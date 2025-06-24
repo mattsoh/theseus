@@ -1,6 +1,6 @@
 module SnailMail
   module Components
-    class ImbComponent < BaseComponent
+    class IMbComponent < BaseComponent
       def initialize(letter:, x:, y:, width:, **options)
         @x = x
         @y = y

@@ -1,6 +1,6 @@
 module SnailMail
   module Components
-    class QrCodeComponent < BaseComponent
+    class QRCodeComponent < BaseComponent
       def initialize(letter:, x:, y:, size: 70, **options)
         @x = x
         @y = y

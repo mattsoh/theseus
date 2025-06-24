@@ -57,11 +57,11 @@ module SnailMail
       end
 
       def render_imb(x, y, width, **options)
-        render ImbComponent.new(letter: letter, x: x, y: y, width: width, **options)
+        render IMbComponent.new(letter: letter, x: x, y: y, width: width, **options)
       end
 
       def render_qr_code(x, y, size = 70)
-        render QrCodeComponent.new(letter: letter, x: x, y: y, size: size, **options)
+        render QRCodeComponent.new(letter: letter, x: x, y: y, size: size, **options)
       end
 
       def render_letter_id(x, y, size, **opts)
