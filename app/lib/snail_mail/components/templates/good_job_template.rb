@@ -4,6 +4,10 @@ module SnailMail
   module Components
     module Templates
       class GoodJobTemplate < HalfLetterComponent
+        def self.abstract?
+          false
+        end
+
         ADDRESS_FONT = "arial"
         
         def self.template_name
