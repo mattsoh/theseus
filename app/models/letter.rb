@@ -116,7 +116,7 @@ class Letter < ApplicationRecord
 
   # Generate a label for this letter
   def generate_label(options = {})
-    pdf = SnailMail::Service.generate_label(self, options)
+    pdf = SnailMail::PhlexService.generate_label(self, options)
 
     # Directly attach the PDF to this letter
     attach_pdf(pdf.render)

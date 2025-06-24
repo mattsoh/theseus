@@ -348,7 +348,7 @@ class Letter::Batch < Batch
     end
 
     # Use the SnailMail service to generate labels
-    pdf = SnailMail::Service.generate_batch_labels(
+    pdf = SnailMail::PhlexService.generate_batch_labels(
       preloaded_letters,
       label_options.merge(options)
     )

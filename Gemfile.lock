@@ -372,6 +372,9 @@ GEM
     pg (1.5.9)
     phlex (2.2.1)
       zeitwerk (~> 2.7)
+    phlex-pdf (0.1.2)
+      matrix (~> 0.4)
+      prawn (~> 2.0)
     phlex-rails (2.2.0)
       phlex (~> 2.2.1)
       railties (>= 7.1, < 9)
@@ -667,6 +670,7 @@ DEPENDENCIES
   oauth2 (~> 2.0)
   parallel (~> 1.26)
   pg (~> 1.1)
+  phlex-pdf (~> 0.1.2)
   phlex-rails (~> 2.2)
   prawn (~> 2.5)
   propshaft

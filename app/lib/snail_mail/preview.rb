@@ -55,8 +55,8 @@ module SnailMail
 
       usps_mailer_id = OpenStruct.new(mid: "111111")
 
-      Templates.available_templates.each do |name|
-        template = Templates.get_template_class(name)
+      SnailMail::Components::Registry.available_templates.each do |name|
+        template = SnailMail::Components::Registry.get_component_class(name)
         sender, recipient = names.sample(2)
 
         mock_letter = OpenStruct.new(
@@ -81,7 +81,7 @@ module SnailMail
         )
 
         Rails.logger.info("generating preview for #{name}...")
-        pdf = SnailMail::Service.generate_label(mock_letter, template: name)
+        pdf = SnailMail::PhlexService.generate_label(mock_letter, template: name)
 
         png_path = OUTPUT_DIR.join("#{template.name.split("::").last.underscore}.png")
 

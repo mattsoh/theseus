@@ -19,7 +19,7 @@ class LettersController < ApplicationController
   # GET /letters/1
   def show
     authorize @letter
-    @available_templates = SnailMail::Service.available_templates
+    @available_templates = SnailMail::PhlexService.available_templates
   end
 
   # GET /letters/new
@@ -114,7 +114,7 @@ class LettersController < ApplicationController
     authorize @letter, :preview_template?
     template = params["template"]
     include_qr_code = params["qr"].present?
-    send_data SnailMail::Service.generate_label(@letter, { template:, include_qr_code: }).render, type: "application/pdf", disposition: "inline"
+    send_data SnailMail::PhlexService.generate_label(@letter, { template:, include_qr_code: }).render, type: "application/pdf", disposition: "inline"
   end
 
   # POST /letters/1/mark_printed

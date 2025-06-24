@@ -13,7 +13,7 @@
     <%= form.label :template_cycle, "Label Templates" %>
     <div class="help-text">Select multiple templates to cycle through them, or just one for all labels.</div>
     <select name="batch[template_cycle][]" id="batch_template_cycle" multiple="multiple" size="8" class="template-select">
-      <% standard_templates = SnailMail::Service.templates_for_size(:standard) %>
+      <% standard_templates = SnailMail::PhlexService.templates_for_size(:standard) %>
       <% if standard_templates.present? %>
         <optgroup label="Standard 4x6 Labels">
           <% standard_templates.uniq.each do |template| %>
@@ -22,7 +22,7 @@
         </optgroup>
       <% end %>
       
-      <% envelope_templates = SnailMail::Service.templates_for_size(:envelope) %>
+      <% envelope_templates = SnailMail::PhlexService.templates_for_size(:envelope) %>
       <% if envelope_templates.present? %>
         <optgroup label="#10 Envelopes">
           <% envelope_templates.uniq.each do |template| %>

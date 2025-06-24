@@ -169,3 +169,5 @@ gem "literal", "~> 1.7"
 gem "phlex-rails", "~> 2.2"
 
 gem "xsv", "~> 1.3"
+
+gem "phlex-pdf", "~> 0.1.2"

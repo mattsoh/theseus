@@ -11,9 +11,9 @@
     <% end %>
   </div>
   <div class="template-picker__grid">
-    <% templates = (local_assigns[:multiple] || local_assigns[:show_all]) ? SnailMail::Templates.available_templates : SnailMail::Templates.available_single_templates %>
+    <% templates = (local_assigns[:multiple] || local_assigns[:show_all]) ? SnailMail::Components::Registry.available_templates : SnailMail::Components::Registry.available_single_templates %>
     <% templates.each do |template_name| %>
-      <% template_class = SnailMail::Templates.get_template_class(template_name) %>
+      <% template_class = SnailMail::Components::Registry.get_component_class(template_name) %>
       <% preview_image = "images/template_previews/#{template_class.name.split('::').last.underscore}.png" %>
       <div class="template-picker__item" 
            data-template-name="<%= template_name %>">
