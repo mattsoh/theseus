@@ -602,6 +602,9 @@ Rails.application.routes.draw do
   get "/lsv/msr/:id/customs_receipt", to: "public/lsv#customs_receipt", as: :msr_customs_receipt
   post "/lsv/msr/:id/customs_receipt", to: "public/lsv#generate_customs_receipt", as: :msr_generate_customs_receipt
 
+  get "/settings/anonymous_map", to: "public/settings#anonymous_map", as: :anonymous_map
+  post "/settings/anonymous_map", to: "public/settings#update_anonymous_map", as: :update_anonymous_map
+
   get "/packages/:id/customs_receipt", to: "public/packages#customs_receipt", as: :package_customs_receipt
   post "/packages/:id/customs_receipt", to: "public/packages#generate_customs_receipt", as: :package_generate_customs_receipt
 

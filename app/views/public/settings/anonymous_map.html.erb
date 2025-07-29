@@ -1,0 +1,22 @@
+<% oo = current_public_user.opted_out_of_map? %>
+<div class="window" style="width: 320px">
+  <div class="title-bar">
+    <div class="title-bar-text">Opt in or out of the anonymous map</div>
+    <div class="title-bar-controls">
+      <%= w95_title_button_to("Close", public_root_path) %>
+    </div>
+  </div>
+  <div class="window-body">
+    <%= form_with url: update_anonymous_map_path, data: {turbo: false} do |form| %>
+      Your letters currently <b><%= oo ? "don't" : "do" %></b> show up on the anonymous <%= link_to "letter map", map_path %>. <br/>
+      <%= oo ? "They wouldn't be" : "They're not" %> associated with your identity in any way, and the displayed coordinates <%= oo ? "would be" : "are" %> offset from your actual location. <br/> <br/>
+      <% if current_public_user.opted_out_of_map? %>
+        <%= hidden_field_tag :opt, "in" %>
+        <%= form.submit "actually, on second thought i'm cool with that" %>
+      <% else %>
+        <%= hidden_field_tag :opt, "out" %>
+        <%= form.submit "don't show my approximate location in aggregate please" %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
