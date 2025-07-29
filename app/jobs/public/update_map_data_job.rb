@@ -10,13 +10,14 @@ class Public::UpdateMapDataJob < ApplicationJob
   private
 
   def fetch_recent_letters_data
-    # Get mailed letters (any time) and letters received in the last 7 days
+    the_paranoid_few = Public::User.where(opted_out_of_map: true).pluck(:email)
     recent_letters = Letter.joins(:address, :return_address)
-      .where(
-        "aasm_state = 'mailed' OR (aasm_state = 'received' AND received_at >= ?)",
-        7.days.ago
-      )
-      .includes(:iv_mtr_events, :address, :return_address)
+                           .where(
+                             "aasm_state = 'mailed' OR (aasm_state = 'received' AND received_at >= ?)",
+                             7.days.ago
+                           )
+                           .includes(:iv_mtr_events, :address, :return_address)
+                           .where.not(recipient_email: the_paranoid_few)
 
     letters_data = recent_letters.map do |letter|
       event_coords = build_letter_event_coordinates(letter)
