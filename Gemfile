@@ -173,3 +173,5 @@ gem "xsv", "~> 1.3"
 gem "phlex-pdf", "~> 0.1.2"
 
 gem "ttfunk", github: "24c02/ttfunk"
+
+gem "slack-ruby-client", "~> 2.7"

@@ -619,6 +619,12 @@ Rails.application.routes.draw do
 
   get "/:public_id", to: "public/public_identifiable#show", constraints: { public_id: /(pkg|ltr)![^\/]+/ }
 
+  defaults format: :json do
+    namespace :slack do
+      post "/events", to: "events#event"
+    end
+  end
+
   resource :qz_tray, only: [] do
     get :cert
     get :settings

@@ -1,0 +1,9 @@
+[
+  section_with_button(
+    "hey!\n to use this app you gotta link your slack to <https://mail.hackclub.com|mail.hackclub.com>..",
+    "go do that?",
+    action_id: "button-action",
+    button_value: "link_slack",
+    button_url: "https://mail.hackclub.com/slack",
+  ),
+]

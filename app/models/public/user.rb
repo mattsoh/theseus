@@ -7,6 +7,7 @@
 #  opted_out_of_map :boolean          default(FALSE)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  slack_id         :string
 #
 class Public::User < ApplicationRecord
   has_many :login_codes

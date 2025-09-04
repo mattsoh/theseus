@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_29_204357) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_04_010918) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -373,6 +373,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_29_204357) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "opted_out_of_map", default: false
+    t.string "slack_id"
   end
 
   create_table "return_addresses", force: :cascade do |t|

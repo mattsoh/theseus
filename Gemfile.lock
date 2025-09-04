@@ -184,6 +184,9 @@ GEM
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
+    faraday-mashify (1.0.0)
+      faraday (~> 2.0)
+      hashie
     faraday-multipart (1.1.0)
       multipart-post (~> 2.0)
     faraday-net_http (3.4.1)
@@ -217,6 +220,8 @@ GEM
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
+    gli (2.22.2)
+      ostruct
     globalid (1.2.1)
       activesupport (>= 6.1)
     good_job (4.11.1)
@@ -524,6 +529,13 @@ GEM
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     slack-notifier (2.4.0)
+    slack-ruby-client (2.7.0)
+      faraday (>= 2.0.1)
+      faraday-mashify
+      faraday-multipart
+      gli
+      hashie
+      logger
     slim (5.2.1)
       temple (~> 0.10.0)
       tilt (>= 2.1.0)
@@ -694,6 +706,7 @@ DEPENDENCIES
   selectize-rails (~> 0.12.6)
   selenium-webdriver
   slack-notifier (~> 2.4)
+  slack-ruby-client (~> 2.7)
   slim-rails (~> 3.7)
   snail (~> 2.3)
   solid_cable
