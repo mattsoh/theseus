@@ -1,35 +1,33 @@
-blocks = []
+blocks do
+  header("hack club mail system!")
 
-blocks << header("hack club mail system!")
+  actions(
+    button(":system-preferences: settings", action_id: "user-prefs"),
+    button(":ie: open web version", action_id: "open-web", url: my_mail_url),
+  )
 
-blocks << actions(
-  button(":system-preferences: settings", action_id: "user-prefs"),
-  button(":ie: open web version", action_id: "open-web", url: my_mail_url),
-)
+  divider
 
-blocks << divider
+  unless @mail&.any?
+    image(
+      "https://hc-cdn.hel1.your-objectstorage.com/s/v3/28ffe42c1dfea1fe2aec99950a0975a86a6f0982_no_mail.png",
+      'heidi looks at you, no-bitches-ly... she says "no mail?"',
+      title: plain_text("you don't have any mail!"),
+    )
+  end
 
-unless @mail&.any?
-  blocks << image(
-    "https://hc-cdn.hel1.your-objectstorage.com/s/v3/28ffe42c1dfea1fe2aec99950a0975a86a6f0982_no_mail.png",
-    'heidi looks at you, no-bitches-ly... she says "no mail?"',
-    title: plain_text("you don't have any mail!"),
+  render @mail if @mail&.any?
+
+  if @truncated
+    section(
+      ".....woah, you've got a lot of mail!\n more mail than slack's block kit will let us show you, even...\n <#{my_mail_url}|open the web version> to see the rest of it :-O",
+      markdown: true,
+    )
+  end
+
+  divider
+
+  context(
+    mrkdwn_text "running <https://github.com/hackclub/theseus|theseus> rev <#{Rails.application.config.commit_link}|#{Rails.application.config.git_version}>"
   )
 end
-
-blocks += render @mail if @mail&.any?
-
-if @truncated
-  blocks << section(
-    ".....woah, you've got a lot of mail!\n more mail than slack's block kit will let us show you, even...\n <#{my_mail_url}|open the web version> to see the rest of it :-O",
-    markdown: true,
-  )
-end
-
-blocks << divider
-
-blocks << context(
-  mrkdwn_text "running <https://github.com/hackclub/theseus|theseus> rev <#{Rails.application.config.commit_link}|#{Rails.application.config.git_version}>"
-)
-
-blocks

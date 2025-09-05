@@ -17,25 +17,39 @@ module BlockKitHelpers
         block_id: options.delete(:block_id),
       }.compact
 
-      if block_given?
-        instance_exec(base_block, *args, **options, &block)
+      result = if block_given?
+          instance_exec(base_block, *args, **options, &block)
+        else
+          base_block.merge(options)
+        end
+
+      if defined?(@blocks) && @blocks
+        @blocks << result
+        result
       else
-        base_block.merge(options)
+        result
       end
     end
   end
 
-  def self.define_interactive_element(name, type, &block)
+  def self.define_interactive_element(name, type, append_to_blocks: true, &block)
     define_method(name) do |*args, **options|
       base_element = {
         type: type,
       }
 
-      if block_given?
+      result = if block_given?
         instance_exec(base_element, *args, **options, &block)
       else
         base_element.merge(options)
       end.compact
+
+      if append_to_blocks && defined?(@blocks) && @blocks
+        @blocks << result
+        result
+      else
+        result
+      end
     end
   end
 
@@ -80,7 +94,7 @@ module BlockKitHelpers
     )
   end
 
-  define_interactive_element :button_element, "button" do |element, text, action_id:, value: nil, url: nil, style: nil, confirm: nil, **options|
+  define_interactive_element :button_element, "button", append_to_blocks: false do |element, text, action_id:, value: nil, url: nil, style: nil, confirm: nil, **options|
     element.merge(
       text: plain_text(text, emoji: true),
       action_id: action_id,
@@ -92,8 +106,8 @@ module BlockKitHelpers
     )
   end
 
-  define_interactive_element :image_element, "image" do |element, image_url, alt_text, **options|
-    element.merge(
+  define_block_element :image_block, "image" do |block, image_url, alt_text, **options|
+    block.merge(
       image_url: image_url,
       alt_text: alt_text,
       **options,
@@ -145,7 +159,13 @@ module BlockKitHelpers
   define_convenience_method :context, :context_block
   define_convenience_method :actions, :actions_block
   define_convenience_method :button, :button_element
-  define_convenience_method :image, :image_element
+  define_convenience_method :image, :image_block
   define_convenience_method :select, :static_select_element
   define_convenience_method :overflow, :overflow_element
+
+  def blocks(&block)
+    @blocks = []
+    instance_eval(&block)
+    @blocks
+  end
 end
