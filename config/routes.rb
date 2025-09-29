@@ -705,5 +705,6 @@ Rails.application.routes.draw do
   # root "posts#index"
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
+    resources :template_previews, only: [:index, :show], path: "previews/templates"
   end
 end
