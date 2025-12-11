@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_29_204357) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_11_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -373,6 +373,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_29_204357) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "opted_out_of_map", default: false
+    t.string "hca_id"
+    t.index ["hca_id"], name: "index_public_users_on_hca_id", unique: true
   end
 
   create_table "return_addresses", force: :cascade do |t|
@@ -411,6 +413,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_29_204357) do
     t.boolean "can_impersonate_public"
     t.bigint "home_mid_id", default: 1, null: false
     t.bigint "home_return_address_id", default: 1, null: false
+    t.string "hca_id"
+    t.index ["hca_id"], name: "index_users_on_hca_id", unique: true
     t.index ["home_mid_id"], name: "index_users_on_home_mid_id"
     t.index ["home_return_address_id"], name: "index_users_on_home_return_address_id"
   end

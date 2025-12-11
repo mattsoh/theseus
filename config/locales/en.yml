@@ -33,6 +33,7 @@ en:
       user:
         home_mid: "Home Mailer ID"
         home_return_address: "Home Return Address"
+        hca_id: Hack Club Auth ID
       usps_payment_account:
         ach: "is ACH?"
   helpers:

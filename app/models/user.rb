@@ -14,6 +14,7 @@
 #  updated_at             :datetime         not null
 #  home_mid_id            :bigint           default(1), not null
 #  home_return_address_id :bigint           default(1), not null
+#  hca_id                 :string
 #  slack_id               :string
 #
 # Indexes
@@ -45,46 +46,30 @@ class User < ApplicationRecord
 
   def remove_admin! = update!(is_admin: false)
 
-  def self.authorize_url(redirect_uri)
-    params = {
-      client_id: ENV["SLACK_CLIENT_ID"],
-      redirect_uri: redirect_uri,
-      state: SecureRandom.hex(24),
-      user_scope: "users.profile:read,users:read,users:read.email",
-    }
+  def self.from_hack_club_auth(auth_hash)
+    hca_id = auth_hash.dig("uid")
+    return nil unless hca_id
 
-    URI.parse("https://slack.com/oauth/v2/authorize?#{params.to_query}")
-  end
+    # Try to find by hca_id first
+    user = find_by(hca_id: hca_id)
 
-  def self.from_slack_token(code, redirect_uri)
-    # Exchange code for token
-    response = HTTP.post("https://slack.com/api/oauth.v2.access", form: {
-                                                                    client_id: ENV["SLACK_CLIENT_ID"],
-                                                                    client_secret: ENV["SLACK_CLIENT_SECRET"],
-                                                                    code: code,
-                                                                    redirect_uri: redirect_uri,
-                                                                  })
+    # If not found, try to migrate from slack_id
+    unless user
+      slack_id = auth_hash.dig("extra", "raw_info", "slack_id")
+      if slack_id.present?
+        user = find_by(slack_id: slack_id)
+        if user
+          # Migrate user to use hca_id
+          user.hca_id = hca_id
+        end
+      end
+    end
 
-    data = JSON.parse(response.body.to_s)
-
-    return nil unless data["ok"]
-
-    # Get user info
-    user_response = HTTP.auth("Bearer #{data["authed_user"]["access_token"]}")
-                        .get("https://slack.com/api/users.info?user=#{data["authed_user"]["id"]}")
-
-    user_data = JSON.parse(user_response.body.to_s)
-
-    return nil unless user_data["ok"]
-
-    user = find_by(slack_id: data.dig("authed_user", "id"))
     return nil unless user
 
-    user.email = user_data.dig("user", "profile", "email")
-    user.username ||= user_data.dig("user", "profile", "username")
-    user.username ||= user_data.dig("user", "profile", "display_name_normalized")
-    user.icon_url = user_data.dig("user", "profile", "image_192") || user_data.dig("user", "profile", "image_72")
-    # Store the OAuth data
+    user.email = auth_hash.dig("info", "email")
+    user.username ||= auth_hash.dig("info", "name")
+
     user.save!
     user
   end

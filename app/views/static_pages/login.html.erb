@@ -8,6 +8,9 @@
 <%= vite_image_tag 'images/login/treasure.png', id: "treasure" %>
 <%= render 'shared/flash' %>
 <h1>welcome ashore...</h1>
-<%= link_to "log in?", slack_auth_path %>
+<form action="/back_office/auth/hackclub" method="post">
+  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+  <button type="submit">log in with hack club?</button>
+</form>
 </body>
 </html>

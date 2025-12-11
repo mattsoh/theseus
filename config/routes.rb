@@ -559,10 +559,9 @@ Rails.application.routes.draw do
 
     delete "signout", to: "sessions#destroy", as: :signout
     get "/login" => "static_pages#login"
-  end
 
-  get "/auth/slack", to: "sessions#new", as: :slack_auth
-  get "/auth/slack/callback", to: "sessions#create"
+    get "/auth/hackclub/callback", to: "sessions#hackclub_callback", as: :hackclub_callback
+  end
 
   root "public/static_pages#root", as: :public_root
 

@@ -14,6 +14,7 @@ class UserDashboard < Administrate::BaseDashboard
     icon_url: Field::String,
     is_admin: Field::Boolean,
     slack_id: Field::String,
+    hca_id: Field::String,
     username: Field::String,
     warehouse_templates: Field::HasMany,
     home_mid: Field::BelongsTo,
@@ -32,7 +33,7 @@ class UserDashboard < Administrate::BaseDashboard
     is_admin
     can_warehouse
     email
-    slack_id
+    hca_id
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -44,6 +45,7 @@ class UserDashboard < Administrate::BaseDashboard
     icon_url
     is_admin
     slack_id
+    hca_id
     username
     warehouse_templates
     home_mid
@@ -61,6 +63,7 @@ class UserDashboard < Administrate::BaseDashboard
     icon_url
     is_admin
     slack_id
+    hca_id
     username
     home_mid
     home_return_address
