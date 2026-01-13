@@ -42,7 +42,7 @@ module SnailMail
 
           # Render postal elements
           render_imb(240, 24, 183)
-          render_qr_code(5, 115, 60)
+          render_qr_code(5, 115, 50)
           render_letter_id(10, 65, 10, rotate: 90)
           render_postage
         end
