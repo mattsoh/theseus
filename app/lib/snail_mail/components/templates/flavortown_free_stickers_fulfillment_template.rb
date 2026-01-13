@@ -27,13 +27,13 @@ module SnailMail
           )
 
           # Render return address
-          render_return_address(10, 278, 260, 70, size: 10)
+          render_return_address(10, 278, 260, 70, size: 8)
 
           # Render destination address
           render_destination_address(
-            160,
+            165,
             140,
-            220,
+            230,
             71,
             size: 14,
             valign: :bottom,
