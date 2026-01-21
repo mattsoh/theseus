@@ -6,7 +6,7 @@ module Public
       case prefix
       when "ltr"
         @record = Letter.find_by_public_id!(params[:public_id])
-        redirect_to public_letter_path(@record)
+        redirect_to public_letter_path(@record, qr: params[:qr])
       when "pkg"
         @record = Warehouse::Order.find_by_public_id!(params[:public_id])
         redirect_to public_package_path(@record)

@@ -68,7 +68,7 @@ module SnailMail
 
           # Custom QR code
           if options[:include_qr_code]
-            SnailMail::QRCodeGenerator.generate_qr_code(self, "https://hack.club/#{letter.public_id}", 360, 73, 60)
+            SnailMail::QRCodeGenerator.generate_qr_code(self, "https://mail.hack.club/#{letter.public_id}?qr=1", 360, 73, 60)
             font("f25") do
               text_box("scan this so we know you got it!", at: [ 360 - 60, 73 - 36 ], width: 54, size: 6.4, align: :right)
             end

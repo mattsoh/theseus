@@ -6,6 +6,7 @@ module Public
 
     def show
       @framed = params[:framed].present? ? params[:framed] == 'true' : request.headers["Sec-Fetch-Dest"] == "iframe"
+      @from_qr = params[:qr].present?
       render "public/letters/show"
     end
 
@@ -15,20 +16,20 @@ module Public
       if @letter.may_mark_received?
         @letter.mark_received!
         @received = true
-        frame_aware_redirect_to public_letter_path(@letter)
+        frame_aware_redirect_to public_letter_path(@letter, qr: params[:qr])
       else
         flash[:alert] = "huh?"
-        return frame_aware_redirect_to public_letter_path(@letter)
+        return frame_aware_redirect_to public_letter_path(@letter, qr: params[:qr])
       end
     end
 
     def mark_mailed
       if @letter.may_mark_mailed?
         @letter.mark_mailed!
-        frame_aware_redirect_to public_letter_path(@letter)
+        frame_aware_redirect_to public_letter_path(@letter, qr: params[:qr])
       else
         flash[:alert] = "huh?"
-        return frame_aware_redirect_to public_letter_path(@letter)
+        return frame_aware_redirect_to public_letter_path(@letter, qr: params[:qr])
       end
     end
 

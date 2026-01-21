@@ -11,7 +11,7 @@ module SnailMail
       def view_template
         return unless options[:include_qr_code]
         
-        SnailMail::QRCodeGenerator.generate_qr_code(self, "https://hack.club/#{letter.public_id}", @x, @y, @size)
+        SnailMail::QRCodeGenerator.generate_qr_code(self, "https://mail.hack.club/#{letter.public_id}?qr=1", @x, @y, @size)
         
         font("f25") do
           text_box("scan this so we know you got it!", at: [@x + 3, @y + 22], width: 54, size: 6.4)
