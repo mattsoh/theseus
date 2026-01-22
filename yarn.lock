@@ -183,10 +183,15 @@
   resolved "https://registry.yarnpkg.com/@open-iframe-resizer/core/-/core-1.4.3.tgz#18ae9f4860b90c75e3db0922d5d3f725f313cec7"
   integrity sha512-wf3jqOGMDsu2NQyA7597B1lDa7hkboU13Cmw7PxjMw0FBGBtqj/gv1HWJlx4V4B3hnI9U0R31ZBBMFDV/ArdcQ==
 
-"@picocss/pico@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.npmjs.org/@picocss/pico/-/pico-2.1.1.tgz"
-  integrity sha512-kIDugA7Ps4U+2BHxiNHmvgPIQDWPDU4IeU6TNRdvXQM1uZX+FibqDQT2xUOnnO2yq/LUHcwnGlu1hvf4KfXnMg==
+"@primer/css@^22.1.0":
+  version "22.1.0"
+  resolved "https://registry.yarnpkg.com/@primer/css/-/css-22.1.0.tgz#b85af5cf9c18b3f9e4aa298699e9137964c87687"
+  integrity sha512-Nwg9QaRiBeu0BU6h+Su0X07daihX1obiuqGRG8y+SexOnvWhN2J5n4OFAvGfQsit07Y7Q6gGoK+yVU5tb8CtDA==
+
+"@primer/primitives@^11.3.2":
+  version "11.3.2"
+  resolved "https://registry.yarnpkg.com/@primer/primitives/-/primitives-11.3.2.tgz#2ea09ef48b7db9e66f3406553f453d8bdd665b34"
+  integrity sha512-/8EDh3MmF9cbmrLETFmIuNFIdvpSCkvBlx6zzD8AZ4dZ5UYExQzFj8QAtIrRtCFJ2ZmW5QrtrPR3+JVb8KEDpg==
 
 "@rails/actioncable@^7.0":
   version "7.2.201"
