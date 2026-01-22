@@ -26,6 +26,9 @@ export default defineConfig({
     target: 'esnext' //browsers can handle the latest ES features
   },
   optimizeDeps: {
-    include: ['d3', 'datamaps']
+    include: ['d3', 'datamaps', '@primer/view-components'],
+    esbuildOptions: {
+      keepNames: true
+    }
   }
 })
