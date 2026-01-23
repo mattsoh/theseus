@@ -28,17 +28,17 @@ class Components::StaticPages::Home < Components::Base
       end
 
       div(style: "display: flex; gap: 8px; flex-wrap: wrap;") do
-        a(href: new_warehouse_order_path, class: "btn btn-primary") do
-          render Primer::Beta::Octicon.new(icon: :package, mr: 1)
-          plain "New order"
-        end
-        a(href: new_letter_path, class: "btn") do
+        a(href: new_letter_path, class: "btn btn-primary") do
           render Primer::Beta::Octicon.new(icon: :mail, mr: 1)
-          plain "New letter"
+          plain "Send a letter"
+        end
+        a(href: new_warehouse_order_path, class: "btn") do
+          render Primer::Beta::Octicon.new(icon: :package, mr: 1)
+          plain "Send a warehouse order"
         end
         a(href: new_letter_batch_path, class: "btn") do
           render Primer::Beta::Octicon.new(icon: :stack, mr: 1)
-          plain "New batch"
+          plain "Create a batch"
         end
       end
     end
@@ -78,7 +78,7 @@ class Components::StaticPages::Home < Components::Base
 
       link_panel("Mail", [
         { label: "Letters", href: letters_path, icon: :mail },
-        { label: "Letter Batches", href: letter_batches_path, icon: :inbox },
+        { label: "Batches", href: letter_batches_path, icon: :stack },
         { label: "Return Addresses", href: return_addresses_path, icon: :home }
       ])
 
