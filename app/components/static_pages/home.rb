@@ -69,24 +69,29 @@ class Components::StaticPages::Home < Components::Base
 
   def main_section
     div(style: "display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;") do
-      link_panel("Warehouse", [
-        { label: "Orders", href: warehouse_orders_path, icon: :package },
-        { label: "Batches", href: warehouse_batches_path, icon: :stack },
-        { label: "SKUs", href: warehouse_skus_path, icon: :archive },
-        { label: "Purchase Orders", href: warehouse_purchase_orders_path, icon: :container }
-      ])
+      if policy(Warehouse::Order.new).index?
+        warehouse_links = [
+          { label: "Orders", href: warehouse_orders_path, icon: :package, check: -> { policy(Warehouse::Order.new).index? } },
+          { label: "Batches", href: warehouse_batches_path, icon: :stack, check: -> { policy(Warehouse::Batch.new).index? } },
+          { label: "SKUs", href: warehouse_skus_path, icon: :archive, check: -> { policy(Warehouse::SKU.new).index? } },
+          { label: "Purchase Orders", href: warehouse_purchase_orders_path, icon: :container, check: -> { policy(Warehouse::PurchaseOrder.new).index? } }
+        ]
+        link_panel("Warehouse", warehouse_links)
+      end
 
-      link_panel("Mail", [
-        { label: "Letters", href: letters_path, icon: :mail },
-        { label: "Batches", href: letter_batches_path, icon: :stack },
-        { label: "Return Addresses", href: return_addresses_path, icon: :home }
-      ])
+      mail_links = [
+        { label: "Letters", href: letters_path, icon: :mail, check: -> { policy(Letter.new).index? } },
+        { label: "Batches", href: letter_batches_path, icon: :stack, check: -> { policy(Letter::Batch.new).index? } },
+        { label: "Return Addresses", href: return_addresses_path, icon: :home, check: -> { policy(ReturnAddress.new).index? } }
+      ]
+      link_panel("Mail", mail_links)
 
-      link_panel("Tools", [
-        { label: "ID Lookup", href: public_ids_path, icon: :search },
-        { label: "Customs Receipts", href: customs_receipts_path, icon: :"file-badge" },
-        { label: "Public Site", href: public_root_path, icon: :globe }
-      ])
+      tools_links = [
+        { label: "ID Lookup", href: public_ids_path, icon: :search, check: -> { current_user&.admin? } },
+        { label: "Customs Receipts", href: customs_receipts_path, icon: :"file-badge", check: -> { policy(:customs_receipt).index? } },
+        { label: "Public Site", href: public_root_path, icon: :globe, check: -> { true } }
+      ]
+      link_panel("Tools", tools_links)
     end
   end
 
@@ -135,6 +140,7 @@ class Components::StaticPages::Home < Components::Base
       end
       div(style: "padding: 8px 0;") do
         links.each do |link|
+          next unless link[:check].call
           a(
             href: link[:href],
             style: "display: flex; align-items: center; gap: 12px; padding: 10px 16px; text-decoration: none; color: inherit;"
