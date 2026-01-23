@@ -4,7 +4,10 @@ class Warehouse::SKUsController < ApplicationController
   # GET /warehouse/skus or /warehouse/skus.json
   def index
     authorize Warehouse::SKU
-    @warehouse_skus = params[:include_non_inventory] ? Warehouse::SKU.all : Warehouse::SKU.in_inventory
+    include_non_inventory = params[:include_non_inventory].present?
+    warehouse_skus = include_non_inventory ? Warehouse::SKU.all : Warehouse::SKU.in_inventory
+    view = params[:view] == 'flat' ? 'flat' : 'grouped'
+    render Views::Warehouse::SKUs::Index.new(warehouse_skus:, include_non_inventory:, view:)
   end
 
   # GET /warehouse/skus/1 or /warehouse/skus/1.json
