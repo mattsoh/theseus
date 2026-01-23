@@ -224,7 +224,7 @@ class Views::Warehouse::Orders::Index < Views::Base
           end
         end
 
-        div(style: "min-width: 100px; text-align: right;") do
+        div(style: "min-width: 100px; text-align: right;", title: order.line_items.map { |li| "#{li.quantity}× #{li.sku.name}" }.join(", ")) do
           span(style: "font-weight: 600;") { order.line_items.sum(&:quantity).to_s }
           span(style: "color: var(--fgColor-muted); margin-left: 4px;") { "items" }
         end
