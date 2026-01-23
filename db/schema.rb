@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_15_180434) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_23_084628) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -556,10 +556,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_15_180434) do
     t.citext "tags", default: [], array: true
     t.decimal "labor_cost", precision: 10, scale: 2
     t.decimal "contents_cost", precision: 10, scale: 2
+    t.integer "created_via", default: 0, null: false
+    t.bigint "origin_batch_id"
     t.index ["address_id"], name: "index_warehouse_orders_on_address_id"
     t.index ["batch_id"], name: "index_warehouse_orders_on_batch_id"
+    t.index ["created_via"], name: "index_warehouse_orders_on_created_via"
     t.index ["hc_id"], name: "index_warehouse_orders_on_hc_id"
     t.index ["idempotency_key"], name: "index_warehouse_orders_on_idempotency_key", unique: true
+    t.index ["origin_batch_id"], name: "index_warehouse_orders_on_origin_batch_id"
     t.index ["source_tag_id"], name: "index_warehouse_orders_on_source_tag_id"
     t.index ["tags"], name: "index_warehouse_orders_on_tags", using: :gin
     t.index ["template_id"], name: "index_warehouse_orders_on_template_id"
@@ -667,6 +671,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_15_180434) do
   add_foreign_key "warehouse_line_items", "warehouse_templates", column: "template_id"
   add_foreign_key "warehouse_orders", "addresses"
   add_foreign_key "warehouse_orders", "batches"
+  add_foreign_key "warehouse_orders", "batches", column: "origin_batch_id"
   add_foreign_key "warehouse_orders", "source_tags"
   add_foreign_key "warehouse_orders", "users"
   add_foreign_key "warehouse_orders", "warehouse_templates", column: "template_id"

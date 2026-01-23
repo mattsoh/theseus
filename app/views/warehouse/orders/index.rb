@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class Views::Warehouse::Orders::Index < Views::Base
-  def initialize(warehouse_orders:, all_orders:, view: nil, search: nil, state: nil, user_id: nil, users: [])
+  def initialize(warehouse_orders:, all_orders:, origin: nil, search: nil, state: nil, user_id: nil, users: [])
     @warehouse_orders = warehouse_orders
     @all_orders = all_orders
-    @view = view
+    @origin = origin
     @search = search
     @state = state
     @user_id = user_id
@@ -17,13 +17,13 @@ class Views::Warehouse::Orders::Index < Views::Base
       stats_section
       filters_section
       orders_list
-      pagination_section unless view == "batched"
+      pagination_section
     end
   end
 
   private
 
-  attr_reader :warehouse_orders, :all_orders, :view, :search, :state, :user_id, :users
+  attr_reader :warehouse_orders, :all_orders, :origin, :search, :state, :user_id, :users
 
   def header_section
     div(style: "display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;") do
@@ -60,9 +60,9 @@ class Views::Warehouse::Orders::Index < Views::Base
   def stat_pill(label, count, scheme, filter_state)
     is_active = state == filter_state
     href = if is_active
-             warehouse_orders_path(view: view, search: search)
+             warehouse_orders_path(origin: origin, search: search)
            else
-             warehouse_orders_path(view: view, search: search, state: filter_state)
+             warehouse_orders_path(origin: origin, search: search, state: filter_state)
            end
 
     schemes = {
@@ -90,7 +90,7 @@ class Views::Warehouse::Orders::Index < Views::Base
     div(style: "display: flex; gap: 12px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;") do
       div(style: "flex: 1; min-width: 200px; max-width: 400px;") do
         form_tag(warehouse_orders_path, method: :get, style: "display: contents;") do
-          hidden_field_tag(:view, view) if view.present?
+          hidden_field_tag(:origin, origin) if origin.present?
           hidden_field_tag(:state, state) if state.present?
           hidden_field_tag(:user_id, user_id) if user_id.present?
           render Primer::Alpha::TextField.new(
@@ -109,42 +109,46 @@ class Views::Warehouse::Orders::Index < Views::Base
         render Components::Shared::UserPicker.new(
           users: users,
           selected_user_id: user_id,
-          path_builder: ->(uid) { warehouse_orders_path(view: view, search: search, state: state, user_id: uid) }
+          path_builder: ->(uid) { warehouse_orders_path(origin: origin, search: search, state: state, user_id: uid) }
         )
       end
 
-      div(style: "display: flex; gap: 8px;") do
-        render Primer::Beta::Button.new(
-          tag: :a,
-          href: warehouse_orders_path(search: search, state: state, user_id: user_id),
-          scheme: view != "batched" ? :secondary : :invisible,
-          size: :medium
-        ) do |btn|
-          btn.with_leading_visual_icon(icon: :package)
-          "Unbatched"
-        end
+      origin_filter_section
 
-        render Primer::Beta::Button.new(
-          tag: :a,
-          href: warehouse_orders_path(view: "batched", search: search, state: state, user_id: user_id),
-          scheme: view == "batched" ? :secondary : :invisible,
-          size: :medium
-        ) do |btn|
-          btn.with_leading_visual_icon(icon: :stack)
-          "Batched"
-        end
-      end
-
-      has_filters = search.present? || state.present? || user_id.present?
+      has_filters = search.present? || state.present? || user_id.present? || origin.present?
       if has_filters
         render Primer::Beta::Button.new(
           tag: :a,
-          href: warehouse_orders_path(view: view),
+          href: warehouse_orders_path,
           scheme: :invisible,
           size: :small
         ) do |btn|
           btn.with_leading_visual_icon(icon: :x)
           "Clear filters"
+        end
+      end
+    end
+  end
+
+  def origin_filter_section
+    origins = [
+      { key: nil, label: "All", icon: :rows },
+      { key: "manual", label: "Manual", icon: :pencil },
+      { key: "bulk_upload", label: "Bulk upload", icon: :upload },
+      { key: "api", label: "API", icon: :code },
+    ]
+
+    div(style: "display: flex; gap: 4px;") do
+      origins.each do |o|
+        is_active = origin == o[:key]
+        render Primer::Beta::Button.new(
+          tag: :a,
+          href: warehouse_orders_path(origin: o[:key], search: search, state: state, user_id: user_id),
+          scheme: is_active ? :secondary : :invisible,
+          size: :medium
+        ) do |btn|
+          btn.with_leading_visual_icon(icon: o[:icon])
+          o[:label]
         end
       end
     end
@@ -205,6 +209,7 @@ class Views::Warehouse::Orders::Index < Views::Base
         end
         div(style: "font-size: 12px; color: var(--fgColor-muted); margin-top: 2px;") do
           plain order.created_at.strftime("%b %d, %Y")
+          plain " · #{order.origin_label}"
           if order.source_tag&.name.present?
             plain " · #{order.source_tag.name}"
           end
@@ -277,7 +282,7 @@ class Views::Warehouse::Orders::Index < Views::Base
       if current > 1
         render Primer::Beta::Button.new(
           tag: :a,
-          href: warehouse_orders_path(page: current - 1, view: view, search: search, state: state, user_id: user_id),
+          href: warehouse_orders_path(page: current - 1, origin: origin, search: search, state: state, user_id: user_id),
           scheme: :secondary,
           size: :small
         ) { "← Prev" }
@@ -286,7 +291,7 @@ class Views::Warehouse::Orders::Index < Views::Base
       if current < total
         render Primer::Beta::Button.new(
           tag: :a,
-          href: warehouse_orders_path(page: current + 1, view: view, search: search, state: state, user_id: user_id),
+          href: warehouse_orders_path(page: current + 1, origin: origin, search: search, state: state, user_id: user_id),
           scheme: :secondary,
           size: :small
         ) { "Next →" }

@@ -5,13 +5,13 @@ class Warehouse::OrdersController < ApplicationController
     authorize Warehouse::Order
 
     # Get all orders with their associations using policy scope
-    @all_orders = policy_scope(Warehouse::Order).includes(:batch, :address, :source_tag, :user, line_items: :sku)
+    @all_orders = policy_scope(Warehouse::Order).includes(:batch, :origin_batch, :address, :source_tag, :user, line_items: :sku)
 
-    # Filter by batched/unbatched based on view parameter
-    orders = if params[:view] == "batched"
-               @all_orders.in_batch
+    # Filter by origin (how the order was created)
+    orders = if params[:origin].present? && %w[manual bulk_upload api].include?(params[:origin])
+               @all_orders.where(created_via: params[:origin])
              else
-               @all_orders.not_in_batch
+               @all_orders
              end
 
     # Filter by state
@@ -33,11 +33,7 @@ class Warehouse::OrdersController < ApplicationController
       )
     end
 
-    @warehouse_orders = if params[:view] == "batched"
-                          orders.order(created_at: :desc)
-                        else
-                          orders.order(created_at: :desc).page(params[:page]).per(25)
-                        end
+    @warehouse_orders = orders.order(created_at: :desc).page(params[:page]).per(25)
 
     # Get users for the picker (admin only)
     @users = current_user&.is_admin? ? User.where(id: @all_orders.select(:user_id).distinct).order(:email) : []
@@ -45,7 +41,7 @@ class Warehouse::OrdersController < ApplicationController
     render Views::Warehouse::Orders::Index.new(
       warehouse_orders: @warehouse_orders,
       all_orders: @all_orders,
-      view: params[:view],
+      origin: params[:origin],
       search: params[:search],
       state: params[:state],
       user_id: params[:user_id],
