@@ -7,6 +7,9 @@ class PublicIdsController < ApplicationController
   end
 
   def lookup
+
+    return redirect_back fallback_location: public_ids_path, alert: "well you gotta enter *something*..." unless params[:id].present?
+
     # The public_id contains the prefix that determines the model class
     prefix = params[:id].split("!").first&.downcase
     id_part = params[:id].split("!").last
@@ -52,7 +55,7 @@ class PublicIdsController < ApplicationController
       redirect_to url_for(@record)
 
       # If no matching prefix is found, return 404
-      # raise ActiveRecord::RecordNotFound, "No record found with public_id: #{params[:id]}"
+      raise ActiveRecord::RecordNotFound, "No record found with public_id: #{params[:id]}"
     end
   rescue ActiveRecord::RecordNotFound => e
     flash[:alert] = "Record not found"
