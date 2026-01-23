@@ -26,6 +26,14 @@ class Components::Shared::AppHeader < Components::Base
           plain "Theseus"
           sup(class: "app-header-env-badge") { "dev" } if Rails.env.development?
         end
+
+        render(Primer::Beta::IconButton.new(
+          icon: :home,
+          "aria-label": "Home",
+          scheme: :invisible,
+          tag: :a,
+          href: root_path
+        ))
       end
 
       div(style: "display: flex; align-items: center; gap: 0.5rem;") do
