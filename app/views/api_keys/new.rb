@@ -2,14 +2,12 @@
 
 class Views::APIKeys::New < Views::Base
   include Phlex::Rails::Helpers::FormWith
-
   def initialize(api_key:)
     @api_key = api_key
   end
 
   def view_template
-    div(class: "p-4") do
-      div(class: "Box") do
+      div(class: "Box mb-4") do
         div(class: "Box-header p-3 border-bottom") do
           h2(class: "m-0 h4") { "New API Key" }
         end
@@ -48,10 +46,9 @@ class Views::APIKeys::New < Views::Base
           end
         end
       end
-    end
-    div class: "p-4" do
-      render Components::Shared::BackButton.new(href: api_keys_path)
-    end
+
+    render Components::Shared::BackButton.new(href: api_keys_path)
+
   end
 
   private
