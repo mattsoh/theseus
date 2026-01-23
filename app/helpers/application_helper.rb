@@ -1,6 +1,16 @@
 module ApplicationHelper
   include ButtonHelper
 
+  def icon_svg(icon)
+    @icon_svg_cache ||= {}
+    unless @icon_svg_cache.key?(icon)
+      f = File.read(Rails.root.join("app", "frontend", "images", "icons", "#{icon}.svg"))
+      x = Nokogiri::HTML::DocumentFragment.parse f
+      @icon_svg_cache[icon] = x.at_css("svg").children.to_html.html_safe
+    end
+    @icon_svg_cache[icon]
+  end
+
   def admin_tool(class_name: "", element: "div", **options, &block)
     return unless current_user&.is_admin?
     concat content_tag(element, class: "admin-tool #{class_name}", **options, &block)

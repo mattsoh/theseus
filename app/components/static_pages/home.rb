@@ -70,10 +70,10 @@ class Components::StaticPages::Home < Components::Base
   def main_section
     div(style: "display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;") do
       link_panel("Warehouse", [
-        { label: "SKUs", href: warehouse_skus_path, icon: :package },
-        { label: "Orders", href: warehouse_orders_path, icon: :"list-ordered" },
+        { label: "Orders", href: warehouse_orders_path, icon: :package },
         { label: "Batches", href: warehouse_batches_path, icon: :stack },
-        { label: "Purchase Orders", href: warehouse_purchase_orders_path, icon: :file }
+        { label: "SKUs", href: warehouse_skus_path, icon: :archive },
+        { label: "Purchase Orders", href: warehouse_purchase_orders_path, icon: :container }
       ])
 
       link_panel("Mail", [
