@@ -1,12 +1,16 @@
 <% content_for :title, "Editing order" %>
 
-<h1>Editing order</h1>
+<%= render Primer::Beta::Heading.new(tag: :h1, mb: 4) { "Editing order" } %>
 
 <%= render "form", warehouse_order: @warehouse_order %>
 
-<br>
-
-<div>
-  <%= link_to "Show this order", @warehouse_order %> |
-  <%= link_to "Back to orders", warehouse_orders_path %>
+<div class="mt-4 d-flex gap-3">
+  <%= render Primer::Beta::Link.new(href: @warehouse_order, muted: true) do |link| %>
+    <% link.with_leading_visual_icon(icon: :eye) %>
+    Show this order
+  <% end %>
+  <%= render Primer::Beta::Link.new(href: warehouse_orders_path, muted: true) do |link| %>
+    <% link.with_leading_visual_icon(icon: :"arrow-left") %>
+    Back to orders
+  <% end %>
 </div>

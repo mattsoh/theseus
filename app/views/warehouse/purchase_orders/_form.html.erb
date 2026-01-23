@@ -1,0 +1,62 @@
+<%= form_with(model: purchase_order, url: purchase_order.persisted? ? warehouse_purchase_order_path(purchase_order) : warehouse_purchase_orders_path) do |form| %>
+  <% if purchase_order.errors.any? %>
+    <%= render Primer::Beta::Flash.new(scheme: :danger, full: true, mb: 3) do %>
+      <strong><%= pluralize(purchase_order.errors.count, "error") %> prevented saving:</strong>
+      <ul style="margin: 8px 0 0 16px; padding: 0;">
+        <% purchase_order.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    <% end %>
+  <% end %>
+
+  <%= render Primer::Beta::BorderBox.new(mb: 4) do |box| %>
+    <% box.with_header do |header| %>
+      <% header.with_title(tag: :h2) do %>Supplier Information<% end %>
+    <% end %>
+    <% box.with_body do %>
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
+        <div class="mb-3">
+          <%= form.label :supplier_name, "Supplier Name", class: "FormControl-label d-block mb-1" %>
+          <%= form.text_field :supplier_name, class: "FormControl-input width-full", required: true, placeholder: "Enter supplier name" %>
+        </div>
+        <div class="mb-3">
+          <%= form.label :supplier_id, "Supplier ID (optional)", class: "FormControl-label d-block mb-1" %>
+          <%= form.number_field :supplier_id, class: "FormControl-input width-full", placeholder: "Zenventory supplier ID" %>
+        </div>
+      </div>
+      <div class="mb-3">
+        <%= form.label :required_by_date, "Required By Date", class: "FormControl-label d-block mb-1" %>
+        <%= form.date_field :required_by_date, class: "FormControl-input", style: "width: 200px;" %>
+      </div>
+      <div>
+        <%= form.label :notes, "Notes", class: "FormControl-label d-block mb-1" %>
+        <%= form.text_area :notes, class: "FormControl-input width-full", rows: 3, placeholder: "Add any notes for this purchase order..." %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%= render Primer::Beta::BorderBox.new(mb: 4) do |box| %>
+    <% box.with_header do |header| %>
+      <% header.with_title(tag: :h2) do %>Line Items<% end %>
+    <% end %>
+    <% box.with_body do %>
+      <%= render Components::Warehouse::LineItemsEditor.new(
+        form: form,
+        scope: :enabled,
+        show_unit_cost: true,
+        add_button_text: "Add Item"
+      ) %>
+    <% end %>
+  <% end %>
+
+  <div style="display: flex; gap: 8px; align-items: center;">
+    <%= render Primer::Beta::Button.new(tag: :a, href: warehouse_purchase_orders_path, scheme: :secondary) do
+      "Cancel"
+    end %>
+    <%= render Primer::Beta::Button.new(type: :submit, scheme: :primary) do |btn|
+      btn.with_leading_visual_icon(icon: :check)
+      purchase_order.persisted? ? "Update Purchase Order" : "Create Purchase Order"
+    end %>
+  </div>
+<% end %>

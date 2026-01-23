@@ -1,11 +1,12 @@
 <% content_for :title, "New order" %>
 
-<h1>New order</h1>
+<%= render Primer::Beta::Heading.new(tag: :h1, mb: 4) { "New order" } %>
 
 <%= render "form", warehouse_order: @warehouse_order %>
 
-<br>
-
-<div>
-  <%= link_to "Back to orders", warehouse_orders_path %>
+<div class="mt-4">
+  <%= render Primer::Beta::Link.new(href: warehouse_orders_path, muted: true) do |link| %>
+    <% link.with_leading_visual_icon(icon: :"arrow-left") %>
+    Back to orders
+  <% end %>
 </div>

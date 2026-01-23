@@ -68,13 +68,14 @@ class Components::StaticPages::Home < Components::Base
   end
 
   def main_section
+    wh = policy(::Warehouse::Order.new).index?
     div(style: "display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;") do
-      if policy(Warehouse::Order.new).index?
+      if wh
         warehouse_links = [
-          { label: "Orders", href: warehouse_orders_path, icon: :package, check: -> { policy(Warehouse::Order.new).index? } },
-          { label: "Batches", href: warehouse_batches_path, icon: :stack, check: -> { policy(Warehouse::Batch.new).index? } },
-          { label: "SKUs", href: warehouse_skus_path, icon: :archive, check: -> { policy(Warehouse::SKU.new).index? } },
-          { label: "Purchase Orders", href: warehouse_purchase_orders_path, icon: :container, check: -> { policy(Warehouse::PurchaseOrder.new).index? } }
+          { label: "Orders", href: warehouse_orders_path, icon: :package, check: -> { true } },
+          { label: "Batches", href: warehouse_batches_path, icon: :stack, check: -> { true } },
+          { label: "SKUs", href: warehouse_skus_path, icon: :archive, check: -> { policy(::Warehouse::SKU.new).index? } },
+          { label: "Purchase Orders", href: warehouse_purchase_orders_path, icon: :container, check: -> { policy(::Warehouse::PurchaseOrder.new).index? } }
         ]
         link_panel("Warehouse", warehouse_links)
       end
