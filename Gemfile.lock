@@ -413,6 +413,9 @@ GEM
       racc
     pdf-core (0.10.0)
     pg (1.5.9)
+    pg_search (2.3.7)
+      activerecord (>= 6.1)
+      activesupport (>= 6.1)
     phlex (2.3.1)
       zeitwerk (~> 2.7)
     phlex-pdf (0.1.2)
@@ -752,6 +755,7 @@ DEPENDENCIES
   omniauth_openid_connect (~> 0.7)
   parallel (~> 1.26)
   pg (~> 1.1)
+  pg_search (~> 2.3)
   phlex-pdf (~> 0.1.2)
   phlex-rails (~> 2.3)
   prawn (~> 2.5)

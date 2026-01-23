@@ -62,7 +62,17 @@ class Warehouse::Order < ApplicationRecord
   include HasAddress
   include CanBeBatched
   include PublicIdentifiable
+  include PgSearch::Model
   set_public_id_prefix "pkg"
+
+  pg_search_scope :search,
+    against: %i[hc_id recipient_email user_facing_title tags],
+    associated_against: {
+      address: %i[first_name last_name]
+    },
+    using: {
+      tsearch: { prefix: true }
+    }
 
   enum :created_via, { manual: 0, bulk_upload: 1, api: 2 }
 

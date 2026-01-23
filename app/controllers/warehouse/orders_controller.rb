@@ -21,17 +21,7 @@ class Warehouse::OrdersController < ApplicationController
     orders = orders.where(user_id: params[:user_id]) if params[:user_id].present? && current_user&.is_admin?
 
     # Search
-    if params[:search].present?
-      search_term = "%#{params[:search].downcase}%"
-      orders = orders.left_joins(:address).where(
-        "LOWER(warehouse_orders.hc_id) LIKE :q OR " \
-        "LOWER(warehouse_orders.recipient_email) LIKE :q OR " \
-        "LOWER(warehouse_orders.user_facing_title) LIKE :q OR " \
-        "LOWER(addresses.first_name) LIKE :q OR " \
-        "LOWER(addresses.last_name) LIKE :q",
-        q: search_term
-      )
-    end
+    orders = orders.search(params[:search]) if params[:search].present?
 
     @warehouse_orders = orders.order(created_at: :desc).page(params[:page]).per(25)
 
