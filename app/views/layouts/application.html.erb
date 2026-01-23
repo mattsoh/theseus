@@ -28,16 +28,19 @@
     <% if Rails.env.development? %>
       <div class="dev-border-overlay"></div>
     <% end %>
-    
-    <div class="app-layout">
-      <%= render "shared/nav" %>
+    <%= render Components::Shared::AppHeader.new %>
+    <main class="app-main">
+      <%= yield %>
+    </main>
+    <%= render Components::Shared::AppFooter.new %>
+<!--    <div class="app-layout">-->
+      <%#= render "shared/nav" %>
 
-      <div class="content-wrapper">
-        <main class="content-container">
-          <%= render "shared/flash" %>
-          <%= yield %>
-        </main>
-      </div>
-    </div>
+<!--      <div class="content-wrapper">-->
+<!--        <main class="content-container">-->
+          <%#= render "shared/flash" %>
+<!--        </main>-->
+<!--      </div>-->
+<!--    </div>-->
   </body>
 </html>
