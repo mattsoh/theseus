@@ -94,6 +94,28 @@ module ApplicationHelper
     end
   end
 
+  def flash_scheme(type)
+    case type.to_s
+    when 'notice', 'success'
+      :success
+    when 'alert', 'error'
+      :danger
+    else
+      :default
+    end
+  end
+
+  def flash_icon(type)
+    case type.to_s
+    when 'notice', 'success'
+      :'check-circle-fill'
+    when 'alert', 'error'
+      :'alert'
+    else
+      :info
+    end
+  end
+
   private
 
   def recursively_transform_values(obj, &block)

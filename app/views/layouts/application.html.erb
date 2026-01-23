@@ -23,6 +23,15 @@
       <div class="dev-border-overlay"></div>
     <% end %>
     <%= render Components::Shared::AppHeader.new %>
+    <% if flash.any? %>
+      <div class="flash-container" style="padding: 1em 4em">
+        <% flash.each do |type, message| %>
+          <div x-data="{ open: true }" x-show="open" @click="if ($el.querySelector('.js-flash-close')) open = false">
+            <%= render(Primer::Beta::Flash.new(scheme: flash_scheme(type), dismissible: true, icon: flash_icon(type))) { message } %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
     <div style="padding: 4em">
       <%= yield %>
     </div>
