@@ -2,6 +2,7 @@
 
 class Components::Shared::AppHeader < Components::Base
   include Phlex::Rails::Helpers::LinkTo
+  include Phlex::Rails::Helpers::FormWith
 
   register_value_helper :request
 
@@ -27,21 +28,25 @@ class Components::Shared::AppHeader < Components::Base
         end
       end
 
-      if current_user
-        render(Primer::Alpha::ActionMenu.new(anchor_align: :end)) do |menu|
-          menu.with_show_button(scheme: :invisible) do |btn|
-            btn.with_leading_visual_icon(icon: :person)
-            plain current_user.username
-            plain " [IMPERSONATING]" if session[:impersonator_user_id]
-          end
-          
-          if session[:impersonator_user_id]
-            menu.with_item(label: "Stop impersonating", href: stop_impersonating_path)
-            menu.with_divider
-          end
-          
-          menu.with_item(label: "Log out", href: signout_path, data: {method: :delete}) do |item|
-            item.with_leading_visual_icon(icon: :"sign-out")
+      div(style: "display: flex; align-items: center; gap: 0.5rem;") do
+        render_id_lookup_dialog
+
+        if current_user
+          render(Primer::Alpha::ActionMenu.new(anchor_align: :end)) do |menu|
+            menu.with_show_button(scheme: :invisible) do |btn|
+              btn.with_leading_visual_icon(icon: :person)
+              plain current_user.username
+              plain " [IMPERSONATING]" if session[:impersonator_user_id]
+            end
+
+            if session[:impersonator_user_id]
+              menu.with_item(label: "Stop impersonating", href: stop_impersonating_path)
+              menu.with_divider
+            end
+
+            menu.with_item(label: "Log out", href: signout_path, data: {method: :delete}) do |item|
+              item.with_leading_visual_icon(icon: :"sign-out")
+            end
           end
         end
       end
@@ -49,6 +54,29 @@ class Components::Shared::AppHeader < Components::Base
   end
 
   private
+
+  def render_id_lookup_dialog
+    render(Primer::Alpha::Dialog.new(
+      title: "ID Lookup",
+      size: :small
+    )) do |dialog|
+      dialog.with_show_button(icon: :search, "aria-label": "ID Lookup", scheme: :invisible)
+      dialog.with_body do
+        form_with url: helpers.lookup_public_ids_path, method: :post do |f|
+          render(Primer::Alpha::TextField.new(
+            name: :id,
+            label: "Public ID or tracking number",
+            placeholder: "e.g. ltr!abc123, 9400111...",
+            full_width: true,
+            autofocus: true
+          ))
+          div(style: "margin-top: 1rem; display: flex; justify-content: flex-end;") do
+            render(Primer::ButtonComponent.new(type: :submit, scheme: :primary)) { "Go" }
+          end
+        end
+      end
+    end
+  end
 
   def session
     Rails.application.env_config["rack.session"] || {}

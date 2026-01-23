@@ -22,7 +22,7 @@ class PublicIdsController < ApplicationController
         if @letter.present?
           redirect_to public_letter_path(@letter)
         else
-          redirect_to public_ids_path, alert: "MTR event found, but no associated letter...?"
+          redirect_back fallback_location: public_ids_path, alert: "MTR event found, but no associated letter...?"
         end
       end
     when "hackapost", "dev"
@@ -34,7 +34,7 @@ class PublicIdsController < ApplicationController
         if @letter.present?
           redirect_to public_letter_path(@letter)
         else
-          redirect_to public_ids_path, alert: "indicium found, but no associated letter...?"
+          redirect_back fallback_location: public_ids_path, alert: "indicium found, but no associated letter...?"
         end
       end
     else
@@ -46,7 +46,7 @@ class PublicIdsController < ApplicationController
       end
       @record = clazz.find_by_public_id(params[:id])
       unless @record.present?
-        return redirect_to public_ids_path, alert: "no #{clazz.name} found with public id #{params[:id]}"
+        return redirect_back fallback_location: public_ids_path, alert: "no #{clazz.name} found with public id #{params[:id]}"
       end
 
       redirect_to url_for(@record)
@@ -56,7 +56,7 @@ class PublicIdsController < ApplicationController
     end
   rescue ActiveRecord::RecordNotFound => e
     flash[:alert] = "Record not found"
-    redirect_to public_ids_path
+    redirect_back fallback_location: public_ids_path
   end
 
   private
@@ -76,6 +76,6 @@ class PublicIdsController < ApplicationController
 
     # No package found with this tracking number
     flash[:alert] = "nothing found at all."
-    redirect_to public_ids_path
+    redirect_back fallback_location: public_ids_path
   end
 end
