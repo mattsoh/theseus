@@ -8,7 +8,6 @@ class Warehouse::SyncPurchaseOrdersJob < ApplicationJob
 
     zenv_pos = Zenventory.get_purchase_orders
     Rails.logger.info("fetched #{zenv_pos.length} POs from zenventory")
-    puts "wew"
     zenv_pos.each do |zenv_po|
       sync_purchase_order(zenv_po)
     rescue => e
