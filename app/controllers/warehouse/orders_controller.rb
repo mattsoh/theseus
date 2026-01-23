@@ -5,14 +5,44 @@ class Warehouse::OrdersController < ApplicationController
     authorize Warehouse::Order
 
     # Get all orders with their associations using policy scope
-    @all_orders = policy_scope(Warehouse::Order).includes(:batch, :address, :source_tag, :user)
+    @all_orders = policy_scope(Warehouse::Order).includes(:batch, :address, :source_tag, :user, line_items: :sku)
 
     # Filter by batched/unbatched based on view parameter
-    if params[:view] == "batched"
-      @warehouse_orders = @all_orders.in_batch
-    else
-      @warehouse_orders = @all_orders.not_in_batch.page(params[:page]).per(20)
+    orders = if params[:view] == "batched"
+               @all_orders.in_batch
+             else
+               @all_orders.not_in_batch
+             end
+
+    # Filter by state
+    orders = orders.where(aasm_state: params[:state]) if params[:state].present?
+
+    # Search
+    if params[:search].present?
+      search_term = "%#{params[:search].downcase}%"
+      orders = orders.left_joins(:address).where(
+        "LOWER(warehouse_orders.hc_id) LIKE :q OR " \
+        "LOWER(warehouse_orders.recipient_email) LIKE :q OR " \
+        "LOWER(warehouse_orders.user_facing_title) LIKE :q OR " \
+        "LOWER(addresses.first_name) LIKE :q OR " \
+        "LOWER(addresses.last_name) LIKE :q",
+        q: search_term
+      )
     end
+
+    @warehouse_orders = if params[:view] == "batched"
+                          orders.order(created_at: :desc)
+                        else
+                          orders.order(created_at: :desc).page(params[:page]).per(25)
+                        end
+
+    render Views::Warehouse::Orders::Index.new(
+      warehouse_orders: @warehouse_orders,
+      all_orders: @all_orders,
+      view: params[:view],
+      search: params[:search],
+      state: params[:state]
+    )
   end
 
   # GET /warehouse/orders/1 or /warehouse/orders/1.json

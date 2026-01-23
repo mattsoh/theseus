@@ -1,74 +1,260 @@
-<div>
-  <h2 class="inline">
-    Order <%= @warehouse_order.hc_id %>:
-  </h2>
-  <%= render 'status_badge', order: @warehouse_order %>
-  <%= link_to "Show on public page", public_package_path(@warehouse_order), target: "_blank" %>
-</div>
+<% content_for :title, "Order #{@warehouse_order.hc_id}" %>
 
-<%= render 'shared/tags', tags: @warehouse_order.tags %>
+<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+  <%# Header %>
+  <div style="margin-bottom: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
+          <h1 style="font-size: 24px; font-weight: 600; margin: 0; font-family: var(--fontStack-monospace);">
+            <%= @warehouse_order.hc_id %>
+          </h1>
+          <% status_scheme = { draft: :secondary, dispatched: :accent, mailed: :success, errored: :danger, canceled: :attention }[@warehouse_order.aasm_state.to_sym] || :secondary %>
+          <%= render(Primer::Beta::Label.new(scheme: status_scheme, size: :large)) { @warehouse_order.humanized_state } %>
+        </div>
+        <% if @warehouse_order.user_facing_title.present? %>
+          <p style="color: var(--fgColor-muted, #656d76); margin: 0; font-size: 16px;"><%= @warehouse_order.user_facing_title %></p>
+        <% end %>
+      </div>
 
-<div class="my-2">
-  <b>title:</b> <%= @warehouse_order.user_facing_title %><br>
-  <b>recipient email:</b>
-  <%= link_to @warehouse_order.recipient_email, "mailto:#{@warehouse_order.recipient_email}" %><br>
-  <b>recipient:</b><br>
-  <%= render 'addresses/address', address: @warehouse_order.address %>
-</div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <%= render Primer::Beta::Button.new(tag: :a, href: public_package_path(@warehouse_order), scheme: :secondary, size: :medium, target: "_blank") do |btn|
+          btn.with_leading_visual_icon(icon: :"link-external")
+          "Public Page"
+        end %>
+        <%= render Primer::Beta::Button.new(tag: :a, href: edit_warehouse_order_path(@warehouse_order), scheme: :secondary, size: :medium) do |btn|
+          btn.with_leading_visual_icon(icon: :pencil)
+          "Edit"
+        end %>
+        <% if @warehouse_order.zenventory_url.present? %>
+          <%= render Primer::Beta::Button.new(tag: :a, href: @warehouse_order.zenventory_url, scheme: :secondary, size: :medium, target: "_blank") do |btn|
+            btn.with_leading_visual_icon(icon: :"link-external")
+            "Zenventory"
+          end %>
+        <% end %>
+        <% if policy(@warehouse_order).send_to_warehouse? && @warehouse_order.may_mark_dispatched? %>
+          <%= form_with url: send_to_warehouse_warehouse_order_path(@warehouse_order), method: :post, style: "display: inline;" do %>
+            <%= render Primer::Beta::Button.new(type: :submit, scheme: :primary, size: :medium) do |btn|
+              btn.with_leading_visual_icon(icon: :organization)
+              "Send to Warehouse"
+            end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
 
-<% if @warehouse_order.batch.present? %>
-  <%= render 'shared/batch_info', record: @warehouse_order %>
-<% end %>
-
-<b>contents:</b>
-<%= render 'warehouse/orders/line_items', order: @warehouse_order %>
-
-<div class="my-2">
-  <b>labor cost:</b> <%= number_to_currency(@warehouse_order.labor_cost) %>
-</div>
-
-<div class="my-2">
-  <b>actual contents cost:</b> <%= number_to_currency(@warehouse_order.contents_actual_cost_to_hc) %>
-</div>
-
-<div class="my-2">
-  <b>postage cost:</b>
-  <% if @warehouse_order.postage_cost.present? %>
-    <%= number_to_currency(@warehouse_order.postage_cost) %>
-  <% else %>
-    $?.??
+  <%# Tags %>
+  <% if @warehouse_order.tags.present? %>
+    <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 24px;">
+      <% @warehouse_order.tags.compact_blank.each do |tag| %>
+        <%= render(Primer::Beta::Label.new(tag: :a, href: tag_stats_path(tag), scheme: :secondary)) { tag } %>
+      <% end %>
+    </div>
   <% end %>
+
+  <%# Cost Summary %>
+  <div style="display: flex; gap: 24px; margin-bottom: 24px; padding: 12px 16px; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px;">
+    <div><span style="color: var(--fgColor-muted);">Units:</span> <strong><%= @warehouse_order.line_items.sum(&:quantity) %></strong></div>
+    <div><span style="color: var(--fgColor-muted);">Contents:</span> <strong><%= number_to_currency(@warehouse_order.contents_actual_cost_to_hc) %></strong></div>
+    <div><span style="color: var(--fgColor-muted);">Labor:</span> <strong><%= number_to_currency(@warehouse_order.labor_cost || 0) %></strong></div>
+    <div><span style="color: var(--fgColor-muted);">Postage:</span> <strong><%= @warehouse_order.postage_cost.present? ? number_to_currency(@warehouse_order.postage_cost) : "—" %></strong></div>
+    <div style="margin-left: auto;"><span style="color: var(--fgColor-muted);">Total:</span> <strong><%= number_to_currency(@warehouse_order.total_cost) %></strong></div>
+  </div>
+
+  <%# Main Content Grid %>
+  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px;">
+    <%# Left Column: Line Items %>
+    <div>
+      <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Contents</h2>
+      <%= render Primer::Beta::BorderBox.new do |box|
+        box.with_header do %>
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <span style="font-weight: 600;">SKU</span>
+            <div style="display: flex; gap: 48px;">
+              <span style="font-weight: 600; min-width: 60px; text-align: right;">Qty</span>
+              <span style="font-weight: 600; min-width: 90px; text-align: right;">Cost to HC</span>
+              <span style="font-weight: 600; min-width: 90px; text-align: right;">Declared</span>
+            </div>
+          </div>
+        <% end
+
+        @warehouse_order.line_items.each do |li|
+          box.with_row do %>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+              <div>
+                <%= link_to li.sku.name, warehouse_sku_path(li.sku), style: "color: var(--fgColor-accent); font-weight: 500;" %>
+                <span style="color: var(--fgColor-muted); font-size: 13px; margin-left: 8px; font-family: var(--fontStack-monospace);"><%= li.sku.sku %></span>
+              </div>
+              <div style="display: flex; gap: 48px;">
+                <span style="min-width: 60px; text-align: right; font-weight: 500;"><%= li.quantity %></span>
+                <span style="min-width: 90px; text-align: right; color: var(--fgColor-muted);"><%= number_to_currency(li.sku.actual_cost_to_hc) %></span>
+                <span style="min-width: 90px; text-align: right; color: var(--fgColor-muted);"><%= number_to_currency(li.sku.declared_unit_cost) %></span>
+              </div>
+            </div>
+          <% end
+        end
+
+        box.with_footer do %>
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <span style="font-weight: 600;">Total</span>
+            <div style="display: flex; gap: 48px;">
+              <span style="min-width: 60px;"></span>
+              <span style="min-width: 90px; text-align: right; font-weight: 600;"><%= number_to_currency(@warehouse_order.contents_actual_cost_to_hc) %></span>
+              <span style="min-width: 90px; text-align: right; font-weight: 600;"><%= number_to_currency(@warehouse_order.contents_declared_unit_cost) %></span>
+            </div>
+          </div>
+        <% end
+      end %>
+    </div>
+
+    <%# Right Column: Recipient & Details %>
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+      <%# Recipient Card %>
+      <div>
+        <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Recipient</h2>
+        <%= render Primer::Beta::BorderBox.new do |box|
+          box.with_row do %>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-weight: 600;"><%= @warehouse_order.address.first_name %> <%= @warehouse_order.address.last_name %></span>
+              <div style="color: var(--fgColor-muted); font-size: 14px; line-height: 1.5;">
+                <%= @warehouse_order.address.line_1 %><br>
+                <% if @warehouse_order.address.line_2.present? %><%= @warehouse_order.address.line_2 %><br><% end %>
+                <%= @warehouse_order.address.city %>, <%= @warehouse_order.address.state %> <%= @warehouse_order.address.postal_code %><br>
+                <%= ISO3166::Country[@warehouse_order.address.country]&.common_name || @warehouse_order.address.country %>
+              </div>
+            </div>
+          <% end
+          box.with_row do %>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <%= render Primer::Beta::Octicon.new(icon: :mail, size: :small, color: :muted) %>
+              <%= link_to @warehouse_order.recipient_email, "mailto:#{@warehouse_order.recipient_email}", style: "color: var(--fgColor-accent);" %>
+            </div>
+          <% end
+        end %>
+      </div>
+
+      <%# Order Details Card %>
+      <div>
+        <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Details</h2>
+        <%= render Primer::Beta::BorderBox.new do |box|
+          box.with_row do %>
+            <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Created</span><span><%= @warehouse_order.created_at.strftime("%b %d, %Y") %></span></div>
+          <% end
+          box.with_row do %>
+            <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Created By</span><span><%= link_to @warehouse_order.user&.email, @warehouse_order.user, style: "color: var(--fgColor-accent);" %></span></div>
+          <% end
+          box.with_row do %>
+            <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Source</span><span><%= @warehouse_order.source_tag&.name %></span></div>
+          <% end
+          if @warehouse_order.labor_cost.present? && @warehouse_order.labor_cost > 0
+            box.with_row do %>
+              <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Labor Cost</span><span><%= number_to_currency(@warehouse_order.labor_cost) %></span></div>
+            <% end
+          end
+          box.with_row do %>
+            <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Notify on Dispatch</span><span><%= @warehouse_order.notify_on_dispatch? ? "Yes" : "No" %></span></div>
+          <% end
+          box.with_row do %>
+            <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Zenventory ID</span><code><%= @warehouse_order.zenventory_id || "—" %></code></div>
+          <% end
+        end %>
+      </div>
+
+      <%# Shipping Card (if shipped) %>
+      <% if @warehouse_order.mailed? %>
+        <div>
+          <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Shipping</h2>
+          <%= render Primer::Beta::BorderBox.new do |box|
+            box.with_row do %>
+              <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Carrier</span><span><%= @warehouse_order.pretty_via %></span></div>
+            <% end
+            if @warehouse_order.tracking_number.present?
+              box.with_row do %>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="color: var(--fgColor-muted);">Tracking</span>
+                  <% if @warehouse_order.tracking_url.present? %>
+                    <%= link_to @warehouse_order.tracking_number, @warehouse_order.tracking_url, target: "_blank", style: "color: var(--fgColor-accent); font-family: var(--fontStack-monospace); font-size: 13px;" %>
+                  <% else %>
+                    <code><%= @warehouse_order.tracking_number %></code>
+                  <% end %>
+                </div>
+              <% end
+            end
+            if @warehouse_order.mailed_at.present?
+              box.with_row do %>
+                <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Shipped</span><span><%= @warehouse_order.mailed_at.strftime("%b %d, %Y") %></span></div>
+              <% end
+            end
+            if @warehouse_order.might_be_slow?
+              box.with_row do %>
+                <div style="padding: 8px 12px; background: var(--bgColor-attention-muted); border-radius: 4px; font-size: 13px; color: var(--fgColor-attention);">
+                  <%= render Primer::Beta::Octicon.new(icon: :alert, size: :small) %>
+                  <span style="margin-left: 6px;">International shipping may take 2-4 weeks</span>
+                </div>
+              <% end
+            end
+          end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Batch Info %>
+  <% if @warehouse_order.batch.present? %>
+    <div style="margin-bottom: 24px;">
+      <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Batch</h2>
+      <%= render Primer::Beta::BorderBox.new do |box|
+        box.with_row do %>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span style="font-weight: 500;">Batch #<%= @warehouse_order.batch.id %></span>
+              <span style="color: var(--fgColor-muted); margin-left: 12px;"><%= @warehouse_order.batch.aasm.current_state.to_s.titleize %></span>
+            </div>
+            <%= render Primer::Beta::Button.new(tag: :a, href: letter_batch_path(@warehouse_order.batch), scheme: :secondary, size: :small) do |btn|
+              "View Batch"
+            end %>
+          </div>
+        <% end
+      end %>
+    </div>
+  <% end %>
+
+  <%# Internal Notes %>
+  <% if @warehouse_order.internal_notes.present? %>
+    <div style="margin-bottom: 24px;">
+      <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Internal Notes</h2>
+      <%= render Primer::Beta::BorderBox.new do |box|
+        box.with_row do %>
+          <div style="white-space: pre-wrap;"><%= @warehouse_order.internal_notes %></div>
+        <% end
+      end %>
+    </div>
+  <% end %>
+
+  <%# Actions %>
+  <div style="display: flex; gap: 8px; margin-bottom: 24px; padding-top: 16px; border-top: 1px solid var(--borderColor-muted);">
+    <% if @warehouse_order.may_mark_canceled? && policy(@warehouse_order).cancel? %>
+      <%= render Primer::Beta::Button.new(tag: :a, href: cancel_warehouse_order_path(@warehouse_order), scheme: :danger, size: :small) do |btn|
+        btn.with_leading_visual_icon(icon: :x)
+        "Cancel Order"
+      end %>
+    <% end %>
+    <% if policy(@warehouse_order).destroy? %>
+      <%= form_with url: warehouse_order_path(@warehouse_order), method: :delete, style: "display: inline;" do %>
+        <%= render Primer::Beta::Button.new(type: :submit, scheme: :danger, size: :small) do |btn|
+          btn.with_leading_visual_icon(icon: :trash)
+          "Delete"
+        end %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%# Back Link %>
+  <div style="margin-top: 32px;">
+    <%= link_to "← Back to Orders", warehouse_orders_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+  </div>
+
+  <%= render partial: "admin_inspector", locals: { record: @warehouse_order } %>
+  <% inspector_toggle :line_items %>
 </div>
-
-<div class="my-2">
-  <b>all in<%= " (excluding postage)" unless @warehouse_order.postage_cost.present? %>:</b>
-  <%= number_to_currency((@warehouse_order.contents_actual_cost_to_hc || 0) + 
-    (@warehouse_order.labor_cost || 0) +
-    (@warehouse_order.postage_cost || 0)) %>
-</div>
-
-<div class="my-4">
-  <b>Internal Notes:</b><br>
-  <%= @warehouse_order.internal_notes %>
-</div>
-
-<br>
-
-<% zenv_link @warehouse_order %>
-
-<% if policy(@warehouse_order).send_to_warehouse? && @warehouse_order.may_mark_dispatched? %>
-  <%= button_to "send to warehouse!", action: :send_to_warehouse %>
-<% end %>
-
-<% if policy(@warehouse_order).destroy? %>
-  <%= button_to "delete draft order.", @warehouse_order, method: :delete %>
-<% end %>
-
-<div>
-  <%= link_to "edit this order", edit_warehouse_order_path(@warehouse_order) %><br>
-  <%= link_to "back to orders", warehouse_orders_path %>
-</div>
-
-<%= render partial: "admin_inspector", locals: { record: @warehouse_order } %>
-
-<% inspector_toggle :line_items %>
