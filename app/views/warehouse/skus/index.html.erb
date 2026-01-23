@@ -11,7 +11,7 @@
       <% @warehouse_skus.group_by(&:category).each do |cat, skus| %>
         <details class="sku-category">
           <summary>
-            <%= cat.humanize %>
+            <%= cat&.humanize %>
           </summary>
           <div class="warehouse-skus-grid">
             <% skus.each do |warehouse_sku| %>
