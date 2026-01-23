@@ -5,21 +5,8 @@ class Components::Shared::Nav < Components::Base
   register_value_helper :request
 
   def view_template
-    div(class: "nav-content") do
-      if current_user
-        div(class: "nav-user-info") do
-          render(Primer::Beta::Octicon.new(icon: :person, size: :small, color: :muted))
-          span { current_user.username }
-        end
-        if session[:impersonator_user_id]
-          div(class: "nav-user-actions") do
-            link_to "Stop impersonating", stop_impersonating_path
-          end
-        end
-      end
-    end
-
-    render(Primer::Beta::NavList.new(aria: { label: "Main navigation" })) do |list|
+    render Primer::Beta::NavList.new do |list|
+      list.with_heading title: "Theseus"
       list.with_group do |group|
         group.with_heading(title: "Navigation")
 
@@ -68,20 +55,5 @@ class Components::Shared::Nav < Components::Base
         end
       end
     end
-
-    if current_user
-      div do
-        a(href: "#", class: "Button Button--secondary Button--medium", onclick: safe("fetch('#{signout_path}', {method: 'DELETE'}).then(() => window.location = '/'); return false;")) do
-          render(Primer::Beta::Octicon.new(icon: :"sign-out", size: :small, mr: 1))
-          plain "Log out"
-        end
-      end
-    end
-  end
-
-  private
-
-  def session
-    Rails.application.env_config["rack.session"] || {}
   end
 end
