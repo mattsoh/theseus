@@ -2,7 +2,6 @@
 
 class Components::Shared::Nav < Components::Base
   include Phlex::Rails::Helpers::LinkTo
-  include Phlex::Rails::Helpers::ButtonTo
   register_value_helper :request
 
   def view_template
@@ -72,7 +71,7 @@ class Components::Shared::Nav < Components::Base
 
     if current_user
       div do
-        button_to signout_path, method: :delete, class: "Button--secondary Button--medium Button" do
+        a(href: "#", class: "Button Button--secondary Button--medium", onclick: safe("fetch('#{signout_path}', {method: 'DELETE'}).then(() => window.location = '/'); return false;")) do
           render(Primer::Beta::Octicon.new(icon: :"sign-out", size: :small, mr: 1))
           plain "Log out"
         end

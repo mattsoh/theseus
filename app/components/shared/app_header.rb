@@ -6,7 +6,7 @@ class Components::Shared::AppHeader < Components::Base
       render(Primer::Alpha::Dialog.new(
         title: "Navigation",
         position: :left,
-        # position_narrow: :fullscreen,
+        position_narrow: :fullscreen,
         size: :small,
         visually_hide_title: true
       )) do |dialog|
