@@ -7,7 +7,7 @@ class Views::APIKeys::Index < Views::Base
 
   def view_template
     div(class: "d-flex flex-justify-between flex-items-center mb-3") do
-      render Primer::Beta::Heading.new(tag: :h1) { "API Keys" }
+      render(Primer::Beta::Heading.new(tag: :h1)) { "API Keys" }
       render Primer::Beta::Button.new(tag: :a, href: new_api_key_path, scheme: :primary) do |btn|
         btn.with_leading_visual_icon(icon: :key)
         "Visit the locksmith!"
