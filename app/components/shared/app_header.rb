@@ -57,21 +57,22 @@ class Components::Shared::AppHeader < Components::Base
 
   def render_id_lookup_dialog
     render(Primer::Alpha::Dialog.new(
-      title: "ID Lookup",
-      size: :small
+      title: "Find object by ID",
+      subtitle: "Enter a Theseus ID or package tracking number...",
+      size: :medium
     )) do |dialog|
-      dialog.with_show_button(icon: :search, "aria-label": "ID Lookup", scheme: :invisible)
+      dialog.with_show_button(icon: :"id-badge", "aria-label": "Find object by ID", scheme: :invisible)
       dialog.with_body do
         form_with url: helpers.lookup_public_ids_path, method: :post do |f|
           render(Primer::Alpha::TextField.new(
             name: :id,
-            label: "Public ID or tracking number",
+            label: nil,
             placeholder: "e.g. ltr!abc123, 9400111...",
             full_width: true,
             autofocus: true
           ))
           div(style: "margin-top: 1rem; display: flex; justify-content: flex-end;") do
-            render(Primer::ButtonComponent.new(type: :submit, scheme: :primary)) { "Go" }
+            render(Primer::ButtonComponent.new(type: :submit, scheme: :primary)) { "Go!" }
           end
         end
       end
