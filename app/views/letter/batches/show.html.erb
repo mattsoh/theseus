@@ -66,7 +66,7 @@
                       <tbody>
                         <% @batch.letters.each do |letter| %>
                           <tr>
-                            <td><%= letter.public_id %></td>
+                            <td><%= render Components::Shared::PublicId.new(value: letter.public_id) %></td>
                             <td><%= letter.address.snailify %></td>
                             <td><%= letter.aasm.current_state %></td>
                             <td>

@@ -13,7 +13,7 @@
           <% end %>
           <%= letter_status_badge(@letter.aasm_state) %>
         </h1>
-        <div class="text-sm text-gray-500"><%= @letter.public_id %></div>
+        <%= render Components::Shared::PublicId.new(value: @letter.public_id) %>
       </div>
     </div>
     <div class="actions flex gap-2">
@@ -105,7 +105,7 @@
                 </div>
                 <div>
                   <dt class="text-gray-500">Indicium ID</dt>
-                  <dd class="font-mono text-xs"><%= @letter.usps_indicium.public_id %></dd>
+                  <dd><%= render Components::Shared::PublicId.new(value: @letter.usps_indicium.public_id) %></dd>
                 </div>
               </dl>
               <%= render 'admin_inspector', record: @letter.usps_indicium %>

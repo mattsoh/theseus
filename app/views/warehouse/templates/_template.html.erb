@@ -15,7 +15,7 @@
     </div>
     <div class="mt-4">
       <small class="text-muted">API ID:</small>
-      <%= template.public_id %>
+      <%= render Components::Shared::PublicId.new(value: template.public_id) %>
     </div>
   </div>
 </article>

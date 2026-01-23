@@ -6,8 +6,8 @@
     <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
       <div>
         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
-          <h1 style="font-size: 24px; font-weight: 600; margin: 0; font-family: var(--fontStack-monospace);">
-            <%= @warehouse_order.hc_id %>
+          <h1 style="font-size: 24px; font-weight: 600; margin: 0;">
+            <%= render Components::Shared::PublicId.new(value: @warehouse_order.hc_id) %>
           </h1>
           <% status_scheme = { draft: :secondary, dispatched: :accent, mailed: :success, errored: :danger, canceled: :attention }[@warehouse_order.aasm_state.to_sym] || :secondary %>
           <%= render(Primer::Beta::Label.new(scheme: status_scheme, size: :large)) { @warehouse_order.humanized_state } %>

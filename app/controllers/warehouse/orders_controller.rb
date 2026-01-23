@@ -17,6 +17,9 @@ class Warehouse::OrdersController < ApplicationController
     # Filter by state
     orders = orders.where(aasm_state: params[:state]) if params[:state].present?
 
+    # Filter by user (admin only)
+    orders = orders.where(user_id: params[:user_id]) if params[:user_id].present? && current_user&.is_admin?
+
     # Search
     if params[:search].present?
       search_term = "%#{params[:search].downcase}%"
@@ -36,12 +39,17 @@ class Warehouse::OrdersController < ApplicationController
                           orders.order(created_at: :desc).page(params[:page]).per(25)
                         end
 
+    # Get users for the picker (admin only)
+    @users = current_user&.is_admin? ? User.where(id: @all_orders.select(:user_id).distinct).order(:email) : []
+
     render Views::Warehouse::Orders::Index.new(
       warehouse_orders: @warehouse_orders,
       all_orders: @all_orders,
       view: params[:view],
       search: params[:search],
-      state: params[:state]
+      state: params[:state],
+      user_id: params[:user_id],
+      users: @users
     )
   end
 

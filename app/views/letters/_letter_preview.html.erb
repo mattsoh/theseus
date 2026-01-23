@@ -5,7 +5,7 @@
   
   <div class="document-header">
     <div class="document-title">Theseus Mail Service</div>
-    <div class="document-subtitle">Letter #<%= letter.public_id %></div>
+    <div class="document-subtitle">Letter #<%= render Components::Shared::PublicId.new(value: letter.public_id) %></div>
   </div>
   
   <div class="document-addresses">
