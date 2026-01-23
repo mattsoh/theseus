@@ -3,6 +3,7 @@ class StaticPagesController < ApplicationController
   skip_after_action :verify_authorized
 
   def index
+    @stats = DashboardStats.new(user: current_user)
   end
 
   def login
