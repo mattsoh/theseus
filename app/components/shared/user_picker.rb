@@ -17,12 +17,20 @@ class Components::Shared::UserPicker < Components::Base
         title: "Filter by user",
         size: :medium,
         fetch_strategy: :local,
-        dynamic_label: true,
         select_variant: :single,
         id: "user-picker-panel"
       ) do |panel|
-        panel.with_show_button(scheme: :secondary, size: :medium) do
-          show_button_content
+        panel.with_show_button(scheme: :secondary, size: :medium) do |btn|
+          if selected_user
+            btn.with_leading_visual_icon(icon: :person) unless selected_user.icon_url.present?
+            if selected_user.icon_url.present?
+              render Primer::Beta::Avatar.new(src: selected_user.icon_url, alt: selected_user.email, size: 16, mr: 2)
+            end
+            plain display_name(selected_user)
+          else
+            btn.with_leading_visual_icon(icon: :people)
+            "All users"
+          end
         end
 
         all_users_item(panel)
@@ -40,18 +48,6 @@ class Components::Shared::UserPicker < Components::Base
     @selected_user = selected_user_id.present? ? users.find { |u| u.id == selected_user_id } : nil
   end
 
-  def show_button_content
-    span(class: "d-flex flex-items-center gap-2") do
-      if selected_user
-        user_avatar(selected_user, size: 20)
-        span { display_name(selected_user) }
-      else
-        render Primer::Beta::Octicon.new(icon: :people, size: :small, color: :muted)
-        span { "All users" }
-      end
-    end
-  end
-
   def all_users_item(panel)
     panel.with_item(
       label: "All users",
@@ -64,7 +60,8 @@ class Components::Shared::UserPicker < Components::Base
   end
 
   def user_items(panel)
-    users.each do |user|
+    sorted_users = users.sort_by { |u| [u.id == current_user&.id ? 0 : 1, display_name(u).downcase] }
+    sorted_users.each do |user|
       panel.with_item(
         label: display_name(user),
         href: path_builder.call(user.id),
@@ -80,14 +77,6 @@ class Components::Shared::UserPicker < Components::Base
         end
         item.with_description { user.email }
       end
-    end
-  end
-
-  def user_avatar(user, size:)
-    if user.icon_url.present?
-      img(src: user.icon_url, style: "width: #{size}px; height: #{size}px; border-radius: 50%;")
-    else
-      render Primer::Beta::Octicon.new(icon: :person, size: :small)
     end
   end
 
