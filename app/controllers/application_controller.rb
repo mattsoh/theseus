@@ -2,13 +2,15 @@ class ApplicationController < ActionController::Base
   include Pundit::Authorization
   after_action :verify_authorized
 
-  helper_method :current_user, :user_signed_in?
+  helper_method :current_user, :user_signed_in?, :impersonating?
 
   before_action :authenticate_user!, :set_sentry_context
 
   def current_user
     @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
   end
+
+  def impersonating? = !!session[:impersonator_user_id]
 
   def user_signed_in?
     !!current_user
