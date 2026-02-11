@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Components::StaticPages::Home < Components::Base
+  include Phlex::Rails::Helpers::FormWith
+
   def initialize(stats:)
     @stats = stats
   end
@@ -88,12 +90,34 @@ class Components::StaticPages::Home < Components::Base
       ]
       link_panel("Mail", mail_links)
 
-      tools_links = [
-        { label: "ID Lookup", href: public_ids_path, icon: :search, check: -> { current_user&.admin? } },
-        { label: "Customs Receipts", href: customs_receipts_path, icon: :"file-badge", check: -> { policy(:customs_receipt).index? } },
-        { label: "Public Site", href: public_root_path, icon: :globe, check: -> { true } }
-      ]
-      link_panel("Tools", tools_links)
+      div(style: "background: var(--bgColor-default, #fff); border: 1px solid var(--borderColor-default, #d0d7de); border-radius: 6px; overflow: hidden;") do
+        div(style: "padding: 12px 16px; border-bottom: 1px solid var(--borderColor-default, #d0d7de); background: var(--bgColor-muted, #f6f8fa);") do
+          h3(style: "font-size: 14px; font-weight: 600; margin: 0;") { "Tools" }
+        end
+        div(style: "padding: 8px 0;") do
+          div(style: "display: flex; align-items: center; gap: 12px; padding: 10px 16px;") do
+            render_id_lookup_dialog
+          end
+          a(
+            href: customs_receipts_path,
+            style: "display: flex; align-items: center; gap: 12px; padding: 10px 16px; text-decoration: none; color: inherit;"
+          ) do
+            span(style: "color: var(--fgColor-muted, #656d76);") do
+              render Primer::Beta::Octicon.new(icon: :"file-badge", size: :small)
+            end
+            span(style: "font-size: 14px;") { "Customs Receipts" }
+          end if policy(:customs_receipt).index?
+          a(
+            href: public_root_path,
+            style: "display: flex; align-items: center; gap: 12px; padding: 10px 16px; text-decoration: none; color: inherit;"
+          ) do
+            span(style: "color: var(--fgColor-muted, #656d76);") do
+              render Primer::Beta::Octicon.new(icon: :globe, size: :small)
+            end
+            span(style: "font-size: 14px;") { "Public Site" }
+          end
+        end
+      end
     end
   end
 
@@ -151,6 +175,35 @@ class Components::StaticPages::Home < Components::Base
               render Primer::Beta::Octicon.new(icon: link[:icon], size: :small)
             end
             span(style: "font-size: 14px;") { link[:label] }
+          end
+        end
+      end
+    end
+  end
+
+  def render_id_lookup_dialog
+    span(style: "color: var(--fgColor-muted, #656d76);") do
+      render Primer::Beta::Octicon.new(icon: :search, size: :small)
+    end
+    render(Primer::Alpha::Dialog.new(
+      title: "Find object by ID",
+      subtitle: "Enter a Theseus ID or package tracking number...",
+      size: :medium
+    )) do |dialog|
+      dialog.with_show_button(scheme: :invisible, classes: "Link--primary") do
+        plain "ID Lookup"
+      end
+      dialog.with_body do
+        form_with url: helpers.lookup_public_ids_path, method: :post do |f|
+          render(Primer::Alpha::TextField.new(
+            name: :id,
+            label: nil,
+            placeholder: "e.g. ltr!abc123, 9400111...",
+            full_width: true,
+            autofocus: true
+          ))
+          div(style: "margin-top: 1rem; display: flex; justify-content: flex-end;") do
+            render(Primer::ButtonComponent.new(type: :submit, scheme: :primary)) { "Go!" }
           end
         end
       end
