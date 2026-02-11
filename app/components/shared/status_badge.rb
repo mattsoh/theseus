@@ -22,6 +22,7 @@ class Components::Shared::StatusBadge < Components::Base
     when [:batch, 'processed'] then :success
     when [:letter, 'queued'] then :secondary
     when [:letter, 'pending'] then :attention
+    when [:letter, 'printed'] then :accent
     when [:letter, 'mailed'], [:letter, 'received'] then :success
     when [:letter, 'canceled'], [:letter, 'failed'] then :danger
     else :secondary

@@ -4,29 +4,26 @@ class LettersController < ApplicationController
   # GET /letters
   def index
     authorize Letter
-    @status = params[:status].presence
-    @search = params[:search].presence
-    @user_id = params[:user_id].presence if current_user&.is_admin?
 
-    @all_letters = policy_scope(Letter)
+    all_letters = policy_scope(Letter)
       .includes(:batch, :address, :usps_mailer_id, :user, :label_attachment, :label_blob)
       .where.not(aasm_state: "queued")
 
-    letters = @all_letters
-    letters = letters.where(aasm_state: @status) if @status.present?
-    letters = letters.where(user_id: @user_id) if @user_id.present?
-    letters = letters.search(@search) if @search.present?
+    letters = all_letters
+    letters = letters.where(aasm_state: params[:status]) if params[:status].present?
+    letters = letters.where(created_via: params[:origin]) if params[:origin].present? && %w[manual bulk_upload queue api].include?(params[:origin])
+    letters = letters.where(user_id: params[:user_id]) if params[:user_id].present? && current_user&.is_admin?
+    letters = letters.search(params[:search]) if params[:search].present?
 
-    @letters = letters.order(created_at: :desc).page(params[:page]).per(25)
-
-    @counts = {
-      pending: @all_letters.where(aasm_state: "pending").count,
-      printed: @all_letters.where(aasm_state: "printed").count,
-      mailed: @all_letters.where(aasm_state: "mailed").count,
-      received: @all_letters.where(aasm_state: "received").count,
-    }
-
-    @users = current_user&.is_admin? ? User.where(id: @all_letters.select(:user_id).distinct).order(:email) : []
+    render Views::Letters::Index.new(
+      letters: letters.order(created_at: :desc).page(params[:page]).per(25),
+      all_letters: all_letters,
+      search: params[:search],
+      status: params[:status],
+      origin: params[:origin],
+      user_id: params[:user_id],
+      users: current_user&.is_admin? ? User.where(id: all_letters.select(:user_id).distinct).order(:email) : []
+    )
   end
 
   # GET /letters/1

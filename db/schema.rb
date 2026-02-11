@@ -10,21 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_23_084628) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_11_204938) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
-
-  create_table "action_text_rich_texts", force: :cascade do |t|
-    t.string "name", null: false
-    t.text "body"
-    t.string "record_type", null: false
-    t.bigint "record_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
-  end
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -68,7 +58,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_23_084628) do
     t.string "phone_number"
     t.bigint "batch_id"
     t.string "email"
+    t.uuid "import_token"
     t.index ["batch_id"], name: "index_addresses_on_batch_id"
+    t.index ["import_token"], name: "index_addresses_on_import_token", where: "(import_token IS NOT NULL)"
   end
 
   create_table "api_keys", force: :cascade do |t|
@@ -100,10 +92,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_23_084628) do
     t.decimal "letter_weight"
     t.bigint "letter_mailer_id_id"
     t.bigint "letter_return_address_id"
-    t.citext "tags", default: [], array: true
     t.integer "letter_processing_category"
     t.date "letter_mailing_date"
-    t.string "template_cycle", default: [], array: true
+    t.citext "tags", default: [], array: true
     t.string "letter_return_address_name"
     t.bigint "letter_queue_id"
     t.bigint "hcb_payment_account_id"
@@ -296,23 +287,23 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_23_084628) do
     t.string "name"
     t.string "slug"
     t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.decimal "letter_height"
     t.decimal "letter_width"
     t.decimal "letter_weight"
     t.integer "letter_processing_category"
+    t.date "letter_mailing_date"
     t.bigint "letter_mailer_id_id"
     t.bigint "letter_return_address_id"
     t.string "letter_return_address_name"
     t.string "user_facing_title"
     t.citext "tags", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "type"
     t.string "template"
     t.string "postage_type"
     t.bigint "usps_payment_account_id"
     t.boolean "include_qr_code", default: true
-    t.date "letter_mailing_date"
     t.bigint "hcb_payment_account_id"
     t.index ["hcb_payment_account_id"], name: "index_letter_queues_on_hcb_payment_account_id"
     t.index ["letter_mailer_id_id"], name: "index_letter_queues_on_letter_mailer_id_id"
@@ -341,19 +332,22 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_23_084628) do
     t.bigint "batch_id"
     t.bigint "return_address_id", null: false
     t.jsonb "metadata"
-    t.citext "tags", default: [], array: true
     t.integer "postage_type"
     t.date "mailing_date"
+    t.citext "tags", default: [], array: true
+    t.string "user_facing_title"
     t.datetime "printed_at"
     t.datetime "mailed_at"
     t.datetime "received_at"
-    t.string "user_facing_title"
     t.bigint "user_id", null: false
     t.string "return_address_name"
     t.bigint "letter_queue_id"
     t.string "idempotency_key"
+    t.integer "created_via", default: 0, null: false
+    t.index ["aasm_state"], name: "index_letters_on_aasm_state"
     t.index ["address_id"], name: "index_letters_on_address_id"
     t.index ["batch_id"], name: "index_letters_on_batch_id"
+    t.index ["created_via"], name: "index_letters_on_created_via"
     t.index ["idempotency_key"], name: "index_letters_on_idempotency_key", unique: true
     t.index ["imb_serial_number"], name: "index_letters_on_imb_serial_number"
     t.index ["letter_queue_id"], name: "index_letters_on_letter_queue_id"
@@ -399,8 +393,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_23_084628) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "opted_out_of_map", default: false
-    t.string "hca_id"
-    t.index ["hca_id"], name: "index_public_users_on_hca_id", unique: true
   end
 
   create_table "return_addresses", force: :cascade do |t|
@@ -435,7 +427,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_23_084628) do
     t.string "icon_url"
     t.string "username"
     t.boolean "can_warehouse"
-    t.boolean "back_office", default: false
     t.boolean "can_impersonate_public"
     t.bigint "home_mid_id", default: 1, null: false
     t.bigint "home_return_address_id", default: 1, null: false
@@ -472,13 +463,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_23_084628) do
     t.bigint "letter_id"
     t.bigint "batch_id", null: false
     t.jsonb "payload"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "opcode"
     t.string "zip_code"
     t.bigint "mailer_id_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["batch_id"], name: "index_usps_iv_mtr_events_on_batch_id"
     t.index ["letter_id"], name: "index_usps_iv_mtr_events_on_letter_id"
+    t.index ["mailer_id_id", "happened_at"], name: "index_usps_iv_mtr_events_on_mailer_id_id_and_happened_at"
+    t.index ["mailer_id_id", "opcode"], name: "index_usps_iv_mtr_events_on_mailer_id_id_and_opcode"
     t.index ["mailer_id_id"], name: "index_usps_iv_mtr_events_on_mailer_id_id"
   end
 
@@ -595,6 +588,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_23_084628) do
     t.index ["order_number"], name: "index_warehouse_purchase_orders_on_order_number"
     t.index ["user_id"], name: "index_warehouse_purchase_orders_on_user_id"
     t.index ["zenventory_id"], name: "index_warehouse_purchase_orders_on_zenventory_id", unique: true
+  end
+
+  create_table "warehouse_purpose_codes", force: :cascade do |t|
+    t.string "code"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "sequence_number"
+    t.index ["code"], name: "index_warehouse_purpose_codes_on_code"
   end
 
   create_table "warehouse_skus", force: :cascade do |t|
