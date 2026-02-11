@@ -28,10 +28,10 @@ class Components::Batches::Form < Components::Base
           label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--fgColor-default, #24292f);") do
             plain "CSV File"
             span(style: "color: var(--fgColor-danger, #ae1c17); margin-left: 2px;") { "*" }
-          </label>
+          end
           p(style: "font-size: 13px; color: var(--fgColor-muted); margin: 0 0 6px 0;") do
             plain "Upload a CSV file with addresses to process"
-          </p>
+          end
           input(
             type: :file,
             name: "batch[csv]",
