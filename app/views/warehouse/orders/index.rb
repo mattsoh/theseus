@@ -238,7 +238,7 @@ class Views::Warehouse::Orders::Index < Views::Base
 
   def render_tags(tags)
     tags.compact_blank.each do |tag|
-      render(Primer::Beta::Label.new(scheme: :secondary, size: :small)) { tag }
+      render(Primer::Beta::Label.new(scheme: :secondary, size: :medium)) { tag }
     end
   end
 
