@@ -28,7 +28,12 @@
   </div>
 
   <div id="letter-fields" style="display: none;">
-    <%= render partial: "letters/letter_attributes_form", locals: { form: form, is_batch: true } %>
+    <div data-svelte-component="letter-attributes-picker"
+         data-form-scope="letter_batch"
+         data-is-batch="true"
+         data-initial-weight="1"
+         data-initial-processing-category="letter">
+    </div>
     <div class="field">
       <%= form.label :letter_mailer_id_id, "USPS Mailer ID" %>
       <%= form.collection_select :letter_mailer_id_id,

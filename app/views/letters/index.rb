@@ -195,7 +195,7 @@ class Views::Letters::Index < Views::Base
     a(
       href: letter_path(letter),
       style: "display: flex; justify-content: space-between; align-items: center; width: 100%; " \
-             "text-decoration: none; color: inherit; gap: 16px;"
+             "text-decoration: none; color: inherit; gap: 16px; padding: 8px 16px;"
     ) do
       div(style: "flex: 1; min-width: 0;") do
         div(style: "display: flex; align-items: center; gap: 8px; margin-bottom: 2px;") do
@@ -253,47 +253,11 @@ class Views::Letters::Index < Views::Base
   end
 
   def pagination_section
-    return unless letters.respond_to?(:total_pages) && letters.total_pages > 1
-
-    div(style: "margin-top: 24px; display: flex; justify-content: center; gap: 8px; align-items: center;") do
-      pagination_info
-      pagination_links
-    end
-  end
-
-  def pagination_info
-    current = letters.current_page
-    total = letters.total_pages
-    total_count = letters.total_count
-
-    span(style: "font-size: 13px; color: var(--fgColor-muted);") do
-      plain "Page #{current} of #{total} (#{total_count} letters)"
-    end
-  end
-
-  def pagination_links
-    current = letters.current_page
-    total = letters.total_pages
-
-    div(style: "display: flex; gap: 4px;") do
-      if current > 1
-        render Primer::Beta::Button.new(
-          tag: :a,
-          href: letters_path(page: current - 1, origin: origin, search: search, status: status, user_id: user_id),
-          scheme: :secondary,
-          size: :small
-        ) { "← Prev" }
-      end
-
-      if current < total
-        render Primer::Beta::Button.new(
-          tag: :a,
-          href: letters_path(page: current + 1, origin: origin, search: search, status: status, user_id: user_id),
-          scheme: :secondary,
-          size: :small
-        ) { "Next →" }
-      end
-    end
+    render Components::Shared::Pagination.new(
+      collection: letters,
+      base_path: method(:letters_path),
+      filter_params: { search: search, status: status, origin: origin, user_id: user_id }
+    )
   end
 
   def form_tag(url, method:, style:, &block)

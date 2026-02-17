@@ -42,7 +42,14 @@
           <h2 class="text-sm font-medium mb-0">Editable Before Processing</h2>
         </div>
         <div class="card-body">
-          <%= render partial: "letters/letter_attributes_form", locals: { form: form, is_batch: true } %>
+          <div data-svelte-component="letter-attributes-picker"
+               data-form-scope="letter_batch"
+               data-is-batch="true"
+               data-initial-width="<%= @batch.letter_width %>"
+               data-initial-height="<%= @batch.letter_height %>"
+               data-initial-weight="<%= @batch.letter_weight || 1 %>"
+               data-initial-processing-category="<%= @batch.letter_processing_category || 'letter' %>">
+          </div>
 
           <div class="field mb-3">
             <%= form.label :letter_mailer_id_id, "USPS Mailer ID", class: "form-label" %>

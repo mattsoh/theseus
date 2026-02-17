@@ -1,12 +1,43 @@
 <% content_for :title, "Editing letter" %>
 
-<h1>Editing letter</h1>
+<%= render Primer::Beta::Heading.new(tag: :h1, mb: 4) { "Editing letter" } %>
 
-<%= render "form", letter: @letter %>
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start;">
+  <div>
+    <%= render "form", letter: @letter %>
+  </div>
 
-<br>
+  <div style="position: sticky; top: 24px;">
+    <%= render Primer::Beta::BorderBox.new do |box| %>
+      <% box.with_header do |header| %>
+        <% header.with_title(tag: :h3) do %>Letter Info<% end %>
+      <% end %>
+      <% box.with_body do %>
+        <dl>
+          <dt class="color-fg-muted f6">ID</dt>
+          <dd class="mb-3"><code><%= @letter.public_id %></code></dd>
 
-<div>
-  <%= link_to "Show this letter", @letter %> |
-  <%= link_to "Back to letters", letters_path %>
+          <dt class="color-fg-muted f6">Status</dt>
+          <dd class="mb-3"><%= render Components::Shared::StatusBadge.new(status: @letter.aasm_state, type: :letter) %></dd>
+
+          <dt class="color-fg-muted f6">Created</dt>
+          <dd class="mb-3"><%= @letter.created_at.strftime("%b %-d, %Y") %></dd>
+
+          <dt class="color-fg-muted f6">Origin</dt>
+          <dd><%= @letter.origin_label %></dd>
+        </dl>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<div class="mt-4 d-flex gap-3">
+  <%= render Primer::Beta::Link.new(href: @letter, muted: true) do |link| %>
+    <% link.with_leading_visual_icon(icon: :eye) %>
+    Show this letter
+  <% end %>
+  <%= render Primer::Beta::Link.new(href: letters_path, muted: true) do |link| %>
+    <% link.with_leading_visual_icon(icon: :"arrow-left") %>
+    Back to letters
+  <% end %>
 </div>

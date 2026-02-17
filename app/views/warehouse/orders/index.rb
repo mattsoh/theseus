@@ -256,47 +256,11 @@ class Views::Warehouse::Orders::Index < Views::Base
   end
 
   def pagination_section
-    return unless warehouse_orders.respond_to?(:total_pages) && warehouse_orders.total_pages > 1
-
-    div(style: "margin-top: 24px; display: flex; justify-content: center; gap: 8px; align-items: center;") do
-      pagination_info
-      pagination_links
-    end
-  end
-
-  def pagination_info
-    current = warehouse_orders.current_page
-    total = warehouse_orders.total_pages
-    total_count = warehouse_orders.total_count
-
-    span(style: "font-size: 13px; color: var(--fgColor-muted);") do
-      plain "Page #{current} of #{total} (#{total_count} orders)"
-    end
-  end
-
-  def pagination_links
-    current = warehouse_orders.current_page
-    total = warehouse_orders.total_pages
-
-    div(style: "display: flex; gap: 4px;") do
-      if current > 1
-        render Primer::Beta::Button.new(
-          tag: :a,
-          href: warehouse_orders_path(page: current - 1, origin: origin, search: search, state: state, user_id: user_id),
-          scheme: :secondary,
-          size: :small
-        ) { "← Prev" }
-      end
-
-      if current < total
-        render Primer::Beta::Button.new(
-          tag: :a,
-          href: warehouse_orders_path(page: current + 1, origin: origin, search: search, state: state, user_id: user_id),
-          scheme: :secondary,
-          size: :small
-        ) { "Next →" }
-      end
-    end
+    render Components::Shared::Pagination.new(
+      collection: warehouse_orders,
+      base_path: method(:warehouse_orders_path),
+      filter_params: { origin: origin, search: search, state: state, user_id: user_id }
+    )
   end
 
   def form_tag(url, method:, style:, &block)
