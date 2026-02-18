@@ -35,10 +35,25 @@ class Letter::QueuesController < ApplicationController
     )
   end
 
-  # GET /letter/queues/1 or /letter/queues/1.json
   def show
-    @letters = @letter_queue.letters.queued
-    @batches = @letter_queue.letter_batches
+    letter_counts = @letter_queue.letters
+                      .group(:aasm_state)
+                      .count
+
+    letters = @letter_queue.letters.order(created_at: :desc)
+    letters = letters.search(params[:search]) if params[:search].present?
+    letters = letters.where(aasm_state: params[:status]) if params[:status].present?
+
+    @batches = @letter_queue.letter_batches.order(created_at: :desc)
+
+    render Views::Letter::Queues::Show.new(
+      queue: @letter_queue,
+      letters: letters,
+      batches: @batches,
+      letter_counts: letter_counts,
+      search: params[:search],
+      status: params[:status]
+    )
   end
 
   # GET /letter/queues/new

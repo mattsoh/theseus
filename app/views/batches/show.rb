@@ -13,7 +13,7 @@ class Views::Batches::Show < Views::Base
       ) do |header|
         header.with_actions do
           render Primer::Beta::Button.new(tag: :a, href: batches_path, scheme: :secondary, size: :small) do |btn|
-            btn.with_leading_visual_icon(icon: :arrow_left)
+            btn.with_leading_visual_icon(icon: :"arrow-left")
             "Back to batches"
           end
           render Primer::Beta::Button.new(tag: :a, href: edit_batch_path(@batch), scheme: :secondary, size: :small) do |btn|

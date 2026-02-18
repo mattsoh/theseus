@@ -6,7 +6,22 @@ class Letter::InstantQueuesController < Letter::QueuesController
   end
 
   def show
-    @letters = @letter_queue.letters
+    letter_counts = @letter_queue.letters
+                      .group(:aasm_state)
+                      .count
+
+    letters = @letter_queue.letters.order(created_at: :desc)
+    letters = letters.search(params[:search]) if params[:search].present?
+    letters = letters.where(aasm_state: params[:status]) if params[:status].present?
+
+    render Views::Letter::InstantQueues::Show.new(
+      queue: @letter_queue,
+      letters: letters,
+      batches: [],
+      letter_counts: letter_counts,
+      search: params[:search],
+      status: params[:status]
+    )
   end
 
   private

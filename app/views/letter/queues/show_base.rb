@@ -1,0 +1,318 @@
+# frozen_string_literal: true
+
+class Views::Letter::Queues::ShowBase < Views::Base
+  include Phlex::Rails::Helpers::FormWith
+
+  LETTER_STATES = %w[queued pending printed mailed received].freeze
+
+  def initialize(queue:, letters:, batches:, letter_counts:, search: nil, status: nil)
+    @queue = queue
+    @letters = letters
+    @batches = batches
+    @letter_counts = letter_counts
+    @search = search
+    @status = status
+  end
+
+  def view_template
+    div(style: "max-width: 1200px; margin: 0 auto; padding: 24px;") do
+      header_section
+      stats_row
+      make_batch_section
+      letters_section
+      batches_section
+      queue_details_section
+      admin_inspector(queue)
+    end
+  end
+
+  private
+
+  attr_reader :queue, :letters, :batches, :letter_counts, :search, :status
+
+  # --- Header ---
+
+  def header_section
+    div(style: "display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;") do
+      div do
+        h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { queue.name }
+        p(style: "color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;") do
+          plain "#{type_label} \u00B7 #{queue.slug}"
+        end
+      end
+
+      div(style: "display: flex; gap: 8px; align-items: center;") do
+        render Primer::Beta::Button.new(tag: :a, href: letter_queues_path, scheme: :secondary, size: :small) do |btn|
+          btn.with_leading_visual_icon(icon: :"arrow-left")
+          "Back to queues"
+        end
+        render Primer::Beta::Button.new(tag: :a, href: edit_queue_path, scheme: :secondary, size: :small) do |btn|
+          btn.with_leading_visual_icon(icon: :pencil)
+          "Edit"
+        end
+        admin_tool do
+          button_to queue_show_path, method: :delete, class: "btn btn-danger btn-sm" do
+            "Delete"
+          end
+        end
+      end
+    end
+  end
+
+  # --- Stats Row ---
+
+  def stats_row
+    active_states = LETTER_STATES.select { |s| letter_counts.fetch(s, 0) > 0 }
+    return if active_states.empty?
+
+    div(style: "display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;") do
+      active_states.each do |state|
+        render(Primer::Beta::Label.new(scheme: state_scheme(state), size: :large)) do
+          "#{letter_counts[state]} #{state}"
+        end
+      end
+    end
+  end
+
+  # Hook for subclasses (e.g. make batch button + dialog)
+  def make_batch_section; end
+
+  # --- Letters Section ---
+
+  def letters_section
+    collapsible_section("Letters", letters.count, open: true) do
+      letters_filter_bar
+      if letters.any?
+        render Primer::Beta::BorderBox.new do |box|
+          letters.each do |letter|
+            box.with_row do
+              letter_row(letter)
+            end
+          end
+        end
+      else
+        render Primer::Beta::Blankslate.new do |bs|
+          bs.with_visual_icon(icon: :mail)
+          bs.with_heading(tag: :h3) { "No letters" }
+          if search.present? || status.present?
+            bs.with_description { "Try adjusting your search or filters." }
+          end
+        end
+      end
+    end
+  end
+
+  def letters_filter_bar
+    div(style: "display: flex; gap: 12px; margin-bottom: 16px; align-items: center; flex-wrap: wrap;") do
+      # Search
+      div(style: "flex: 1; min-width: 200px; max-width: 400px;") do
+        form(action: queue_show_path, method: "get", style: "display: contents;") do
+          input(type: "hidden", name: "status", value: status) if status.present?
+          render Primer::Alpha::TextField.new(
+            name: "search",
+            label: "Search letters",
+            visually_hide_label: true,
+            placeholder: "Search by name or email...",
+            value: search,
+            leading_visual: { icon: :search },
+            full_width: true
+          )
+        end
+      end
+
+      # Status toggles
+      div(style: "display: flex; gap: 4px;") do
+        LETTER_STATES.each do |state|
+          count = letter_counts.fetch(state, 0)
+          next if count == 0
+
+          is_active = status == state
+          href = if is_active
+                   queue_show_path(search: search)
+                 else
+                   queue_show_path(search: search, status: state)
+                 end
+
+          render Primer::Beta::Button.new(
+            tag: :a,
+            href: href,
+            scheme: is_active ? :primary : :invisible,
+            size: :small
+          ) do |btn|
+            "#{count} #{state}"
+          end
+        end
+      end
+
+      # Clear filters
+      if search.present? || status.present?
+        render Primer::Beta::Button.new(
+          tag: :a,
+          href: queue_show_path,
+          scheme: :invisible,
+          size: :small
+        ) do |btn|
+          btn.with_leading_visual_icon(icon: :x)
+          "Clear"
+        end
+      end
+    end
+  end
+
+  # --- Batches Section (no-op by default) ---
+
+  def batches_section; end
+
+  # --- Queue Details ---
+
+  def queue_details_section
+    collapsible_section("Queue Details") do
+      render Primer::Beta::BorderBox.new do |box|
+        admin_tool do
+          box.with_row do
+            div do
+              strong { "Owner" }
+              div(style: "margin-top: 4px;") do
+                render_user_mention(queue.user)
+              end
+            end
+          end
+        end
+
+        if queue.tags.any?
+          box.with_row do
+            div do
+              strong { "Tags" }
+              div(style: "margin-top: 4px; display: flex; gap: 4px; flex-wrap: wrap;") do
+                queue.tags.each do |tag|
+                  render(Primer::Beta::Label.new(size: :medium)) { tag }
+                end
+              end
+            end
+          end
+        end
+
+        box.with_row do
+          div do
+            strong { "Return Address" }
+            div(style: "margin-top: 4px;") do
+              if queue.letter_return_address.present?
+                render_address(queue)
+              else
+                span(style: "color: var(--fgColor-muted);") { "No return address" }
+              end
+            end
+          end
+        end
+
+        box.with_row do
+          div do
+            strong { "Mailer ID" }
+            div(style: "margin-top: 4px;") do
+              plain(queue.letter_mailer_id&.display_name || "No mailer ID")
+            end
+          end
+        end
+
+        box.with_row do
+          div do
+            strong { "Letter Specs" }
+            div(style: "margin-top: 4px;") do
+              span { "#{queue.letter_width}\" \u00D7 #{queue.letter_height}\" \u00B7 #{queue.letter_weight} oz" }
+            end
+          end
+        end
+
+        extra_queue_details(box)
+      end
+    end
+  end
+
+  # Hook for subclasses to add extra detail rows
+  def extra_queue_details(box); end
+
+  # --- Helpers ---
+
+  def letter_row(letter)
+    div(style: "display: flex; align-items: center; gap: 12px; width: 100%;") do
+      a(
+        href: letter_path(letter),
+        style: "font-family: monospace; color: var(--fgColor-accent); text-decoration: none;"
+      ) { letter.public_id }
+      span(style: "flex: 1;") do
+        name = [letter.address&.first_name, letter.address&.last_name].compact_blank.join(" ")
+        plain name.presence || "\u2014"
+      end
+      render Components::Shared::StatusBadge.new(status: letter.aasm_state, type: :letter)
+      span(style: "color: var(--fgColor-muted); font-size: 13px; white-space: nowrap;") do
+        letter.created_at.strftime("%b %d, %Y")
+      end
+    end
+  end
+
+  def render_address(q)
+    addr = q.letter_return_address
+    name = q.letter_return_address_name.presence || addr.name
+
+    div do
+      div { name } if name.present?
+      div { addr.line_1 }
+      div { addr.line_2 } if addr.line_2.present?
+      div { "#{addr.city}, #{addr.state} #{addr.postal_code}" }
+      div { addr.country }
+    end
+  end
+
+  def collapsible_section(title, count = nil, open: false)
+    details(style: "margin-top: 24px;", **( open ? { open: true } : {})) do
+      summary(style: "cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px 6px 0 0; font-weight: 600;") do
+        label_text = count ? "#{title} (#{count})" : title
+        h2(style: "margin: 0; font-size: 16px;") { label_text }
+        span(style: "color: var(--fgColor-muted);") { "\u25BC" }
+      end
+      div(style: "border: 1px solid var(--borderColor-default); border-top: none; border-radius: 0 0 6px 6px; padding: 16px;") do
+        yield
+      end
+    end
+  end
+
+  def state_scheme(state)
+    case state
+    when "queued" then :secondary
+    when "pending" then :attention
+    when "printed" then :accent
+    when "mailed", "received" then :success
+    else :secondary
+    end
+  end
+
+  def render_user_mention(user)
+    div(class: "user-info #{current_user == user ? 'current-user' : ''}") do
+      if user.icon_url.present?
+        img(src: user.icon_url, width: 32, height: 32, class: "avatar", alt: "#{user.username}'s avatar")
+      end
+      span { user.username }
+    end
+  end
+
+  def admin_inspector(record)
+    admin_tool do
+      details(style: "margin-top: 24px;") do
+        summary { "Inspect \"#{record.class.name.underscore}\" record" }
+        div(class: "border-left ml1") do
+          details(class: "ml2") do
+            summary { "View JSON" }
+            div(class: "overflow-x-auto") do
+              pre(class: "w-max") { JSON.pretty_generate(record.as_json) }
+            end
+          end
+        end
+      end
+    end
+  end
+
+  # Abstract — subclasses must define these
+  def type_label = raise(NotImplementedError)
+  def edit_queue_path = raise(NotImplementedError)
+  def queue_show_path(**) = raise(NotImplementedError)
+end

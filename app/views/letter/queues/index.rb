@@ -127,7 +127,7 @@ class Views::Letter::Queues::Index < Views::Base
 
   def queue_card(queue)
     is_instant = queue.is_a?(Letter::InstantQueue)
-    href = is_instant ? letter_instant_queue_path(queue) : letter_queue_path(queue)
+    href = is_instant ? letter_instant_queue_path(queue) : letter_queue_path(queue, status: :queued)
     action = attention_count(queue)
 
     if action > 0
