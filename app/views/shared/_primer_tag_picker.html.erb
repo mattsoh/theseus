@@ -2,39 +2,24 @@
   <%= vite_javascript_tag "taggable" %>
 <% end %>
 
-<%= render Primer::Beta::BorderBox.new(mb: 4) do |box| %>
-  <% box.with_header do |header| %>
-    <% header.with_title(tag: :h2) do %>Tags<% end %>
-  <% end %>
-  <% box.with_body do %>
-    <% selected_tags = taggable.try(:tags) || [] %>
-    <% all_tags = available_tags(selected_tags) %>
+<% selected_tags = taggable.try(:tags) || [] %>
+<% all_tags = available_tags(selected_tags) %>
 
-    <%= form.select :tags,
-                    all_tags,
-                    { selected: selected_tags, include_blank: false },
-                    { multiple: true,
-                      class: "form-control selectize-tags width-full",
-                      data: {
-                        selectize: {
-                          plugins: ['remove_button'],
-                          persist: false,
-                          create: true,
-                          maxItems: nil
-                        }
+<div class="FormControl mb-3">
+  <%= form.label :tags, "Tags", class: "FormControl-label" %>
+  <%= form.select :tags,
+                  all_tags,
+                  { selected: selected_tags, include_blank: false },
+                  { multiple: true,
+                    class: "selectize-tags width-full",
+                    data: {
+                      selectize: {
+                        plugins: ['remove_button'],
+                        persist: false,
+                        create: true,
+                        maxItems: nil
                       }
-                    } %>
-    <p class="note color-fg-muted mt-2">Select from common tags or create your own</p>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      $('.selectize-tags').selectize({
-        plugins: ['remove_button'],
-        persist: false,
-        create: true,
-        maxItems: null
-      });
-    });
-    </script>
-  <% end %>
-<% end %>
+                    }
+                  } %>
+  <p class="FormControl-caption">Select from common tags or create your own</p>
+</div>
