@@ -7,10 +7,10 @@ class Components::Shared::StatusBadge < Components::Base
   end
 
   def view_template
-    render Primer::Beta::Label.new(
+    render(Primer::Beta::Label.new(
       scheme: scheme_for_status,
       size: :medium
-    ) { text_for_status }
+    )) { text_for_status }
   end
 
   private
