@@ -43,10 +43,10 @@ class Views::Letter::Queues::Index < Views::Base
             btn.with_leading_visual_icon(icon: :plus)
             "New Queue"
           end
-          menu.with_item(label: "New Queue", href: new_letter_queue_path) do |item|
+          menu.with_item(label: "Batch queue", href: new_letter_queue_path) do |item|
             item.with_leading_visual_icon(icon: :stack)
           end
-          menu.with_item(label: "New Instant Queue", href: new_letter_instant_queue_path) do |item|
+          menu.with_item(label: "Instant queue", href: new_letter_instant_queue_path) do |item|
             item.with_leading_visual_icon(icon: :zap)
           end
         end
