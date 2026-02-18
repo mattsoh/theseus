@@ -42,8 +42,7 @@
   <h3>set defaults for letters:</h3>
   <div class="form-group">
     <%= form.label :template, "Label Template", class: "form-label" %>
-    <%= form.hidden_field :template, id: "selected_template", value: letter_queue.template %>
-    <%= render "shared/template_picker", multiple: false, show_all: true %>
+    <%= render "shared/template_picker", form: form, name: :template, selected: letter_queue.template, show_all: true %>
   </div>
   <% queue_scope = letter_queue.is_a?(Letter::InstantQueue) ? 'letter_instant_queue' : 'letter_queue' %>
   <div data-svelte-component="letter-attributes-picker"

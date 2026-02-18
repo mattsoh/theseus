@@ -115,7 +115,7 @@ class Views::Letter::Queues::Index < Views::Base
 
   def sorted_queues
     letter_queues.sort_by do |q|
-      if q.is_a?(Letter::InstantQueue)
+      if q.is_a?(::Letter::InstantQueue)
         printed = count_for(q, "printed")
         printed > 0 ? [1, -printed] : [2, q.name.downcase]
       else
@@ -126,7 +126,7 @@ class Views::Letter::Queues::Index < Views::Base
   end
 
   def queue_card(queue)
-    is_instant = queue.is_a?(Letter::InstantQueue)
+    is_instant = queue.is_a?(::Letter::InstantQueue)
     href = is_instant ? letter_instant_queue_path(queue, status: :printed) : letter_queue_path(queue, status: :queued)
     action = attention_count(queue)
 
@@ -168,7 +168,6 @@ class Views::Letter::Queues::Index < Views::Base
           end
         end
 
-
       end
     end
   end
@@ -191,10 +190,11 @@ class Views::Letter::Queues::Index < Views::Base
   end
 
   def attention_count(queue)
-    if queue.is_a?(Letter::InstantQueue)
-      count_for(queue, "printed")
-    else
-      count_for(queue, "queued")
+    count_for queue, case queue
+                     when ::Letter::InstantQueue
+                       "printed"
+                     else
+                       "queued"
     end
   end
 

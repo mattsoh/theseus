@@ -56,51 +56,36 @@ class Letter::QueuesController < ApplicationController
     )
   end
 
-  # GET /letter/queues/new
   def new
     @letter_queue = Letter::Queue.new
+    render Views::Letter::Queues::New.new(queue: @letter_queue)
   end
 
-  # GET /letter/queues/1/edit
   def edit
+    render Views::Letter::Queues::Edit.new(queue: @letter_queue)
   end
 
-  # POST /letter/queues or /letter/queues.json
   def create
     @letter_queue = letter_queue_class.new(letter_queue_params.merge(user: current_user))
 
-    respond_to do |format|
-      if @letter_queue.save
-        format.html { redirect_to @letter_queue, notice: "Queue was successfully created." }
-        format.json { render :show, status: :created, location: @letter_queue }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @letter_queue.errors, status: :unprocessable_entity }
-      end
+    if @letter_queue.save
+      redirect_to @letter_queue, notice: "Queue was successfully created."
+    else
+      render Views::Letter::Queues::New.new(queue: @letter_queue), status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /letter/queues/1 or /letter/queues/1.json
   def update
-    respond_to do |format|
-      if @letter_queue.update(letter_queue_params)
-        format.html { redirect_to @letter_queue, notice: "Queue was successfully updated." }
-        format.json { render :show, status: :ok, location: @letter_queue }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @letter_queue.errors, status: :unprocessable_entity }
-      end
+    if @letter_queue.update(letter_queue_params)
+      redirect_to @letter_queue, notice: "Queue was successfully updated."
+    else
+      render Views::Letter::Queues::Edit.new(queue: @letter_queue), status: :unprocessable_entity
     end
   end
 
-  # DELETE /letter/queues/1 or /letter/queues/1.json
   def destroy
     @letter_queue.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to letter_queues_path, status: :see_other, notice: "Queue was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    redirect_to letter_queues_path, status: :see_other, notice: "Queue was successfully destroyed."
   end
 
   def batch
