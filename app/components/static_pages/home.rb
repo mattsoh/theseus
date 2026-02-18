@@ -51,9 +51,9 @@ class Components::StaticPages::Home < Components::Base
       # Action items section
       h2(style: "font-size: 14px; font-weight: 600; color: var(--fgColor-muted, #656d76); text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 12px;") { "Needs attention" }
       div(style: "display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px;") do
-        action_card("Orders to dispatch", stats[:orders_to_dispatch], :package, warehouse_orders_path)
-        action_card("Letters to print", stats[:letters_to_print], :mail, letters_path)
-        action_card("Ready to mail", stats[:letters_to_mail], :check, letters_path)
+        action_card("Orders to dispatch", stats[:orders_to_dispatch], :package, warehouse_orders_path(state: "draft"))
+        action_card("Letters to print", stats[:letters_to_print], :mail, letters_path(status: "pending"))
+        action_card("Ready to mail", stats[:letters_to_mail], :check, letters_path(status: "printed"))
         action_card("Open batches", stats[:open_letter_batches], :inbox, letter_batches_path)
         action_card("My queued letters", stats[:my_queued_letters], :inbox, letter_queues_path) if stats[:my_queue_count].to_i > 0
       end
@@ -61,9 +61,9 @@ class Components::StaticPages::Home < Components::Base
       # Global stats section
       h2(style: "font-size: 14px; font-weight: 600; color: var(--fgColor-muted, #656d76); text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 12px;") { "This week" }
       div(style: "display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px;") do
-        stat_card("In transit", stats[:orders_in_transit], :rocket, warehouse_orders_path)
-        stat_card("Orders shipped", stats[:orders_shipped_this_week], :package, warehouse_orders_path)
-        stat_card("Letters mailed", stats[:letters_mailed_this_week], :"paper-airplane", letters_path)
+        stat_card("In transit", stats[:orders_in_transit], :rocket, warehouse_orders_path(state: "dispatched"))
+        stat_card("Orders shipped", stats[:orders_shipped_this_week], :package, warehouse_orders_path(state: "mailed"))
+        stat_card("Letters mailed", stats[:letters_mailed_this_week], :"paper-airplane", letters_path(status: "mailed"))
         stat_card("Letters (30d)", stats[:total_letters_this_month], :graph, letters_path)
       end
     end
