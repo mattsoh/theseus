@@ -1,10 +1,38 @@
 class Letter::QueuesController < ApplicationController
   before_action :set_letter_queue, only: %i[ show edit update destroy batch ]
   skip_after_action :verify_authorized
-  # GET /letter/queues or /letter/queues.json
   def index
     authorize Letter::Queue, policy_class: Letter::QueuePolicy
-    @letter_queues = policy_scope(Letter::Queue, policy_scope_class: Letter::QueuePolicy::Scope)
+    all_queues = policy_scope(Letter::Queue, policy_scope_class: Letter::QueuePolicy::Scope)
+
+    filtered = all_queues
+
+    is_admin = current_user&.is_admin?
+
+    user_id = is_admin ? params[:user_id] : nil
+    filtered = filtered.where(user_id: user_id) if user_id.present?
+    users = is_admin ? User.where(id: all_queues.select(:user_id).distinct).order(:email) : []
+
+    filtered = filtered.includes(:user) if is_admin
+
+    if params[:queue_type] == "batch"
+      filtered = filtered.where.not(type: "Letter::InstantQueue")
+    elsif params[:queue_type] == "instant"
+      filtered = filtered.where(type: "Letter::InstantQueue")
+    end
+
+    letter_counts = Letter.where(letter_queue_id: filtered.select(:id))
+                          .group(:letter_queue_id, :aasm_state)
+                          .count
+
+    render Views::Letter::Queues::Index.new(
+      letter_queues: filtered.to_a,
+      all_queues: all_queues,
+      letter_counts: letter_counts,
+      user_id: user_id,
+      queue_type: params[:queue_type],
+      users: users
+    )
   end
 
   # GET /letter/queues/1 or /letter/queues/1.json
