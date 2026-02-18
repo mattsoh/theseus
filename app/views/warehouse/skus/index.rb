@@ -354,7 +354,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
             
             const divs = pill.querySelectorAll('div');
             divs.forEach((div, i) => {
-              if (i > 0) div.style.color = 'var(--fgColor-muted, #656d76)';
+              div.style.color = i === 0 ? '' : 'var(--fgColor-muted, #656d76)';
             });
           }
 
