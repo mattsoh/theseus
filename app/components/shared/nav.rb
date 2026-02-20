@@ -38,6 +38,7 @@ class Components::Shared::Nav < Components::Base
           item.with_leading_visual_icon icon: :"arrow-both"
           item.with_item(label: "API keys", href: api_keys_path) { |item| item.with_leading_visual_icon icon: :key }
           item.with_item(label: "Letter queues", href: letter_queues_path) { |item| item.with_leading_visual_icon icon: :inbox }
+          item.with_item(label: "Docs", href: api_docs_path) { |item| item.with_leading_visual_icon icon: :book }
         end
 
         group.with_item(label: "Settings") do |item|

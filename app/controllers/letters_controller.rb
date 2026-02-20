@@ -38,13 +38,13 @@ class LettersController < ApplicationController
     @letter = Letter.new
     @letter.return_address = current_user.home_return_address || ReturnAddress.first
     @letter.build_address
+    render Views::Letters::New.new(letter: @letter)
   end
 
   # GET /letters/1/edit
   def edit
     authorize @letter
-    # If letter doesn't have a return address already, don't build one
-    # Let the user select one from the dropdown
+    render Views::Letters::Edit.new(letter: @letter)
   end
 
   # POST /letters
@@ -60,7 +60,8 @@ class LettersController < ApplicationController
     if @letter.save
       redirect_to @letter, notice: "Letter was successfully created."
     else
-      render :new, status: :unprocessable_entity
+      @letter.build_address if @letter.address.nil?
+      render Views::Letters::New.new(letter: @letter), status: :unprocessable_entity
     end
   end
 
@@ -84,7 +85,7 @@ class LettersController < ApplicationController
     if @letter.update(letter_params)
       redirect_to @letter, notice: "Letter was successfully updated."
     else
-      render :edit, status: :unprocessable_entity
+      render Views::Letters::Edit.new(letter: @letter), status: :unprocessable_entity
     end
   end
 

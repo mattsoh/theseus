@@ -183,3 +183,5 @@ gem "hcbv4", "~> 0.2"
 gem "primer_view_components", "~> 0.49.0"
 
 gem "pg_search", "~> 2.3"
+
+gem "redcarpet", "~> 3.6"

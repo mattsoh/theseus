@@ -580,6 +580,7 @@ Rails.application.routes.draw do
 
     delete "signout", to: "sessions#destroy", as: :signout
     get "/login" => "static_pages#login"
+    get "/api-docs" => "static_pages#api_docs"
 
     get "/auth/hackclub/callback", to: "sessions#hackclub_callback", as: :hackclub_callback
   end
@@ -703,6 +704,7 @@ Rails.application.routes.draw do
         resource :qz_tray, only: [] do
           get :cert
           post :sign
+          match :cert, :sign, via: :options, to: "qz_trays#preflight"
         end
         resources :tags, only: [:index, :show] do
           member do
