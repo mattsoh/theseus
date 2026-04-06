@@ -304,6 +304,35 @@ GET /api/v1/warehouse_orders
 
 returns all warehouse orders visible to your API key.
 
+#### embedding a tracking widget:
+
+want to show your recipients their order status without sending them to a separate page? we've got an embeddable tracking widget you can drop into an iframe.
+
+```
+GET /packages/:id/embed
+```
+
+where `:id` is the order's ID (e.g. `pkg_abc123`). this is a public endpoint — no API key needed.
+
+the widget is a self-contained HTML page designed to be iframed. it shows:
+- **order timeline:** Order Placed → Sent to Warehouse → Shipped, with dates as they become available.
+- **backorder info:** if any items are out of stock, the widget shows which ones and whether more are on the way.
+- **tracking info:** once the order ships, the carrier and a clickable tracking number show up.
+- **contents:** a list of what's in the box (unless you've marked the order as a surprise).
+
+embed it like this:
+```html
+<iframe
+  src="https://theseus.hackclub.com/packages/pkg_abc123/embed"
+  style="width: 100%; border: none; min-height: 200px;"
+></iframe>
+```
+
+a few things to know:
+- **draft orders return an error state.** if the order hasn't been dispatched yet, the widget will show "Order not found or not ready yet" — so don't embed it until the order is dispatched.
+- **no auth required.** the embed is public. anyone with the order ID can see it. this is by design — it's meant for recipient-facing contexts.
+- **frameable from anywhere.** the CSP is wide open on this endpoint, so you can iframe it from any domain.
+
 ---
 
 **a note on countries:** we do our best to parse whatever you throw at us ("United States", "US", "USA", "us", etc.) but the safest bet is always ISO 3166 alpha-2 codes. same goes for states — "Vermont" and "VT" both work, but abbreviations are less likely to surprise you.
