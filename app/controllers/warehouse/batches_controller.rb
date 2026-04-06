@@ -1,5 +1,5 @@
 class Warehouse::BatchesController < BaseBatchesController
-  before_action :set_allowed_templates, only: %i[ new create ]
+  before_action :set_allowed_templates, only: %i[ new create edit ]
 
   # GET /warehouse/batches or /warehouse/batches.json
   def index
@@ -23,15 +23,20 @@ class Warehouse::BatchesController < BaseBatchesController
     authorize @batch
   end
 
-  # POST /warehouse/batches or /warehouse/batches.json
+  # POST /warehouse/batches
   def create
     authorize Warehouse::Batch
     @batch = Warehouse::Batch.new(batch_params.merge(user: current_user))
 
     if @batch.save
-      @batch.aasm_state = :awaiting_field_mapping
-      @batch.save!
-      redirect_to map_fields_warehouse_batch_path(@batch), notice: "Please map your CSV fields to address fields."
+      begin
+        addresses_data = JSON.parse(params[:batch][:addresses_data])
+        @batch.import_addresses!(addresses_data)
+        redirect_to process_confirm_warehouse_batch_path(@batch), notice: "Batch created with #{@batch.addresses.count} addresses. Review and process."
+      rescue StandardError => e
+        event_id = Sentry.capture_exception(e)&.event_id
+        redirect_to warehouse_batch_path(@batch), flash: { alert: "Batch created but address import failed: #{e.message} (error: #{event_id})" }
+      end
     else
       render :new, status: :unprocessable_entity
     end
@@ -81,7 +86,7 @@ class Warehouse::BatchesController < BaseBatchesController
 
   def process_form
     authorize @batch, :process_form?
-    render :process_warehouse
+    render Views::Warehouse::Batches::Process.new(batch: @batch)
   end
 
   def process_batch
@@ -128,7 +133,7 @@ class Warehouse::BatchesController < BaseBatchesController
   private
 
   def batch_params
-    params.require(:batch).permit(:warehouse_template_id, :warehouse_user_facing_title, :csv, tags: [])
+    params.require(:batch).permit(:warehouse_template_id, :warehouse_user_facing_title, :csv, :addresses_data, tags: [])
   end
 
   def set_allowed_templates

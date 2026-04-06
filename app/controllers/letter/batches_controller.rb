@@ -27,7 +27,14 @@ class Letter::BatchesController < BaseBatchesController
     @batch = Letter::Batch.new(batch_params.merge(user: current_user))
 
     if @batch.save
-      redirect_to map_fields_letter_batch_path(@batch), notice: "Batch was successfully created."
+      begin
+        addresses_data = JSON.parse(params[:letter_batch][:addresses_data])
+        @batch.import_addresses!(addresses_data)
+        redirect_to process_letter_batch_path(@batch), notice: "Batch created with #{@batch.addresses.count} addresses. Review and process."
+      rescue StandardError => e
+        event_id = Sentry.capture_exception(e)&.event_id
+        redirect_to letter_batch_path(@batch), flash: { alert: "Batch created but address import failed: #{e.message} (error: #{event_id})" }
+      end
     else
       render :new, status: :unprocessable_entity
     end
@@ -77,7 +84,7 @@ class Letter::BatchesController < BaseBatchesController
 
   def process_form
     authorize @batch, :process_form?, policy_class: Letter::BatchPolicy
-    render :process_letter
+    render Views::Letter::Batches::Process.new(batch: @batch)
   end
 
   def process_batch
@@ -202,6 +209,7 @@ class Letter::BatchesController < BaseBatchesController
   def batch_params
     params.require(:letter_batch).permit(
       :csv,
+      :addresses_data,
       :letter_template_id,
       :user_facing_title,
       :letter_height,

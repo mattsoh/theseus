@@ -1,9 +1,11 @@
 import LetterAttributesPicker from '../components/LetterAttributesPicker.svelte';
 import MailScanner from '../components/MailScanner.svelte';
+import BatchCsvMapper from '../components/BatchCsvMapper.svelte';
 
 const components = {
   'letter-attributes-picker': LetterAttributesPicker,
   'mail-scanner': MailScanner,
+  'batch-csv-mapper': BatchCsvMapper,
 };
 
 export function mountSvelteComponents() {
