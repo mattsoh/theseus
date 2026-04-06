@@ -529,6 +529,7 @@ Rails.application.routes.draw do
       get "/impersonate/:id", to: "sessions#impersonate", as: :impersonate_user
     end
     get "/stop_impersonating", to: "sessions#stop_impersonating", as: :stop_impersonating
+    get "/dev_login", to: "sessions#dev_login" if Rails.env.development?
 
     namespace :usps do
       resources :indicia

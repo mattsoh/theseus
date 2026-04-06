@@ -53,14 +53,30 @@ export const mappedRows = derived([rows, mapping], ([$rows, $mapping]) => {
     .filter((obj) => obj.first_name && obj.first_name.trim() !== '');
 });
 
+// Derived: per-row warnings for rows missing required field values
+export const rowWarnings = derived([mappedRows, missingRequired], ([$mapped, $missingCols]) => {
+  // only check if all required columns are mapped
+  if ($missingCols.length > 0) return [];
+
+  const warnings = [];
+  $mapped.forEach((row, i) => {
+    const missing = REQUIRED_FIELDS.filter((f) => !row[f] || row[f].trim() === '');
+    if (missing.length > 0) {
+      warnings.push({ row: i + 1, name: row.first_name || '(blank)', missing });
+    }
+  });
+  return warnings;
+});
+
 // Derived: preview rows (first 5)
 export const previewRows = derived(mappedRows, ($mapped) => $mapped.slice(0, 5));
 
 // Derived: row count stats
-export const stats = derived([rows, mappedRows], ([$rows, $mapped]) => ({
+export const stats = derived([rows, mappedRows, rowWarnings], ([$rows, $mapped, $warnings]) => ({
   total: $rows.length,
   valid: $mapped.length,
   skipped: $rows.length - $mapped.length,
+  warnings: $warnings.length,
 }));
 
 // Auto-map headers based on the default mapping dictionary

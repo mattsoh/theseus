@@ -1,8 +1,12 @@
 <script>
   import { previewRows, stats, mapping, isValid } from './stores.js';
-  import { FIELD_LABELS } from './constants.js';
+  import { FIELD_LABELS, REQUIRED_FIELDS } from './constants.js';
 
   $: activeFields = Object.values($mapping).filter(Boolean);
+
+  function isMissing(row, field) {
+    return REQUIRED_FIELDS.includes(field) && (!row[field] || row[field].trim() === '');
+  }
 </script>
 
 {#if $previewRows.length > 0}
@@ -30,7 +34,7 @@
           {#each $previewRows as row}
             <tr>
               {#each activeFields as field}
-                <td class:empty={!row[field]}>{row[field] || '—'}</td>
+                <td class:empty={!row[field]} class:missing={isMissing(row, field)}>{row[field] || '—'}</td>
               {/each}
             </tr>
           {/each}
@@ -105,6 +109,12 @@
 
   td.empty {
     color: var(--fgColor-muted, #656d76);
+  }
+
+  td.missing {
+    background: var(--bgColor-danger-muted, #ffebe9);
+    color: var(--fgColor-danger, #d1242f);
+    font-weight: 500;
   }
 
   tr:last-child td {
