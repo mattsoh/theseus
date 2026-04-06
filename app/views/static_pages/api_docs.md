@@ -212,13 +212,13 @@ POST /api/v1/warehouse_orders/from_template/:template_id
   },
   "warehouse_order": {
     "recipient_email": "zach@hackclub.com",
-    "tags": ["high-seas", "welcome-kit"],
+    "tags": ["high-seas", "welcome-envelope"],
     "idempotency_key": "hs-welcome-zach-2026",
-    "user_facing_title": "Your High Seas Welcome Kit!",
+    "user_facing_title": "Your High Seas Welcome Envelope!",
     "metadata": { "hs_id": "usr_zach123" }
   },
   "contents": [
-    { "sku": "HC-STICKER-MEGA", "quantity": 3 }
+    { "sku": "Sti/Example/1", "quantity": 3 }
   ]
 }
 ```
@@ -246,12 +246,12 @@ POST /api/v1/warehouse_orders
   "warehouse_order": {
     "recipient_email": "max@hackclub.com",
     "tags": ["boba-drops"],
-    "idempotency_key": "boba-max-march-2026",
+    "idempotency_key": "boba-max@hackclub.com-march-2026",
     "metadata": {}
   },
   "contents": [
-    { "sku": "HC-STICKER-HOLOGRAPHIC", "quantity": 5 },
-    { "sku": "HC-POSTER-2026", "quantity": 1 }
+    { "sku": "Five/Dollar/Bill", "quantity": 1 },
+    { "sku": "Thoughtful/Postcard", "quantity": 1 }
   ]
 }
 ```
