@@ -22,7 +22,7 @@ class Views::Letter::Batches::Process < Views::Base
         "This will generate labels for #{helpers.pluralize(@batch.addresses.count, 'address')}."
       end
 
-      form_with(model: @batch, url: process_batch_letter_batch_path(@batch), method: :post, scope: :batch) do |f|
+      form_with(model: @batch, url: process_letter_batch_path(@batch), method: :post, scope: :batch) do |f|
         # Title
         render Primer::Beta::BorderBox.new(mb: 4) do |box|
           box.with_header do |header|

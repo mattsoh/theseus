@@ -24,7 +24,7 @@ class Views::Letter::Batches::Show < Views::Base
             "Edit"
           end
           if @batch.fields_mapped?
-            render Primer::Beta::Button.new(tag: :a, href: process_letter_batch_path(@batch), scheme: :primary, size: :small) do |btn|
+            render Primer::Beta::Button.new(tag: :a, href: process_confirm_letter_batch_path(@batch), scheme: :primary, size: :small) do |btn|
               btn.with_leading_visual_icon(icon: :play)
               "Process"
             end

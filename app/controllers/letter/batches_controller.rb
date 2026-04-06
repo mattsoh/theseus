@@ -30,7 +30,7 @@ class Letter::BatchesController < BaseBatchesController
       begin
         addresses_data = JSON.parse(params[:letter_batch][:addresses_data])
         @batch.import_addresses!(addresses_data)
-        redirect_to process_letter_batch_path(@batch), notice: "Batch created with #{@batch.addresses.count} addresses. Review and process."
+        redirect_to process_confirm_letter_batch_path(@batch), notice: "Batch created with #{@batch.addresses.count} addresses. Review and process."
       rescue StandardError => e
         event_id = Sentry.capture_exception(e)&.event_id
         redirect_to letter_batch_path(@batch), flash: { alert: "Batch created but address import failed: #{e.message} (error: #{event_id})" }
@@ -93,7 +93,7 @@ class Letter::BatchesController < BaseBatchesController
 
     if request.post?
       if letter_batch_params[:letter_mailing_date].blank?
-        redirect_to process_letter_batch_path(@batch), alert: "Mailing date is required"
+        redirect_to process_confirm_letter_batch_path(@batch), alert: "Mailing date is required"
         return
       end
 
@@ -107,14 +107,14 @@ class Letter::BatchesController < BaseBatchesController
         payment_account = USPS::PaymentAccount.find_by(id: letter_batch_params[:usps_payment_account_id])
 
         if payment_account.nil?
-          redirect_to process_letter_batch_path(@batch), alert: "Please select a valid payment account when using indicia"
+          redirect_to process_confirm_letter_batch_path(@batch), alert: "Please select a valid payment account when using indicia"
           return
         end
 
         hcb_payment_account = current_user.hcb_payment_accounts.find_by(id: letter_batch_params[:hcb_payment_account_id])
 
         if hcb_payment_account.nil?
-          redirect_to process_letter_batch_path(@batch), alert: "Please select an HCB payment account to purchase indicia"
+          redirect_to process_confirm_letter_batch_path(@batch), alert: "Please select an HCB payment account to purchase indicia"
           return
         end
       else
@@ -136,7 +136,7 @@ class Letter::BatchesController < BaseBatchesController
         redirect_to letter_batch_path(@batch, print_now: letter_batch_params[:print_immediately]), notice: "Batch processed successfully"
       rescue => e
         event_id = Sentry.capture_exception(e)&.event_id
-        redirect_to process_letter_batch_path(@batch), alert: "Failed to process batch: #{e.message} (error: #{event_id})"
+        redirect_to process_confirm_letter_batch_path(@batch), alert: "Failed to process batch: #{e.message} (error: #{event_id})"
       end
     end
   end
