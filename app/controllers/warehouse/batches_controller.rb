@@ -1,26 +1,30 @@
 class Warehouse::BatchesController < BaseBatchesController
   before_action :set_allowed_templates, only: %i[ new create edit ]
 
-  # GET /warehouse/batches or /warehouse/batches.json
+  # GET /warehouse/batches
   def index
     authorize Warehouse::Batch
     @batches = policy_scope(Warehouse::Batch).order(created_at: :desc)
+    render Views::Warehouse::Batches::Index.new(batches: @batches)
   end
 
-  # GET /warehouse/batches/1 or /warehouse/batches/1.json
+  # GET /warehouse/batches/1
   def show
     authorize @batch
+    render Views::Warehouse::Batches::Show.new(batch: @batch)
   end
 
   # GET /warehouse/batches/new
   def new
     authorize Warehouse::Batch
     @batch = Warehouse::Batch.new
+    render Views::Warehouse::Batches::New.new(batch: @batch, allowed_templates: @allowed_templates)
   end
 
   # GET /warehouse/batches/1/edit
   def edit
     authorize @batch
+    render Views::Warehouse::Batches::Edit.new(batch: @batch, allowed_templates: @allowed_templates)
   end
 
   # POST /warehouse/batches
@@ -38,7 +42,7 @@ class Warehouse::BatchesController < BaseBatchesController
         redirect_to warehouse_batch_path(@batch), flash: { alert: "Batch created but address import failed: #{e.message} (error: #{event_id})" }
       end
     else
-      render :new, status: :unprocessable_entity
+      render Views::Warehouse::Batches::New.new(batch: @batch, allowed_templates: @allowed_templates), status: :unprocessable_entity
     end
   end
 
@@ -74,7 +78,7 @@ class Warehouse::BatchesController < BaseBatchesController
 
       redirect_to warehouse_batch_path(@batch), notice: "Batch was successfully updated."
     else
-      render :edit, status: :unprocessable_entity
+      render Views::Warehouse::Batches::Edit.new(batch: @batch, allowed_templates: @allowed_templates), status: :unprocessable_entity
     end
   end
 

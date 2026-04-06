@@ -3,22 +3,26 @@ class Letter::BatchesController < BaseBatchesController
   def index
     authorize Letter::Batch, policy_class: Letter::BatchPolicy
     @batches = policy_scope(Letter::Batch, policy_scope_class: Letter::BatchPolicy::Scope).order(created_at: :desc)
+    render Views::Letter::Batches::Index.new(batches: @batches)
   end
 
   # GET /letter/batches/new
   def new
     authorize Letter::Batch, policy_class: Letter::BatchPolicy
     @batch = Letter::Batch.new
+    render Views::Letter::Batches::New.new(batch: @batch)
   end
 
   # GET /letter/batches/:id
   def show
     authorize @batch, policy_class: Letter::BatchPolicy
+    render Views::Letter::Batches::Show.new(batch: @batch)
   end
 
   # GET /letter/batches/:id/edit
   def edit
     authorize @batch, policy_class: Letter::BatchPolicy
+    render Views::Letter::Batches::Edit.new(batch: @batch)
   end
 
   # POST /letter/batches
@@ -36,7 +40,7 @@ class Letter::BatchesController < BaseBatchesController
         redirect_to letter_batch_path(@batch), flash: { alert: "Batch created but address import failed: #{e.message} (error: #{event_id})" }
       end
     else
-      render :new, status: :unprocessable_entity
+      render Views::Letter::Batches::New.new(batch: @batch), status: :unprocessable_entity
     end
   end
 
