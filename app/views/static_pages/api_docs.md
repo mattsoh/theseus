@@ -168,8 +168,7 @@ an idempotency key is a unique string you make up that represents "this specific
 ```
 
 the key just needs to be unique within your usage. some good patterns:
-- `"{program}-{user_id}-{action}"` — e.g. `"high-seas-usr_abc123-welcome-letter"`
-- `"{event}-{timestamp}"` — e.g. `"sticker-drop-2026-03-01"`
+- `"{program}_{env}-{user_id}-{action}"` — e.g. `"high-seas_prod-usr_abc123-welcome-letter"`
 - whatever your system already uses to deduplicate work
 
 if you send a request with a duplicate idempotency key, you'll get back:
