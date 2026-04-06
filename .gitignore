@@ -52,4 +52,4 @@ node_modules
 *.key
 
 app/frontend/images/template_previews/*
-public/.vite
+public/.vite/*
