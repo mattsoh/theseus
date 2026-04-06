@@ -112,12 +112,9 @@ returns the same letter object as above. you can use this to poll for status cha
 
 ### Instant Queues:
 
-Instant Queues are the cool, impatient sibling of Batch Queues. instead of waiting for a human to come along and batch things up, an Instant Queue processes your letter _immediately_ — generates labels, buys postage (if it's set up for indicia), the whole deal, all in one request.
+Instant Queues are the cool, impatient sibling of Batch Queues. instead of waiting for a human to come along and batch things up, an Instant Queue prints your mail as a postcard and drops it straight into the outbox — buys postage (if it's set up for indicia), the whole deal, all in one request.
 
-this is great for things like:
-- transactional mail ("you just won a mass of stickers, here they come!")
-- anything where the letter needs to go out NOW and not whenever Nora gets around to it
-- single letters that don't make sense as part of a batch
+this is for transactional mail: "your project was marked as awesome! <picture of the project>", things like that.
 
 #### sending a letter instantly:
 ```
@@ -143,15 +140,16 @@ same body as Batch Queues:
 }
 ```
 
-**the response** (201 Created) is the same letter object, but the status will be `pending` (not `queued`) and if the queue uses indicia, the postage will already be purchased. the label PDF is generated and ready to print.
+**the response** (201 Created) is the same letter object, but the status will be `pending` (not `queued`) and if the queue uses indicia, the postage will already be purchased. the postcard is printed and in the outbox.
 
 #### the tradeoffs:
-Instant Queues are powerful but they're doing a lot of work per request — creating the letter, potentially buying postage from USPS, generating a label PDF. this means:
-- **they're slower** than Batch Queue requests. the request does real work and you should expect it to take a few seconds.
-- **errors are louder.** if postage purchasing fails or label generation breaks, you'll get an error on the spot. with Batch Queues, that stuff happens later when a human is watching.
+Instant Queues are a fundamentally different primitive from Batch Queues. when you submit a letter to an Instant Queue, it gets printed as a postcard and dropped straight into the outbox — no batching, no label generation, no human in the loop. this means:
+- **they're postcards.** Instant Queues print postcards, not letters in envelopes. if your content doesn't fit on a postcard, you want a Batch Queue.
+- **they're slower per-request** than Batch Queue requests. the request does real work (printing, postage) and you should expect it to take a few seconds.
+- **errors are louder.** if something breaks, you'll get an error on the spot. with Batch Queues, that stuff happens later when a human is watching.
 - **they cost money immediately.** if your queue is set up with indicia postage, the postage charge goes through the moment you make the request.
 
-for most "send a bunch of letters to a bunch of people" use cases, Batch Queues are the move. Instant Queues shine when you need one letter, right now, soup to nuts.
+for most "send a bunch of letters to a bunch of people" use cases, Batch Queues are the move. Instant Queues shine when you need a postcard out the door right now, no waiting.
 
 ---
 
