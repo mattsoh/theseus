@@ -1,11 +1,9 @@
-<% content_for :title, "New indicium" %>
+<% content_for :title, "New Indicium" %>
 
-<h1>New indicium</h1>
-
-<%= render "form", usps_indicium: @usps_indicium %>
-
-<br>
-
-<div>
-  <%= link_to "Back to indicia", usps_indicia_path %>
+<div style="max-width: 600px; margin: 0 auto; padding: 24px;">
+  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px 0;">New Indicium</h1>
+  <%= render "form", usps_indicium: @usps_indicium %>
+  <div style="margin-top: 32px;">
+    <%= link_to "← Back to indicia", usps_indicia_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+  </div>
 </div>

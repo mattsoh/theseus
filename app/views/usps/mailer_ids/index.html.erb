@@ -1,11 +1,36 @@
-<% content_for :title, "Mailers" %>
+<% content_for :title, "Mailer IDs" %>
 
-<h1>CRID/Mailer ID Pairs:</h1>
+<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <div>
+      <h1 style="font-size: 24px; font-weight: 600; margin: 0;">CRID / Mailer ID Pairs</h1>
+      <p style="color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;"><%= @usps_mailer_ids.count %> registered</p>
+    </div>
+    <%= render Primer::Beta::Button.new(tag: :a, href: new_usps_mailer_id_path, scheme: :primary) do |btn|
+      btn.with_leading_visual_icon(icon: :plus)
+      "New Mailer ID"
+    end %>
+  </div>
 
-<div id="usps_mailer_ids">
-  <% @usps_mailer_ids.each do |mid| %>
-    <%= link_to mid.name, mid %> (<%= mid.crid %>/<%= mid.mid %>) <br/>
+  <% if @usps_mailer_ids.any? %>
+    <%= render Primer::Beta::BorderBox.new do |box|
+      @usps_mailer_ids.each do |mid|
+        box.with_row do %>
+          <a href="<%= usps_mailer_id_path(mid) %>" style="display: flex; justify-content: space-between; align-items: center; width: 100%; text-decoration: none; color: inherit;">
+            <span style="font-weight: 600;"><%= mid.name %></span>
+            <div style="display: flex; gap: 16px; font-size: 13px;">
+              <span style="color: var(--fgColor-muted);">CRID: <code><%= mid.crid %></code></span>
+              <span style="color: var(--fgColor-muted);">MID: <code><%= mid.mid %></code></span>
+            </div>
+          </a>
+        <% end
+      end
+    end %>
+  <% else %>
+    <%= render Primer::Beta::Blankslate.new(border: true) do |bs|
+      bs.with_visual_icon(icon: :id_badge)
+      bs.with_heading(tag: :h3) { "No mailer IDs yet" }
+      bs.with_primary_action(href: new_usps_mailer_id_path) { "Add one" }
+    end %>
   <% end %>
 </div>
-<hr/>
-<%= link_to "enter a new MID?", new_usps_mailer_id_path %>

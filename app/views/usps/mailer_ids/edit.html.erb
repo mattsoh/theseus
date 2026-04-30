@@ -1,12 +1,12 @@
-<% content_for :title, "Editing mailer" %>
+<% content_for :title, "Edit Mailer ID" %>
 
-<h1>Editing mailer</h1>
-
-<%= render "form", usps_mailer_id: @usps_mailer_id %>
-
-<br>
-
-<div>
-  <%= link_to "back to MID", @usps_mailer_id %> |
-  <%= link_to "back to all MIDs", usps_mailer_ids_path %>
+<div style="max-width: 600px; margin: 0 auto; padding: 24px;">
+  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Edit Mailer ID</h1>
+    <span style="color: var(--fgColor-muted);"><%= @usps_mailer_id.name %></span>
+  </div>
+  <%= render "form", usps_mailer_id: @usps_mailer_id %>
+  <div style="margin-top: 32px;">
+    <%= link_to "← Back to mailer ID", usps_mailer_id_path(@usps_mailer_id), style: "color: var(--fgColor-muted); text-decoration: none;" %>
+  </div>
 </div>

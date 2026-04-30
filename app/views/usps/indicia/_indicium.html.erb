@@ -1,20 +1,11 @@
-<div id="<%= dom_id indicium %>" class="p-3 border rounded hover:bg-gray-50">
-  <div class="flex items-center justify-between mb-2">
+<div id="<%= dom_id indicium %>" style="padding: 12px 16px; border: 1px solid var(--borderColor-default); border-radius: 6px; margin-bottom: 8px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
     <%= render Components::Shared::PublicId.new(value: indicium.public_id) %>
-    <span class="font-medium"><%= number_to_currency(indicium.postage) %></span>
+    <span style="font-weight: 600;"><%= number_to_currency(indicium.postage) %></span>
   </div>
-  <dl class="grid grid-cols-3 gap-2 text-sm text-gray-600">
-    <div>
-      <dt class="text-gray-400">SKU</dt>
-      <dd class="font-mono text-xs"><%= indicium.usps_sku %></dd>
-    </div>
-    <div>
-      <dt class="text-gray-400">Date</dt>
-      <dd><%= indicium.mailing_date %></dd>
-    </div>
-    <div>
-      <dt class="text-gray-400">Category</dt>
-      <dd><%= indicium.processing_category %></dd>
-    </div>
-  </dl>
+  <div style="display: flex; gap: 24px; font-size: 13px; color: var(--fgColor-muted);">
+    <span>SKU: <code style="font-size: 12px;"><%= indicium.usps_sku %></code></span>
+    <span><%= indicium.mailing_date %></span>
+    <span><%= indicium.processing_category %></span>
+  </div>
 </div>

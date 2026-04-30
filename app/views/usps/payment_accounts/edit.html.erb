@@ -1,12 +1,12 @@
-<% content_for :title, "Editing payment account" %>
+<% content_for :title, "Edit Payment Account" %>
 
-<h1>Editing payment account</h1>
-
-<%= render "form", usps_payment_account: @usps_payment_account %>
-
-<br>
-
-<div>
-  <%= link_to "Show this payment account", @usps_payment_account %> |
-  <%= link_to "Back to payment accounts", usps_payment_accounts_path %>
+<div style="max-width: 600px; margin: 0 auto; padding: 24px;">
+  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Edit Payment Account</h1>
+    <span style="color: var(--fgColor-muted);"><%= @usps_payment_account.display_name %></span>
+  </div>
+  <%= render "form", usps_payment_account: @usps_payment_account %>
+  <div style="margin-top: 32px;">
+    <%= link_to "← Back to account", usps_payment_account_path(@usps_payment_account), style: "color: var(--fgColor-muted); text-decoration: none;" %>
+  </div>
 </div>

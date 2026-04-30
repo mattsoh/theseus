@@ -1,12 +1,12 @@
-<% content_for :title, "Editing indicium" %>
+<% content_for :title, "Edit Indicium" %>
 
-<h1>Editing indicium</h1>
-
-<%= render "form", usps_indicium: @usps_indicium %>
-
-<br>
-
-<div>
-  <%= link_to "Show this indicium", @usps_indicium %> |
-  <%= link_to "Back to indicia", usps_indicia_path %>
+<div style="max-width: 600px; margin: 0 auto; padding: 24px;">
+  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Edit Indicium</h1>
+    <span style="color: var(--fgColor-muted);"><%= render Components::Shared::PublicId.new(value: @usps_indicium.public_id) %></span>
+  </div>
+  <%= render "form", usps_indicium: @usps_indicium %>
+  <div style="margin-top: 32px;">
+    <%= link_to "← Back to indicium", usps_indicium_path(@usps_indicium), style: "color: var(--fgColor-muted); text-decoration: none;" %>
+  </div>
 </div>

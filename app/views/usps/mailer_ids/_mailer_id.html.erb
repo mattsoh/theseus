@@ -1,18 +1,9 @@
-<div id="<%= dom_id mailer_id %>">
-
-  <p>
-    <strong>Name:</strong>
-    <%= mailer_id.name %>
-  </p>
-
-  <p>
-    <strong>Crid:</strong>
-    <%= mailer_id.crid %>
-  </p>
-
-  <p>
-    <strong>Mid:</strong>
-    <%= mailer_id.mid %>
-  </p>
-
+<div id="<%= dom_id mailer_id %>" style="padding: 12px 16px; border: 1px solid var(--borderColor-default); border-radius: 6px; margin-bottom: 8px;">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <a href="<%= usps_mailer_id_path(mailer_id) %>" style="font-weight: 600; color: var(--fgColor-accent); text-decoration: none;"><%= mailer_id.name %></a>
+    <div style="display: flex; gap: 16px; font-size: 13px; color: var(--fgColor-muted);">
+      <span>CRID: <code><%= mailer_id.crid %></code></span>
+      <span>MID: <code><%= mailer_id.mid %></code></span>
+    </div>
+  </div>
 </div>
