@@ -1,33 +1,29 @@
-<div class="table-container">
-  <table class="table-responsive">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Address</th>
-        <th>City</th>
-        <th>State</th>
-        <th>Postal Code</th>
-        <th>Country</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% addresses.each do |address| %>
-        <tr>
-          <td data-label="Name">
-            <%= "#{address.first_name} #{address.last_name}" %>
-          </td>
-          <td data-label="Address">
-            <%= address.line_1 %>
-            <% if address.line_2.present? %>
-              <br><%= address.line_2 %>
-            <% end %>
-          </td>
-          <td data-label="City"><%= address.city %></td>
-          <td data-label="State"><%= address.state %></td>
-          <td data-label="Postal Code"><%= address.postal_code %></td>
-          <td data-label="Country"><%= address.country %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div> 
+<%= render Primer::Beta::BorderBox.new do |box| %>
+  <% box.with_header do %>
+    <div style="display: flex; justify-content: space-between; width: 100%;">
+      <span style="font-weight: 600; flex: 1;">Name</span>
+      <span style="font-weight: 600; flex: 2;">Address</span>
+      <span style="font-weight: 600; min-width: 100px;">City</span>
+      <span style="font-weight: 600; min-width: 60px;">State</span>
+      <span style="font-weight: 600; min-width: 80px;">Postal Code</span>
+      <span style="font-weight: 600; min-width: 60px;">Country</span>
+    </div>
+  <% end %>
+  <% addresses.each do |address| %>
+    <% box.with_row do %>
+      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: 13px;">
+        <span style="flex: 1;"><%= "#{address.first_name} #{address.last_name}" %></span>
+        <span style="flex: 2;">
+          <%= address.line_1 %>
+          <% if address.line_2.present? %>
+            <br><%= address.line_2 %>
+          <% end %>
+        </span>
+        <span style="min-width: 100px;"><%= address.city %></span>
+        <span style="min-width: 60px;"><%= address.state %></span>
+        <span style="min-width: 80px; font-family: var(--fontStack-monospace);"><%= address.postal_code %></span>
+        <span style="min-width: 60px;"><%= address.country %></span>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

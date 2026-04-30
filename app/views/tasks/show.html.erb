@@ -1,18 +1,45 @@
-<h1>your tasks:
-  <sup style="display: inline-block;"><%= button_to "↻", refresh_tasks_path, method: :post, class: "btn btn-tiny success" %></sup>
-</h1>
-<br/>
-<ul>
-  <% @tasks.group_by { |task| task[:type] }.each do |type, tasks| %>
-    <li><b><%= type %>:</b></li>
-    <ul>
-      <% tasks.each do |task| %>
-        <li><%= task[:name] %>
-          <% if task[:subtitle] %>
-            <small class="muted"><i>(<%= task[:subtitle] %>)</i></small>
+<% content_for :title, "Tasks" %>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Your Tasks</h1>
+    <%= button_to refresh_tasks_path, method: :post do %>
+      <%= render Primer::Beta::Button.new(type: :button, scheme: :secondary, size: :small) do |btn|
+        btn.with_leading_visual_icon(icon: :sync)
+        "Refresh"
+      end %>
+    <% end %>
+  </div>
+
+  <% if @tasks.empty? %>
+    <%= render Primer::Beta::Blankslate.new(border: true) do |bs|
+      bs.with_visual_icon(icon: :check_circle)
+      bs.with_heading(tag: :h2) { "All clear!" }
+      bs.with_description { "No tasks right now." }
+    end %>
+  <% else %>
+    <% @tasks.group_by { |task| task[:type] }.each do |type, tasks| %>
+      <div style="margin-bottom: 24px;">
+        <h2 style="font-size: 16px; font-weight: 600; margin: 0 0 8px 0;"><%= type %></h2>
+        <%= render Primer::Beta::BorderBox.new do |box| %>
+          <% tasks.each do |task| %>
+            <% box.with_row do %>
+              <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div>
+                  <span style="font-weight: 500;"><%= task[:name] %></span>
+                  <% if task[:subtitle] %>
+                    <span style="color: var(--fgColor-muted); font-size: 13px; margin-left: 4px;">(<%= task[:subtitle] %>)</span>
+                  <% end %>
+                </div>
+                <%= render Primer::Beta::Button.new(tag: :a, href: task[:link], scheme: :secondary, size: :small) do |btn|
+                  btn.with_trailing_visual_icon(icon: :arrow_right)
+                  "Go"
+                end %>
+              </div>
+            <% end %>
           <% end %>
-          <%= link_to "(go!)", task[:link] %></li>
-      <% end %>
-    </ul>
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
-</ul>
+</div>

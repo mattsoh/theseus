@@ -1,26 +1,23 @@
-<% orders.each do |order| %>
-  <article class="card mb-4">
-    <div class="card-header">
-      <h3 class="mb-0">
-        <%= link_to order.hc_id, order %> – <%= order.user_facing_title %>
-        <%= render 'warehouse/orders/status_badge', order: order %>
-      </h3>
-    </div>
-    <div class="card-body">
-      <div class="grid md:grid-cols-2 gap-4 mb-4">
-        <div>
-          <span class="text-gray-500">Recipient:</span>
-          <%= order.address.name_line %> (<%= order.recipient_email %>)
-        </div>
-        <div>
-          <span class="text-gray-500">Tags:</span>
-          <%= render 'shared/tags', tags: order.tags %>
+<%= render Primer::Beta::BorderBox.new do |box| %>
+  <% orders.each do |order| %>
+    <% box.with_row do %>
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+        <div style="flex: 1; min-width: 0;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <%= link_to order.hc_id, order, style: "color: var(--fgColor-accent); font-weight: 500; font-family: var(--fontStack-monospace);" %>
+            <span style="font-size: 14px;"><%= order.user_facing_title %></span>
+            <%= render 'warehouse/orders/status_badge', order: order %>
+          </div>
+          <div style="font-size: 13px; color: var(--fgColor-muted);">
+            <%= order.address.name_line %> (<%= order.recipient_email %>)
+          </div>
+          <% if order.tags.any? %>
+            <div style="margin-top: 4px;">
+              <%= render 'shared/tags', tags: order.tags %>
+            </div>
+          <% end %>
         </div>
       </div>
-      <div>
-        <span class="text-gray-500">Contents:</span>
-        <%= render 'warehouse/orders/line_items', order: order %>
-      </div>
-    </div>
-  </article>
+    <% end %>
+  <% end %>
 <% end %>
