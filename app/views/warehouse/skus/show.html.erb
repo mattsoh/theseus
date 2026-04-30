@@ -46,34 +46,34 @@
     </div>
   </div>
 
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
-    <div style="padding: 16px; text-align: center; background: var(--bgColor-success-muted); border: 1px solid var(--borderColor-success-muted); border-radius: 6px;">
-      <div style="font-size: 32px; font-weight: 700; line-height: 1;"><%= @warehouse_sku.in_stock || "—" %></div>
-      <div style="font-size: 12px; color: var(--fgColor-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px;">In Stock</div>
+  <div class="stat-grid" style="margin-bottom: 24px;">
+    <div class="stat-card" style="background: var(--bgColor-success-muted); border-color: var(--borderColor-success-muted);">
+      <div class="stat-value"><%= @warehouse_sku.in_stock || "—" %></div>
+      <div class="stat-label">In Stock</div>
     </div>
-    <div style="padding: 16px; text-align: center; background: var(--bgColor-attention-muted); border: 1px solid var(--borderColor-attention-muted); border-radius: 6px;">
-      <div style="font-size: 32px; font-weight: 700; line-height: 1;"><%= @warehouse_sku.inbound || "—" %></div>
-      <div style="font-size: 12px; color: var(--fgColor-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px;">Inbound</div>
+    <div class="stat-card" style="background: var(--bgColor-attention-muted); border-color: var(--borderColor-attention-muted);">
+      <div class="stat-value"><%= @warehouse_sku.inbound || "—" %></div>
+      <div class="stat-label">Inbound</div>
     </div>
-    <div style="padding: 16px; text-align: center; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px;">
-      <div style="font-size: 32px; font-weight: 700; line-height: 1;"><%= number_to_currency(@warehouse_sku.declared_unit_cost) %></div>
-      <div style="font-size: 12px; color: var(--fgColor-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px;">Unit Cost</div>
+    <div class="stat-card">
+      <div class="stat-value"><%= number_to_currency(@warehouse_sku.declared_unit_cost) %></div>
+      <div class="stat-label">Unit Cost</div>
     </div>
   </div>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_row do %>
-        <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Category</span><span><%= @warehouse_sku.category&.humanize || "—" %></span></div>
+        <div class="kv-row"><span class="kv-label">Category</span><span><%= @warehouse_sku.category&.humanize || "—" %></span></div>
       <% end
       if @warehouse_sku.description.present?
         box.with_row do %>
-          <div><div style="color: var(--fgColor-muted); margin-bottom: 4px;">Description</div><div><%= @warehouse_sku.description %></div></div>
+          <div><div class="kv-label" style="margin-bottom: 4px;">Description</div><div><%= @warehouse_sku.description %></div></div>
         <% end
       end
       if @warehouse_sku.customs_description.present?
         box.with_row do %>
-          <div><div style="color: var(--fgColor-muted); margin-bottom: 4px;">Customs</div><div><%= @warehouse_sku.customs_description %></div></div>
+          <div><div class="kv-label" style="margin-bottom: 4px;">Customs</div><div><%= @warehouse_sku.customs_description %></div></div>
         <% end
       end
     end %>
@@ -81,26 +81,26 @@
     <%= render Primer::Beta::BorderBox.new do |box|
       if @warehouse_sku.country_of_origin.present?
         box.with_row do %>
-          <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Country of Origin</span><span><%= @warehouse_sku.country_of_origin %></span></div>
+          <div class="kv-row"><span class="kv-label">Country of Origin</span><span><%= @warehouse_sku.country_of_origin %></span></div>
         <% end
       end
       if @warehouse_sku.hs_code.present?
         box.with_row do %>
-          <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">HS Code</span><code><%= @warehouse_sku.hs_code %></code></div>
+          <div class="kv-row"><span class="kv-label">HS Code</span><code><%= @warehouse_sku.hs_code %></code></div>
         <% end
       end
       if @warehouse_sku.average_po_cost.present?
         box.with_row do %>
-          <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Avg PO Cost</span><span><%= number_to_currency(@warehouse_sku.average_po_cost) %></span></div>
+          <div class="kv-row"><span class="kv-label">Avg PO Cost</span><span><%= number_to_currency(@warehouse_sku.average_po_cost) %></span></div>
         <% end
       end
       if @warehouse_sku.actual_cost_to_hc.present?
         box.with_row do %>
-          <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Actual Cost to HC</span><span><%= number_to_currency(@warehouse_sku.actual_cost_to_hc) %></span></div>
+          <div class="kv-row"><span class="kv-label">Actual Cost to HC</span><span><%= number_to_currency(@warehouse_sku.actual_cost_to_hc) %></span></div>
         <% end
       end
       box.with_row do %>
-        <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Zenventory ID</span><code><%= @warehouse_sku.zenventory_id || "—" %></code></div>
+        <div class="kv-row"><span class="kv-label">Zenventory ID</span><code><%= @warehouse_sku.zenventory_id || "—" %></code></div>
       <% end
     end %>
   </div>
@@ -112,29 +112,23 @@
         @recent_orders.each do |order|
           line_item = order.line_items.find_by(sku_id: @warehouse_sku.id)
           box.with_row do %>
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
-              <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0;">
-                <%= link_to order.hc_id, warehouse_order_path(order), style: "font-family: var(--fontStack-monospace); color: var(--fgColor-accent); font-weight: 500;" %>
+            <div class="order-row">
+              <div class="order-row-left">
+                <%= link_to order.hc_id, warehouse_order_path(order), style: "font-family: var(--fontStack-monospace); font-weight: 500;" %>
                 <% status_scheme = { "draft" => :secondary, "dispatched" => :accent, "mailed" => :success, "canceled" => :danger, "errored" => :danger }[order.aasm_state] || :secondary %>
                 <%= render(Primer::Beta::Label.new(scheme: status_scheme, size: :medium)) { order.humanized_state } %>
-                <span style="color: var(--fgColor-muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;" title="<%= order.address&.name_line %>"><%= order.address&.name_line %></span>
+                <span class="order-row-name" title="<%= order.address&.name_line %>"><%= order.address&.name_line %></span>
               </div>
-              <div style="display: flex; align-items: center; gap: 16px;">
-                <div style="text-align: right; min-width: 80px;">
-                  <div style="font-weight: 500;"><%= line_item&.quantity || 0 %> units</div>
-                </div>
+              <div class="order-row-right">
+                <span class="order-row-qty"><%= line_item&.quantity || 0 %> units</span>
                 <% if order.tracking_number.present? %>
-                  <div style="min-width: 100px;">
-                    <%= link_to order.tracking_url, target: "_blank", style: "font-size: 12px; color: var(--fgColor-accent);" do %>
-                      <%= order.pretty_via %> ↗
-                    <% end %>
-                  </div>
+                  <%= link_to order.tracking_url, target: "_blank", style: "font-size: 12px; min-width: 100px;" do %>
+                    <%= order.pretty_via %> ↗
+                  <% end %>
                 <% else %>
-                  <div style="min-width: 100px; font-size: 12px; color: var(--fgColor-muted);">No tracking</div>
+                  <span style="min-width: 100px; font-size: 12px; color: var(--fgColor-muted);">No tracking</span>
                 <% end %>
-                <div style="text-align: right; min-width: 80px; color: var(--fgColor-muted); font-size: 13px;">
-                  <%= time_ago_in_words(order.created_at) %> ago
-                </div>
+                <span class="order-row-age"><%= time_ago_in_words(order.created_at) %> ago</span>
                 <% admin_tool do %>
                   <%= render Primer::Alpha::ActionMenu.new do |menu|
                     menu.with_show_button(icon: :"kebab-horizontal", "aria-label": "Actions", scheme: :invisible)
@@ -164,13 +158,11 @@
         end
       end %>
     <% else %>
-      <div style="border: 1px solid var(--borderColor-default); border-radius: 6px;">
-        <%= render Primer::Beta::Blankslate.new do |bs|
-          bs.with_visual_icon(icon: :package)
-          bs.with_heading(tag: :h3) { "No orders yet" }
-          bs.with_description { "Theseus orders containing this SKU will appear here." }
-        end %>
-      </div>
+      <%= render Primer::Beta::Blankslate.new(border: true) do |bs|
+        bs.with_visual_icon(icon: :package)
+        bs.with_heading(tag: :h3) { "No orders yet" }
+        bs.with_description { "Theseus orders containing this SKU will appear here." }
+      end %>
     <% end %>
   </div>
 
@@ -181,21 +173,19 @@
         @recent_purchase_orders.each do |po|
           line_item = po.line_items.find_by(sku_id: @warehouse_sku.id)
           box.with_row do %>
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
-              <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0;">
-                <%= link_to po.order_number.presence || "##{po.id}", warehouse_purchase_order_path(po), style: "font-family: var(--fontStack-monospace); color: var(--fgColor-accent); font-weight: 500;" %>
+            <div class="order-row">
+              <div class="order-row-left">
+                <%= link_to po.order_number.presence || "##{po.id}", warehouse_purchase_order_path(po), style: "font-family: var(--fontStack-monospace); font-weight: 500;" %>
                 <% status_scheme = { "draft" => :secondary, "open" => :accent, "completed" => :success, "deleted" => :danger }[po.status] || :secondary %>
                 <%= render(Primer::Beta::Label.new(scheme: status_scheme, size: :medium)) { po.humanized_state } %>
                 <span style="color: var(--fgColor-muted); font-size: 13px;"><%= po.supplier_name %></span>
               </div>
-              <div style="display: flex; align-items: center; gap: 16px;">
+              <div class="order-row-right">
                 <div style="text-align: right; min-width: 100px;">
                   <div style="font-weight: 500;"><%= line_item&.quantity || 0 %> units</div>
                   <div style="font-size: 12px; color: var(--fgColor-muted);"><%= number_to_currency(line_item&.unit_cost) %>/ea</div>
                 </div>
-                <div style="text-align: right; min-width: 80px; color: var(--fgColor-muted); font-size: 13px;">
-                  <%= time_ago_in_words(po.created_at) %> ago
-                </div>
+                <span class="order-row-age"><%= time_ago_in_words(po.created_at) %> ago</span>
                 <% admin_tool do %>
                   <%= render Primer::Alpha::ActionMenu.new do |menu|
                     menu.with_show_button(icon: :"kebab-horizontal", "aria-label": "Actions", scheme: :invisible)
@@ -220,19 +210,35 @@
         end
       end %>
     <% else %>
-      <div style="border: 1px solid var(--borderColor-default); border-radius: 6px;">
-        <%= render Primer::Beta::Blankslate.new do |bs|
-          bs.with_visual_icon(icon: :archive)
-          bs.with_heading(tag: :h3) { "No purchase orders yet" }
-          bs.with_description { "Purchase orders for this SKU will appear here." }
-        end %>
-      </div>
+      <%= render Primer::Beta::Blankslate.new(border: true) do |bs|
+        bs.with_visual_icon(icon: :archive)
+        bs.with_heading(tag: :h3) { "No purchase orders yet" }
+        bs.with_description { "Purchase orders for this SKU will appear here." }
+      end %>
     <% end %>
   </div>
 
   <div style="margin-top: 32px;">
-    <%= link_to "← Back to SKUs", warehouse_skus_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+    <%= render Primer::Beta::Button.new(tag: :a, href: warehouse_skus_path, scheme: :invisible, size: :small) do |btn|
+      btn.with_leading_visual_icon(icon: :"arrow-left")
+      "Back to SKUs"
+    end %>
   </div>
 
   <%= render partial: "admin_inspector", locals: { record: @warehouse_sku } %>
 </div>
+
+<style>
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .stat-card { padding: 16px; text-align: center; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px; }
+  .stat-value { font-size: 32px; font-weight: 700; line-height: 1; }
+  .stat-label { font-size: 12px; color: var(--fgColor-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .kv-row { display: flex; justify-content: space-between; align-items: center; }
+  .kv-label { color: var(--fgColor-muted); }
+  .order-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .order-row-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+  .order-row-right { display: flex; align-items: center; gap: 16px; }
+  .order-row-name { color: var(--fgColor-muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+  .order-row-qty { font-weight: 500; min-width: 80px; text-align: right; }
+  .order-row-age { min-width: 80px; text-align: right; color: var(--fgColor-muted); font-size: 13px; }
+</style>

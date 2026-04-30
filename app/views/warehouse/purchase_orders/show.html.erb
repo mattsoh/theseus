@@ -39,57 +39,57 @@
     </div>
   </div>
 
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
-    <div style="padding: 16px; text-align: center; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px;">
-      <div style="font-size: 32px; font-weight: 700; line-height: 1;"><%= @purchase_order.line_items.sum(&:quantity) %></div>
-      <div style="font-size: 12px; color: var(--fgColor-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px;">Total Units</div>
+  <div class="stat-grid" style="margin-bottom: 24px;">
+    <div class="stat-card">
+      <div class="stat-value"><%= @purchase_order.line_items.sum(&:quantity) %></div>
+      <div class="stat-label">Total Units</div>
     </div>
-    <div style="padding: 16px; text-align: center; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px;">
-      <div style="font-size: 32px; font-weight: 700; line-height: 1;"><%= number_to_currency(@purchase_order.total_cost) %></div>
-      <div style="font-size: 12px; color: var(--fgColor-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px;">Total Cost</div>
+    <div class="stat-card">
+      <div class="stat-value"><%= number_to_currency(@purchase_order.total_cost) %></div>
+      <div class="stat-label">Total Cost</div>
     </div>
-    <div style="padding: 16px; text-align: center; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px;">
-      <div style="font-size: 32px; font-weight: 700; line-height: 1;"><%= @purchase_order.line_items.count %></div>
-      <div style="font-size: 12px; color: var(--fgColor-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px;">Line Items</div>
+    <div class="stat-card">
+      <div class="stat-value"><%= @purchase_order.line_items.count %></div>
+      <div class="stat-label">Line Items</div>
     </div>
   </div>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_row do %>
-        <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Supplier</span><span><%= @purchase_order.supplier_name %></span></div>
+        <div class="kv-row"><span class="kv-label">Supplier</span><span><%= @purchase_order.supplier_name %></span></div>
       <% end
       if @purchase_order.supplier_id.present?
         box.with_row do %>
-          <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Supplier ID</span><code><%= @purchase_order.supplier_id %></code></div>
+          <div class="kv-row"><span class="kv-label">Supplier ID</span><code><%= @purchase_order.supplier_id %></code></div>
         <% end
       end
       if @purchase_order.required_by_date.present?
         box.with_row do %>
-          <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Required By</span><span><%= @purchase_order.required_by_date.strftime("%B %d, %Y") %></span></div>
+          <div class="kv-row"><span class="kv-label">Required By</span><span><%= @purchase_order.required_by_date.strftime("%B %d, %Y") %></span></div>
         <% end
       end
       if @purchase_order.notes.present?
         box.with_row do %>
-          <div><div style="color: var(--fgColor-muted); margin-bottom: 4px;">Notes</div><div><%= simple_format(@purchase_order.notes) %></div></div>
+          <div><div class="kv-label" style="margin-bottom: 4px;">Notes</div><div><%= simple_format(@purchase_order.notes) %></div></div>
         <% end
       end
     end %>
 
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_row do %>
-        <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Created By</span><span><%= link_to @purchase_order.user&.email, @purchase_order.user, style: "color: var(--fgColor-accent);" %></span></div>
+        <div class="kv-row"><span class="kv-label">Created By</span><span><%= link_to @purchase_order.user&.email, @purchase_order.user %></span></div>
       <% end
       box.with_row do %>
-        <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Created At</span><span><%= @purchase_order.created_at.strftime("%B %d, %Y at %I:%M %p") %></span></div>
+        <div class="kv-row"><span class="kv-label">Created At</span><span><%= @purchase_order.created_at.strftime("%B %d, %Y at %I:%M %p") %></span></div>
       <% end
       if @purchase_order.order_number.present?
         box.with_row do %>
-          <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Order Number</span><code><%= @purchase_order.order_number %></code></div>
+          <div class="kv-row"><span class="kv-label">Order Number</span><code><%= @purchase_order.order_number %></code></div>
         <% end
       end
       box.with_row do %>
-        <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Zenventory ID</span><code><%= @purchase_order.zenventory_id || "—" %></code></div>
+        <div class="kv-row"><span class="kv-label">Zenventory ID</span><code><%= @purchase_order.zenventory_id || "—" %></code></div>
       <% end
     end %>
   </div>
@@ -98,36 +98,32 @@
     <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Line Items</h2>
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_header do %>
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-          <span style="font-weight: 600;">SKU</span>
-          <div style="display: flex; gap: 48px;">
-            <span style="font-weight: 600; min-width: 80px; text-align: right;">Quantity</span>
-            <span style="font-weight: 600; min-width: 80px; text-align: right;">Unit Cost</span>
-            <span style="font-weight: 600; min-width: 100px; text-align: right;">Line Total</span>
-          </div>
+        <div class="li-row">
+          <span class="li-col-name" style="font-weight: 600;">SKU</span>
+          <span class="li-col-num" style="font-weight: 600;">Quantity</span>
+          <span class="li-col-num" style="font-weight: 600;">Unit Cost</span>
+          <span class="li-col-num" style="font-weight: 600;">Line Total</span>
         </div>
       <% end
 
       @purchase_order.line_items.each do |li|
         box.with_row do %>
-          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <div>
-              <%= link_to li.sku.name, warehouse_sku_path(li.sku), style: "color: var(--fgColor-accent); font-weight: 500;" %>
+          <div class="li-row">
+            <span class="li-col-name">
+              <%= link_to li.sku.name, warehouse_sku_path(li.sku), style: "font-weight: 500;" %>
               <span style="color: var(--fgColor-muted); font-size: 13px; margin-left: 8px; font-family: var(--fontStack-monospace);"><%= li.sku.sku %></span>
-            </div>
-            <div style="display: flex; gap: 48px;">
-              <span style="min-width: 80px; text-align: right; font-weight: 500;"><%= li.quantity %></span>
-              <span style="min-width: 80px; text-align: right; color: var(--fgColor-muted);"><%= number_to_currency(li.unit_cost) %></span>
-              <span style="min-width: 100px; text-align: right; font-weight: 500;"><%= number_to_currency((li.unit_cost || 0) * li.quantity) %></span>
-            </div>
+            </span>
+            <span class="li-col-num" style="font-weight: 500;"><%= li.quantity %></span>
+            <span class="li-col-num" style="color: var(--fgColor-muted);"><%= number_to_currency(li.unit_cost) %></span>
+            <span class="li-col-num" style="font-weight: 500;"><%= number_to_currency((li.unit_cost || 0) * li.quantity) %></span>
           </div>
         <% end
       end
 
       box.with_footer do %>
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-          <span style="font-weight: 600;">Total</span>
-          <span style="font-weight: 700; font-size: 16px;"><%= number_to_currency(@purchase_order.total_cost) %></span>
+        <div class="kv-row" style="font-weight: 600;">
+          <span>Total</span>
+          <span style="font-size: 16px;"><%= number_to_currency(@purchase_order.total_cost) %></span>
         </div>
       <% end
     end %>
@@ -159,8 +155,23 @@
   </div>
 
   <div style="margin-top: 32px;">
-    <%= link_to "← Back to Purchase Orders", warehouse_purchase_orders_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+    <%= render Primer::Beta::Button.new(tag: :a, href: warehouse_purchase_orders_path, scheme: :invisible, size: :small) do |btn|
+      btn.with_leading_visual_icon(icon: :"arrow-left")
+      "Back to Purchase Orders"
+    end %>
   </div>
 
   <%= render partial: "admin_inspector", locals: { record: @purchase_order } %>
 </div>
+
+<style>
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .stat-card { padding: 16px; text-align: center; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px; }
+  .stat-value { font-size: 32px; font-weight: 700; line-height: 1; }
+  .stat-label { font-size: 12px; color: var(--fgColor-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .kv-row { display: flex; justify-content: space-between; align-items: center; }
+  .kv-label { color: var(--fgColor-muted); }
+  .li-row { display: flex; align-items: center; width: 100%; gap: 16px; }
+  .li-col-name { flex: 1; min-width: 0; }
+  .li-col-num { min-width: 80px; text-align: right; flex-shrink: 0; }
+</style>
