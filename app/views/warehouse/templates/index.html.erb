@@ -1,29 +1,61 @@
-<% content_for :title, "Templates" %>
+<% content_for :title, "Order Templates" %>
 
-<h1>Order Templates</h1>
+<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <div>
+      <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Order Templates</h1>
+      <p style="color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;">Reusable order configurations</p>
+    </div>
+    <%= render Primer::Beta::Button.new(tag: :a, href: new_warehouse_template_path, scheme: :primary) do |btn|
+      btn.with_leading_visual_icon(icon: :plus)
+      "New Template"
+    end %>
+  </div>
 
-<div class="actions">
-  <%= create_button new_warehouse_template_path, "create template" %>
+  <% if current_user&.warehouse_templates&.any? %>
+    <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Your Templates</h2>
+    <%= render Primer::Beta::BorderBox.new(mb: 4) do |box|
+      current_user.warehouse_templates.each do |template|
+        box.with_row do %>
+          <a href="<%= warehouse_template_path(template) %>" style="display: flex; justify-content: space-between; align-items: center; width: 100%; text-decoration: none; color: inherit;">
+            <div>
+              <span style="font-weight: 600;"><%= template.name %></span>
+              <span style="color: var(--fgColor-muted); font-size: 13px; margin-left: 8px;"><%= template.line_items.count %> items</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <% if template.public %>
+                <%= render(Primer::Beta::Label.new(scheme: :accent, size: :small)) { "Shared" } %>
+              <% end %>
+              <%= render Components::Shared::PublicId.new(value: template.public_id) %>
+            </div>
+          </a>
+        <% end
+      end
+    end %>
+  <% end %>
+
+  <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Public Templates</h2>
+  <% if Warehouse::Template.shared.any? %>
+    <%= render Primer::Beta::BorderBox.new do |box|
+      Warehouse::Template.shared.each do |template|
+        box.with_row do %>
+          <a href="<%= warehouse_template_path(template) %>" style="display: flex; justify-content: space-between; align-items: center; width: 100%; text-decoration: none; color: inherit;">
+            <div>
+              <span style="font-weight: 600;"><%= template.name %></span>
+              <span style="color: var(--fgColor-muted); font-size: 13px; margin-left: 8px;"><%= template.line_items.count %> items</span>
+            </div>
+            <div style="font-size: 13px; color: var(--fgColor-muted);">
+              by <%= template.user&.username || "unknown" %>
+            </div>
+          </a>
+        <% end
+      end
+    end %>
+  <% else %>
+    <%= render Primer::Beta::Blankslate.new(border: true) do |bs|
+      bs.with_visual_icon(icon: :file)
+      bs.with_heading(tag: :h3) { "No public templates yet" }
+      bs.with_description { "Shared templates from other users will appear here." }
+    end %>
+  <% end %>
 </div>
-
-<h2>Your templates:</h2>
-<div id="your_templates">
-  <% current_user&.warehouse_templates&.each do |warehouse_template| %>
-    <%= render warehouse_template %>
-    <p>
-      <%= link_to "view this template", warehouse_template %>
-    </p>
-  <% end.presence || "none yet!" %>
-</div>
-
-<h2>Public templates:</h2>
-<div id="public_templates">
-  <% Warehouse::Template.shared.each do |warehouse_template| %>
-    <%= render warehouse_template %>
-    <p>
-      <%= link_to "view this template", warehouse_template %>
-    </p>
-  <% end.presence || "none yet!" %>
-</div>
-
-<%= link_to "create template!", new_warehouse_template_path %>

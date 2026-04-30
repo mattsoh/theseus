@@ -1,12 +1,14 @@
-<% content_for :title, "Editing template" %>
+<% content_for :title, "Edit Template" %>
 
-<h1>Editing template</h1>
+<div style="max-width: 800px; margin: 0 auto; padding: 24px;">
+  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Edit Template</h1>
+    <span style="color: var(--fgColor-muted);"><%= @warehouse_template.name %></span>
+  </div>
 
-<%= render "form", warehouse_template: @warehouse_template %>
+  <%= render "form", warehouse_template: @warehouse_template %>
 
-<br>
-
-<div>
-  <%= link_to "Show this template", @warehouse_template %> |
-  <%= link_to "Back to templates", warehouse_templates_path %>
+  <div style="margin-top: 32px;">
+    <%= link_to "← Back to template", warehouse_template_path(@warehouse_template), style: "color: var(--fgColor-muted); text-decoration: none;" %>
+  </div>
 </div>

@@ -15,10 +15,14 @@
       <% header.with_title(tag: :h2) do %>Template Details<% end %>
     <% end %>
     <% box.with_body do %>
-      <div class="mb-3">
-        <%= form.label :name, "Template Name", class: "FormControl-label d-block mb-1" %>
-        <%= form.text_field :name, class: "FormControl-input width-full", required: true %>
-      </div>
+      <%= render Primer::Alpha::TextField.new(
+        name: "warehouse_template[name]",
+        label: "Template name",
+        value: warehouse_template.name,
+        full_width: true,
+        required: true,
+        mb: 3
+      ) %>
 
       <%= render Primer::Alpha::CheckBox.new(
         name: "warehouse_template[public]",
@@ -42,7 +46,7 @@
     <% end %>
   <% end %>
 
-  <div class="d-flex gap-2">
+  <div style="display: flex; gap: 8px;">
     <%= render Primer::Beta::Button.new(tag: :a, href: warehouse_templates_path, scheme: :secondary) do
       "Cancel"
     end %>

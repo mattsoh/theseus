@@ -1,11 +1,11 @@
-<% content_for :title, "New template" %>
+<% content_for :title, "New Template" %>
 
-<h1>New template</h1>
+<div style="max-width: 800px; margin: 0 auto; padding: 24px;">
+  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px 0;">New Template</h1>
 
-<%= render "form", warehouse_template: @warehouse_template %>
+  <%= render "form", warehouse_template: @warehouse_template %>
 
-<br>
-
-<div>
-  <%= link_to "Back to templates", warehouse_templates_path %>
+  <div style="margin-top: 32px;">
+    <%= link_to "← Back to templates", warehouse_templates_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+  </div>
 </div>
