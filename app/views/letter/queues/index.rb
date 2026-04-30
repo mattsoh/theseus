@@ -33,7 +33,7 @@ class Views::Letter::Queues::Index < Views::Base
 
       div(style: "display: flex; gap: 8px; align-items: center;") do
         admin_tool do
-          button_to mark_printed_instants_mailed_letter_queues_path, method: :post, class: "btn btn-danger btn-sm" do
+          button_to mark_printed_instants_mailed_letter_queues_path, method: :post, style: "padding: 3px 12px; font-size: 12px; border: 1px solid var(--borderColor-danger-emphasis); border-radius: 6px; background: var(--bgColor-danger-emphasis); color: var(--fgColor-onEmphasis); cursor: pointer;" do
             "Mark printed instants mailed"
           end
         end
@@ -105,7 +105,7 @@ class Views::Letter::Queues::Index < Views::Base
 
   def queue_grid_section
     if letter_queues.any?
-      div(class: "queue-grid") do
+      div(style: "display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-bottom: 24px;") do
         sorted_queues.each { |q| queue_card(q) }
       end
     else

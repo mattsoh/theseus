@@ -38,9 +38,9 @@ class Views::Letter::Batches::Process < Views::Base
             )
 
             # Mailing Date
-            div(class: "FormControl mb-3") do
-              label(class: "FormControl-label", for: "batch_letter_mailing_date") { "Mailing Date" }
-              p(class: "FormControl-caption mb-1") { "Select the date you plan to mail these letters." }
+            div(style: "margin-bottom: 16px;") do
+              label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;", for: "batch_letter_mailing_date") { "Mailing Date" }
+              p(style: "color: var(--fgColor-muted); font-size: 12px; margin-bottom: 4px;") { "Select the date you plan to mail these letters." }
               input(
                 type: "date",
                 name: "batch[letter_mailing_date]",
@@ -48,7 +48,7 @@ class Views::Letter::Batches::Process < Views::Base
                 value: (@batch.letter_mailing_date || @batch.default_mailing_date).iso8601,
                 min: Date.current.iso8601,
                 required: true,
-                class: "form-control width-full"
+                style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
               )
             end
           end
@@ -60,7 +60,7 @@ class Views::Letter::Batches::Process < Views::Base
             header.with_title(tag: :h3) { "Label Templates" }
           end
           box.with_body do
-            p(class: "color-fg-muted f6 mb-2") { "Select multiple templates to cycle through them, or just one for all labels." }
+            p(style: "color: var(--fgColor-muted); font-size: 12px; margin-bottom: 8px;") { "Select multiple templates to cycle through them, or just one for all labels." }
             template_select
           end
         end
@@ -71,7 +71,7 @@ class Views::Letter::Batches::Process < Views::Base
             header.with_title(tag: :h3) { "Options" }
           end
           box.with_body do
-            label(class: "d-flex flex-items-center gap-2") do
+            label(style: "display: flex; align-items: center; gap: 8px; cursor: pointer;") do
               input(type: "checkbox", name: "batch[include_qr_code]", value: "1", checked: true)
               span { "Include QR code on labels" }
             end
@@ -100,7 +100,7 @@ class Views::Letter::Batches::Process < Views::Base
         end
 
         # Submit
-        div(class: "d-flex gap-2") do
+        div(style: "display: flex; gap: 8px;") do
           render Primer::Beta::Button.new(tag: :a, href: letter_batch_path(@batch), scheme: :secondary) do
             "Cancel"
           end
@@ -126,8 +126,7 @@ class Views::Letter::Batches::Process < Views::Base
       id: "batch_template_cycle",
       multiple: true,
       size: [8, (standard_templates.length + envelope_templates.length + 2)].min,
-      class: "form-control width-full",
-      style: "min-height: 120px;"
+      style: "width: 100%; min-height: 120px; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
     ) do
       if standard_templates.present?
         optgroup(label: "Standard 4x6 Labels") do
@@ -150,12 +149,12 @@ class Views::Letter::Batches::Process < Views::Base
     div(style: "display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 16px;") do
       div do
         h4(style: "font-size: 14px; font-weight: 600; margin: 0 0 8px;") { "US Mail" }
-        div(class: "d-flex flex-column gap-2") do
-          label(class: "d-flex flex-items-center gap-2") do
+        div(style: "display: flex; flex-direction: column; gap: 8px;") do
+          label(style: "display: flex; align-items: center; gap: 8px; cursor: pointer;") do
             input(type: "radio", name: "batch[us_postage_type]", value: "stamps", checked: true)
             span { "Stamps" }
           end
-          label(class: "d-flex flex-items-center gap-2") do
+          label(style: "display: flex; align-items: center; gap: 8px; cursor: pointer;") do
             input(type: "radio", name: "batch[us_postage_type]", value: "indicia")
             span { "Indicia (Metered)" }
           end
@@ -163,12 +162,12 @@ class Views::Letter::Batches::Process < Views::Base
       end
       div do
         h4(style: "font-size: 14px; font-weight: 600; margin: 0 0 8px;") { "International Mail" }
-        div(class: "d-flex flex-column gap-2") do
-          label(class: "d-flex flex-items-center gap-2") do
+        div(style: "display: flex; flex-direction: column; gap: 8px;") do
+          label(style: "display: flex; align-items: center; gap: 8px; cursor: pointer;") do
             input(type: "radio", name: "batch[intl_postage_type]", value: "stamps", checked: true)
             span { "Stamps" }
           end
-          label(class: "d-flex flex-items-center gap-2") do
+          label(style: "display: flex; align-items: center; gap: 8px; cursor: pointer;") do
             input(type: "radio", name: "batch[intl_postage_type]", value: "indicia")
             span { "Indicia (Metered)" }
           end
@@ -180,13 +179,13 @@ class Views::Letter::Batches::Process < Views::Base
   def cost_info
     div(id: "cost-info", style: "padding: 12px; background: var(--bgColor-muted); border-radius: 6px;") do
       div(style: "display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; font-size: 13px;") do
-        span(class: "color-fg-muted") { "Total postage cost:" }
+        span(style: "color: var(--fgColor-muted);") { "Total postage cost:" }
         span(id: "total_postage_cost", style: "font-weight: 600;") { number_to_currency(@batch.postage_cost) }
 
-        span(class: "color-fg-muted") { "US cost difference:" }
+        span(style: "color: var(--fgColor-muted);") { "US cost difference:" }
         span(id: "us_cost_difference") { number_to_currency(@batch.postage_cost_difference[:us]) }
 
-        span(class: "color-fg-muted") { "International cost difference:" }
+        span(style: "color: var(--fgColor-muted);") { "International cost difference:" }
         span(id: "intl_cost_difference") { number_to_currency(@batch.postage_cost_difference[:intl]) }
       end
       div(id: "cost_explanation", style: "margin-top: 8px; font-size: 12px; color: var(--fgColor-muted);") do
@@ -201,13 +200,13 @@ class Views::Letter::Batches::Process < Views::Base
   end
 
   def payment_fields
-    div(class: "FormControl mb-3") do
-      label(class: "FormControl-label", for: "batch_usps_payment_account_id") { "USPS Payment Account" }
-      p(class: "FormControl-caption mb-1") { "Required only when using indicia." }
+    div(style: "margin-bottom: 16px;") do
+      label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;", for: "batch_usps_payment_account_id") { "USPS Payment Account" }
+      p(style: "color: var(--fgColor-muted); font-size: 12px; margin-bottom: 4px;") { "Required only when using indicia." }
       select(
         name: "batch[usps_payment_account_id]",
         id: "batch_usps_payment_account_id",
-        class: "form-control width-full"
+        style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
       ) do
         option(value: "") { "Select a payment account..." }
         USPS::PaymentAccount.all.each do |pa|
@@ -217,13 +216,13 @@ class Views::Letter::Batches::Process < Views::Base
     end
 
     if current_user.hcb_payment_accounts.any?
-      div(class: "FormControl") do
-        label(class: "FormControl-label", for: "batch_hcb_payment_account_id") { "HCB Payment Account" }
-        p(class: "FormControl-caption mb-1") { "Required for indicia purchases." }
+      div do
+        label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;", for: "batch_hcb_payment_account_id") { "HCB Payment Account" }
+        p(style: "color: var(--fgColor-muted); font-size: 12px; margin-bottom: 4px;") { "Required for indicia purchases." }
         select(
           name: "batch[hcb_payment_account_id]",
           id: "batch_hcb_payment_account_id",
-          class: "form-control width-full"
+          style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
         ) do
           option(value: "") { "Select an HCB account..." }
           current_user.hcb_payment_accounts.each do |hcb|
