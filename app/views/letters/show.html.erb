@@ -1,260 +1,325 @@
 <% content_for :title, "#{@letter.user_facing_title || 'Letter'} #{@letter.public_id}" %>
 
-<div class="container">
-  <header class="page-header mb-6">
-    <div class="flex items-center gap-4">
-      <%= link_to "← Back", letters_path, class: "text-gray-500 hover:text-gray-700" %>
-      <div>
-        <h1 class="flex items-center gap-3">
+<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
+        <h1 style="font-size: 24px; font-weight: 600; margin: 0;">
           <% if @letter.user_facing_title.present? %>
             <%= @letter.user_facing_title %>
           <% else %>
             Letter to <%= @letter.address.name_line %>
           <% end %>
-          <%= letter_status_badge(@letter.aasm_state) %>
         </h1>
-        <%= render Components::Shared::PublicId.new(value: @letter.public_id) %>
+        <% status_scheme = { pending: :secondary, printed: :accent, mailed: :success, received: :done, canceled: :attention, errored: :danger }[@letter.aasm_state.to_sym] || :secondary %>
+        <%= render(Primer::Beta::Label.new(scheme: status_scheme, size: :large)) { @letter.aasm_state.humanize } %>
       </div>
+      <p style="color: var(--fgColor-muted); margin: 0; font-size: 14px;">
+        <%= render Components::Shared::PublicId.new(value: @letter.public_id) %>
+      </p>
     </div>
-    <div class="actions flex gap-2">
-      <%= link_to edit_letter_path(@letter), class: "btn btn-small" do %>
-        Edit
-      <% end %>
-      <%= link_to public_letter_path(@letter), target: "_blank", class: "btn btn-small" do %>
-        Public Page
-      <% end %>
-      <%= button_to letter_path(@letter), method: :delete, class: "btn danger btn-small", data: { confirm: "Delete this letter?" } do %>
-        Delete
-      <% end %>
-    </div>
-  </header>
 
-  <div class="grid md:grid-cols-12 gap-6">
-    <%# Main content %>
-    <div class="md:col-span-8 space-y-6">
-      <%# Addresses %>
-      <article>
-        <header><h2>Addresses</h2></header>
-        <div class="p-4">
-          <%= render 'shared/tags', tags: @letter.tags %>
-          <div class="grid md:grid-cols-2 gap-4">
-            <div>
-              <div class="text-sm text-gray-500 mb-1">From</div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <%= render Primer::Beta::Button.new(tag: :a, href: edit_letter_path(@letter), scheme: :secondary, size: :medium) do |btn|
+        btn.with_leading_visual_icon(icon: :pencil)
+        "Edit"
+      end %>
+      <%= render Primer::Beta::Button.new(tag: :a, href: public_letter_path(@letter), scheme: :secondary, size: :medium, target: "_blank") do |btn|
+        btn.with_leading_visual_icon(icon: :"link-external")
+        "Public Page"
+      end %>
+      <%= form_with url: letter_path(@letter), method: :delete, data: { turbo_confirm: "Delete this letter?" }, style: "display: inline;" do %>
+        <%= render Primer::Beta::Button.new(type: :submit, scheme: :danger, size: :medium) do |btn|
+          btn.with_leading_visual_icon(icon: :trash)
+          "Delete"
+        end %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @letter.tags.present? %>
+    <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 24px;">
+      <% @letter.tags.compact_blank.each do |tag| %>
+        <%= render(Primer::Beta::Label.new(tag: :a, href: tag_stats_path(tag), scheme: :secondary)) { tag } %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+    <div>
+      <div style="margin-bottom: 24px;">
+        <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Addresses</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <%= render Primer::Beta::BorderBox.new do |box|
+            box.with_header { "From" }
+            box.with_row do %>
               <% if @letter.return_address.present? %>
-                <address class="p-3 bg-gray-50 rounded not-italic text-sm">
-                  <div class="font-medium"><%= @letter.return_address_name_line %></div>
-                  <div><%= @letter.return_address.line_1 %></div>
-                  <% if @letter.return_address.line_2.present? %>
-                    <div><%= @letter.return_address.line_2 %></div>
-                  <% end %>
-                  <div><%= @letter.return_address.city %>, <%= @letter.return_address.state %> <%= @letter.return_address.postal_code %></div>
-                  <div><%= @letter.return_address.country %></div>
-                </address>
+                <div style="font-size: 14px; line-height: 1.6;">
+                  <div style="font-weight: 600;"><%= @letter.return_address_name_line %></div>
+                  <div style="color: var(--fgColor-muted);">
+                    <%= @letter.return_address.line_1 %><br>
+                    <% if @letter.return_address.line_2.present? %><%= @letter.return_address.line_2 %><br><% end %>
+                    <%= @letter.return_address.city %>, <%= @letter.return_address.state %> <%= @letter.return_address.postal_code %><br>
+                    <%= @letter.return_address.country %>
+                  </div>
+                </div>
               <% else %>
-                <div class="p-3 bg-gray-50 rounded text-gray-500 text-sm">No return address</div>
+                <span style="color: var(--fgColor-muted);">No return address</span>
               <% end %>
-            </div>
-            <div>
-              <div class="text-sm text-gray-500 mb-1">To</div>
-              <address class="p-3 bg-gray-50 rounded not-italic text-sm">
-                <div class="font-medium"><%= @letter.address.name_line %></div>
-                <div><%= @letter.address.line_1 %></div>
-                <% if @letter.address.line_2.present? %>
-                  <div><%= @letter.address.line_2 %></div>
-                <% end %>
-                <div><%= @letter.address.city %>, <%= @letter.address.state %> <%= @letter.address.postal_code %></div>
-                <div><%= @letter.address.country %></div>
-              </address>
-            </div>
-          </div>
-        </div>
-      </article>
+            <% end
+          end %>
 
-      <%# Specifications %>
-      <article>
-        <header><h2>Specifications</h2></header>
-        <div class="p-4">
-          <%= render 'shared/letter_attributes', record: @letter %>
-        </div>
-      </article>
-
-      <%# Postage %>
-      <article>
-        <header><h2>Postage</h2></header>
-        <div class="p-4">
-          <% if @letter.postage_type == "indicia" %>
-            <% if @letter.usps_indicium.present? %>
-              <div class="flex items-center gap-2 text-green-700 mb-4">
-                <span class="font-medium">✓ Indicia Purchased</span>
+          <%= render Primer::Beta::BorderBox.new do |box|
+            box.with_header { "To" }
+            box.with_row do %>
+              <div style="font-size: 14px; line-height: 1.6;">
+                <div style="font-weight: 600;"><%= @letter.address.name_line %></div>
+                <div style="color: var(--fgColor-muted);">
+                  <%= @letter.address.line_1 %><br>
+                  <% if @letter.address.line_2.present? %><%= @letter.address.line_2 %><br><% end %>
+                  <%= @letter.address.city %>, <%= @letter.address.state %> <%= @letter.address.postal_code %><br>
+                  <%= @letter.address.country %>
+                </div>
               </div>
-              <dl class="grid md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <dt class="text-gray-500">Cost</dt>
-                  <dd class="font-medium">
-                    <%= number_to_currency(@letter.usps_indicium.cost) %>
-                    <span class="text-gray-500 font-normal">(<%= number_to_currency(@letter.usps_indicium.postage) %> + <%= number_to_currency(@letter.usps_indicium.fees || 0) %> fees)</span>
-                  </dd>
+            <% end
+          end %>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 24px;">
+        <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Specifications</h2>
+        <%= render 'shared/letter_attributes', record: @letter %>
+      </div>
+
+      <div style="margin-bottom: 24px;">
+        <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Postage</h2>
+        <%= render Primer::Beta::BorderBox.new do |box|
+          if @letter.postage_type == "indicia"
+            if @letter.usps_indicium.present?
+              box.with_row do %>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <%= render Primer::Beta::Octicon.new(icon: :check_circle, color: :success) %>
+                  <span style="font-weight: 600; color: var(--fgColor-success);">Indicia Purchased</span>
                 </div>
-                <div>
-                  <dt class="text-gray-500">Mailing Date</dt>
-                  <dd><%= @letter.usps_indicium.mailing_date %></dd>
+              <% end
+              box.with_row do %>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 14px;">
+                  <div>
+                    <div style="color: var(--fgColor-muted); font-size: 12px;">Cost</div>
+                    <div style="font-weight: 500;"><%= number_to_currency(@letter.usps_indicium.cost) %>
+                      <span style="color: var(--fgColor-muted); font-weight: normal;">(<%= number_to_currency(@letter.usps_indicium.postage) %> + <%= number_to_currency(@letter.usps_indicium.fees || 0) %> fees)</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div style="color: var(--fgColor-muted); font-size: 12px;">Mailing Date</div>
+                    <div><%= @letter.usps_indicium.mailing_date %></div>
+                  </div>
+                  <div>
+                    <div style="color: var(--fgColor-muted); font-size: 12px;">USPS SKU</div>
+                    <code style="font-size: 12px;"><%= @letter.usps_indicium.usps_sku %></code>
+                  </div>
+                  <div>
+                    <div style="color: var(--fgColor-muted); font-size: 12px;">Indicium ID</div>
+                    <%= render Components::Shared::PublicId.new(value: @letter.usps_indicium.public_id) %>
+                  </div>
                 </div>
-                <div>
-                  <dt class="text-gray-500">USPS SKU</dt>
-                  <dd class="font-mono text-xs"><%= @letter.usps_indicium.usps_sku %></dd>
-                </div>
-                <div>
-                  <dt class="text-gray-500">Indicium ID</dt>
-                  <dd><%= render Components::Shared::PublicId.new(value: @letter.usps_indicium.public_id) %></dd>
-                </div>
-              </dl>
-              <% admin_tool(class_name: "mt-4") do %>
+              <% end
+              admin_tool do %>
                 <% if @letter.usps_indicium.raw_json_response.nil? %>
-                  <%= button_to clear_indicium_letter_path(@letter), method: :post, class: "btn danger btn-small", data: { confirm: "This will destroy the orphaned indicium. Are you sure?" } do %>
-                    Clear Orphaned Indicium
-                  <% end %>
+                  <div style="padding: 8px 0;">
+                    <%= form_with url: clear_indicium_letter_path(@letter), method: :post, data: { turbo_confirm: "This will destroy the orphaned indicium. Are you sure?" }, style: "display: inline;" do %>
+                      <%= render Primer::Beta::Button.new(type: :submit, scheme: :danger, size: :small) do |btn|
+                        btn.with_leading_visual_icon(icon: :trash)
+                        "Clear Orphaned Indicium"
+                      end %>
+                    <% end %>
+                  </div>
                 <% end %>
               <% end %>
               <%= render 'admin_inspector', record: @letter.usps_indicium %>
-            <% else %>
-              <div class="text-yellow-700 mb-4">
-                <span class="font-medium">Indicia Not Purchased</span>
-              </div>
-              <% if @letter.batch_id.nil? %>
-                <%= render 'buy_indicia_form', letter: @letter %>
-              <% else %>
-                <p class="text-sm text-gray-600">Postage will be purchased when processing the batch.</p>
-              <% end %>
-            <% end %>
-          <% elsif @letter.postage_type == "international_origin" %>
-            <p class="text-sm text-gray-600">
-              <strong>International Origin</strong> — Postage paid at origin (<%= @letter.return_address&.country %>)
-            </p>
-          <% else %>
-            <div class="flex items-center justify-between">
-              <p class="text-sm text-gray-600">Using physical stamps</p>
-              <% if @letter.batch_id.nil? %>
-                <%= button_to letter_path(@letter), method: :patch, params: { letter: { postage_type: "indicia" } }, class: "btn btn-small" do %>
-                  Switch to Indicia
+            <% else
+              box.with_row do %>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <%= render Primer::Beta::Octicon.new(icon: :alert, color: :attention) %>
+                  <span style="font-weight: 500; color: var(--fgColor-attention);">Indicia Not Purchased</span>
+                </div>
+              <% end
+              box.with_row do %>
+                <% if @letter.batch_id.nil? %>
+                  <%= render 'buy_indicia_form', letter: @letter %>
+                <% else %>
+                  <span style="color: var(--fgColor-muted); font-size: 14px;">Postage will be purchased when processing the batch.</span>
                 <% end %>
-              <% end %>
-            </div>
-          <% end %>
-        </div>
-      </article>
+              <% end
+            end
+          elsif @letter.postage_type == "international_origin"
+            box.with_row do %>
+              <div>
+                <%= render(Primer::Beta::Label.new(scheme: :accent)) { "International Origin" } %>
+                <span style="color: var(--fgColor-muted); margin-left: 8px;">Postage paid at origin (<%= @letter.return_address&.country %>)</span>
+              </div>
+            <% end
+          else
+            box.with_row do %>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: var(--fgColor-muted);">Using physical stamps</span>
+                <% if @letter.batch_id.nil? %>
+                  <%= form_with url: letter_path(@letter), method: :patch, style: "display: inline;" do |f| %>
+                    <%= f.hidden_field :postage_type, value: "indicia", name: "letter[postage_type]" %>
+                    <%= render Primer::Beta::Button.new(type: :submit, scheme: :secondary, size: :small) do
+                      "Switch to Indicia"
+                    end %>
+                  <% end %>
+                <% end %>
+              </div>
+            <% end
+          end
+        end %>
+      </div>
 
       <% if @letter.batch.present? %>
         <%= render 'shared/batch_info', record: @letter %>
       <% end %>
 
       <% if @letter.imb_serial_number.present? && @letter.address.country&.upcase == 'US' %>
-        <article>
-          <header><h2>IMb Tracking</h2></header>
-          <div class="p-4">
-            <dl class="grid md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <dt class="text-gray-500">Serial</dt>
-                <dd class="font-mono"><%= @letter.imb_serial_number.to_s.rjust(6, '0') %></dd>
+        <div style="margin-bottom: 24px;">
+          <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">IMb Tracking</h2>
+          <%= render Primer::Beta::BorderBox.new do |box|
+            box.with_row do %>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 14px;">
+                <div>
+                  <div style="color: var(--fgColor-muted); font-size: 12px;">Serial</div>
+                  <code><%= @letter.imb_serial_number.to_s.rjust(6, '0') %></code>
+                </div>
+                <div>
+                  <div style="color: var(--fgColor-muted); font-size: 12px;">Epoch</div>
+                  <span><%= @letter.imb_rollover_count %></span>
+                </div>
               </div>
-              <div>
-                <dt class="text-gray-500">Epoch</dt>
-                <dd><%= @letter.imb_rollover_count %></dd>
-              </div>
-            </dl>
-          </div>
-        </article>
+            <% end
+          end %>
+        </div>
       <% end %>
 
       <% if @letter.rubber_stamps.present? %>
-        <article>
-          <header><h2>Rubber Stamps</h2></header>
-          <div class="p-4">
-            <pre class="text-sm bg-gray-50 p-3 rounded overflow-auto"><%= @letter.rubber_stamps %></pre>
-          </div>
-        </article>
+        <div style="margin-bottom: 24px;">
+          <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Rubber Stamps</h2>
+          <%= render Primer::Beta::BorderBox.new do |box|
+            box.with_row do %>
+              <pre style="margin: 0; font-size: 13px; white-space: pre-wrap;"><%= @letter.rubber_stamps %></pre>
+            <% end
+          end %>
+        </div>
       <% end %>
 
       <%= render partial: "admin_inspector", locals: { record: @letter } %>
     </div>
 
-    <%# Sidebar %>
-    <div class="md:col-span-4">
-      <article class="sticky top-4">
-        <header><h2>Actions</h2></header>
-        <div class="p-4 space-y-4">
-          <% case @letter.aasm_state %>
-          <% when 'pending' %>
-            <% if @letter.label.attached? %>
-              <div>
-                <div class="text-sm text-gray-500 mb-2">Label Ready</div>
-                <div class="flex flex-wrap gap-2">
-                  <%= link_to rails_blob_path(@letter.label, disposition: 'inline'), class: "btn btn-small success", target: "_blank" do %>
-                    View Label
-                  <% end %>
-                  <%= button_to clear_label_letter_path(@letter), method: :post, class: "btn btn-small", data: { confirm: "Clear this label?" } do %>
-                    Clear
-                  <% end %>
+    <div>
+      <div style="position: sticky; top: 24px;">
+        <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Actions</h2>
+        <%= render Primer::Beta::BorderBox.new(mb: 4) do |box|
+          box.with_body do %>
+            <% case @letter.aasm_state %>
+            <% when 'pending' %>
+              <% if @letter.label.attached? %>
+                <div style="margin-bottom: 12px;">
+                  <div style="font-size: 12px; color: var(--fgColor-muted); margin-bottom: 8px;">Label Ready</div>
+                  <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <%= render Primer::Beta::Button.new(tag: :a, href: rails_blob_path(@letter.label, disposition: 'inline'), scheme: :secondary, size: :small, target: "_blank") do |btn|
+                      btn.with_leading_visual_icon(icon: :eye)
+                      "View Label"
+                    end %>
+                    <%= form_with url: clear_label_letter_path(@letter), method: :post, data: { turbo_confirm: "Clear this label?" }, style: "display: inline;" do %>
+                      <%= render Primer::Beta::Button.new(type: :submit, scheme: :secondary, size: :small) do |btn|
+                        btn.with_leading_visual_icon(icon: :x)
+                        "Clear"
+                      end %>
+                    <% end %>
+                  </div>
                 </div>
-              </div>
-              <hr class="my-4">
-              <%= button_to mark_printed_letter_path(@letter), method: :post, class: "btn success w-full" do %>
-                Mark as Printed
-              <% end %>
-            <% elsif @letter.batch.present? %>
-              <%= button_to mark_printed_letter_path(@letter), method: :post, class: "btn success w-full" do %>
-                Mark as Printed
-              <% end %>
-            <% else %>
-              <div>
-                <div class="text-sm text-gray-500 mb-2">Generate Label</div>
+                <hr style="border: none; border-top: 1px solid var(--borderColor-muted); margin: 12px 0;">
+                <%= form_with url: mark_printed_letter_path(@letter), method: :post, style: "display: block;" do %>
+                  <%= render Primer::Beta::Button.new(type: :submit, scheme: :primary, block: true) do |btn|
+                    btn.with_leading_visual_icon(icon: :check)
+                    "Mark as Printed"
+                  end %>
+                <% end %>
+              <% elsif @letter.batch.present? %>
+                <%= form_with url: mark_printed_letter_path(@letter), method: :post, style: "display: block;" do %>
+                  <%= render Primer::Beta::Button.new(type: :submit, scheme: :primary, block: true) do |btn|
+                    btn.with_leading_visual_icon(icon: :check)
+                    "Mark as Printed"
+                  end %>
+                <% end %>
+              <% else %>
+                <div style="font-size: 12px; color: var(--fgColor-muted); margin-bottom: 8px;">Generate Label</div>
                 <%= form_tag(generate_label_letter_path(@letter), method: :post) do %>
-                  <div class="mb-3">
+                  <div style="margin-bottom: 12px;">
                     <%= render 'shared/template_picker', multiple: false %>
                     <input type="hidden" name="template" id="selected_template">
                   </div>
-                  <label class="flex items-center gap-2 text-sm mb-3">
-                    <input type="checkbox" name="qr" value="1" checked>
-                    Include QR Code
-                  </label>
-                  <button type="submit" class="btn success w-full">Generate Label</button>
+                  <div style="margin-bottom: 12px;">
+                    <%= render Primer::Alpha::CheckBox.new(
+                      name: "qr",
+                      label: "Include QR Code",
+                      value: "1",
+                      checked: true
+                    ) %>
+                  </div>
+                  <%= render Primer::Beta::Button.new(type: :submit, scheme: :primary, block: true) do |btn|
+                    btn.with_leading_visual_icon(icon: :file)
+                    "Generate Label"
+                  end %>
                 <% end %>
                 <% dev_tool do %>
-                  <%= link_to "preview label?", preview_template_letter_path(@letter), class: "text-sm" %>
+                  <div style="margin-top: 8px;">
+                    <%= link_to "preview label?", preview_template_letter_path(@letter), style: "font-size: 13px; color: var(--fgColor-muted);" %>
+                  </div>
                 <% end %>
+              <% end %>
+            <% when 'printed' %>
+              <%= form_with url: mark_mailed_letter_path(@letter), method: :post, style: "display: block;" do %>
+                <%= render Primer::Beta::Button.new(type: :submit, scheme: :primary, block: true) do |btn|
+                  btn.with_leading_visual_icon(icon: :check)
+                  "Mark as Mailed"
+                end %>
+              <% end %>
+            <% when 'mailed' %>
+              <%= form_with url: mark_received_letter_path(@letter), method: :post, style: "display: block;" do %>
+                <%= render Primer::Beta::Button.new(type: :submit, scheme: :primary, block: true) do |btn|
+                  btn.with_leading_visual_icon(icon: :check)
+                  "Mark as Received"
+                end %>
+              <% end %>
+            <% when 'received' %>
+              <div style="text-align: center; padding: 16px; color: var(--fgColor-success);">
+                <%= render Primer::Beta::Octicon.new(icon: :check_circle, size: :medium) %>
+                <div style="font-weight: 600; margin-top: 4px;">Letter received</div>
               </div>
             <% end %>
-          <% when 'printed' %>
-            <%= button_to mark_mailed_letter_path(@letter), method: :post, class: "btn success w-full" do %>
-              Mark as Mailed
-            <% end %>
-          <% when 'mailed' %>
-            <%= button_to mark_received_letter_path(@letter), method: :post, class: "btn success w-full" do %>
-              Mark as Received
-            <% end %>
-          <% when 'received' %>
-            <div class="text-center text-green-600 py-4">
-              ✓ Letter received
-            </div>
-          <% end %>
-        </div>
-      </article>
+          <% end
+        end %>
 
-      <% if @letter.label.attached? %>
-        <%= render 'shared/instant_print_window', url: rails_blob_path(@letter.label, disposition: 'inline') %>
-        <article class="mt-4">
-          <header><h2>Label Preview</h2></header>
-          <div class="p-4">
-            <div class="border rounded overflow-hidden" style="height: 250px;">
-              <iframe src="<%= rails_blob_path(@letter.label, disposition: 'inline') %>" class="w-full h-full border-0"></iframe>
-            </div>
-            <div class="mt-3">
-              <%= link_to rails_blob_path(@letter.label, disposition: "attachment"), class: "text-sm" do %>
-                Download Label
-              <% end %>
-            </div>
-          </div>
-        </article>
-      <% end %>
+        <% if @letter.label.attached? %>
+          <%= render 'shared/instant_print_window', url: rails_blob_path(@letter.label, disposition: 'inline') %>
+          <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Label Preview</h2>
+          <%= render Primer::Beta::BorderBox.new do |box|
+            box.with_body do %>
+              <div style="border-radius: 4px; overflow: hidden; height: 250px;">
+                <iframe src="<%= rails_blob_path(@letter.label, disposition: 'inline') %>" style="width: 100%; height: 100%; border: 0;"></iframe>
+              </div>
+              <div style="margin-top: 12px;">
+                <%= link_to "Download Label", rails_blob_path(@letter.label, disposition: "attachment"), style: "font-size: 13px; color: var(--fgColor-accent);" %>
+              </div>
+            <% end
+          end %>
+        <% end %>
+      </div>
     </div>
+  </div>
+
+  <div style="margin-top: 32px;">
+    <%= link_to "← Back to letters", letters_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
   </div>
 </div>
