@@ -15,24 +15,39 @@
       <% header.with_title(tag: :h2) do %>Supplier Information<% end %>
     <% end %>
     <% box.with_body do %>
-      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
-        <div class="mb-3">
-          <%= form.label :supplier_name, "Supplier Name", class: "FormControl-label d-block mb-1" %>
-          <%= form.text_field :supplier_name, class: "FormControl-input width-full", required: true, placeholder: "Enter supplier name" %>
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 12px;">
+        <div>
+          <%= render Primer::Alpha::TextField.new(
+            name: "warehouse_purchase_order[supplier_name]",
+            label: "Supplier name",
+            value: purchase_order.supplier_name,
+            full_width: true,
+            required: true,
+            placeholder: "Enter supplier name"
+          ) %>
         </div>
-        <div class="mb-3">
-          <%= form.label :supplier_id, "Supplier ID (optional)", class: "FormControl-label d-block mb-1" %>
-          <%= form.number_field :supplier_id, class: "FormControl-input width-full", placeholder: "Zenventory supplier ID" %>
+        <div>
+          <%= render Primer::Alpha::TextField.new(
+            name: "warehouse_purchase_order[supplier_id]",
+            label: "Supplier ID (optional)",
+            value: purchase_order.supplier_id,
+            full_width: true,
+            placeholder: "Zenventory supplier ID"
+          ) %>
         </div>
       </div>
-      <div class="mb-3">
-        <%= form.label :required_by_date, "Required By Date", class: "FormControl-label d-block mb-1" %>
-        <%= form.date_field :required_by_date, class: "FormControl-input", style: "width: 200px;" %>
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;">Required by date</label>
+        <%= form.date_field :required_by_date, style: "padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; font-size: 14px; background: var(--bgColor-default); color: var(--fgColor-default);" %>
       </div>
-      <div>
-        <%= form.label :notes, "Notes", class: "FormControl-label d-block mb-1" %>
-        <%= form.text_area :notes, class: "FormControl-input width-full", rows: 3, placeholder: "Add any notes for this purchase order..." %>
-      </div>
+      <%= render Primer::Alpha::TextArea.new(
+        name: "warehouse_purchase_order[notes]",
+        label: "Notes",
+        value: purchase_order.notes,
+        rows: 3,
+        full_width: true,
+        placeholder: "Add any notes for this purchase order..."
+      ) %>
     <% end %>
   <% end %>
 
