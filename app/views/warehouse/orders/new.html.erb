@@ -1,12 +1,11 @@
 <% content_for :title, "New order" %>
 
-<%= render Primer::Beta::Heading.new(tag: :h1, mb: 4) { "New order" } %>
+<div style="max-width: 800px; margin: 0 auto; padding: 24px;">
+  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px 0;">New order</h1>
 
-<%= render "form", warehouse_order: @warehouse_order %>
+  <%= render "form", warehouse_order: @warehouse_order %>
 
-<div class="mt-4">
-  <%= render Primer::Beta::Link.new(href: warehouse_orders_path, muted: true) do |link| %>
-    <% link.with_leading_visual_icon(icon: :"arrow-left") %>
-    Back to orders
-  <% end %>
+  <div style="margin-top: 32px;">
+    <%= link_to "← Back to orders", warehouse_orders_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+  </div>
 </div>

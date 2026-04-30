@@ -1,9 +1,41 @@
-<h1>Cancel order <%= @warehouse_order.hc_id %>:</h1>
-Please try to avoid needing to do this. <br/>
-If fulfillment of this order is already underway at the warehouse, this will error out and you'll need to contact them directly.
-<br/><br/>
-<%= form_with method: :post do |form| %>
-  <%= form.label :cancellation_reason, "Reason for cancellation (visible to AGH crew): " %>
-  <%= form.text_field :cancellation_reason %>
-  <%= form.submit "do it!" %>
-<% end %>
+<% content_for :title, "Cancel order #{@warehouse_order.hc_id}" %>
+
+<div style="max-width: 600px; margin: 0 auto; padding: 24px;">
+  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Cancel order</h1>
+    <code style="font-size: 16px; color: var(--fgColor-accent);"><%= @warehouse_order.hc_id %></code>
+  </div>
+
+  <%= render Primer::Beta::Flash.new(scheme: :warning, mb: 3) do %>
+    Please try to avoid needing to do this. If fulfillment is already underway at the warehouse, this will error out and you'll need to contact them directly.
+  <% end %>
+
+  <%= form_with url: cancel_warehouse_order_path(@warehouse_order), method: :post do |form| %>
+    <%= render Primer::Beta::BorderBox.new(mb: 4) do |box| %>
+      <% box.with_body do %>
+        <%= render Primer::Alpha::TextArea.new(
+          name: "cancellation_reason",
+          label: "Reason for cancellation",
+          caption: "Visible to AGH crew",
+          rows: 3,
+          full_width: true,
+          required: true
+        ) %>
+      <% end %>
+    <% end %>
+
+    <div style="display: flex; gap: 8px;">
+      <%= render Primer::Beta::Button.new(tag: :a, href: warehouse_order_path(@warehouse_order), scheme: :secondary) do
+        "Never mind"
+      end %>
+      <%= render Primer::Beta::Button.new(type: :submit, scheme: :danger) do |btn|
+        btn.with_leading_visual_icon(icon: :x)
+        "Cancel this order"
+      end %>
+    </div>
+  <% end %>
+
+  <div style="margin-top: 32px;">
+    <%= link_to "← Back to order", warehouse_order_path(@warehouse_order), style: "color: var(--fgColor-muted); text-decoration: none;" %>
+  </div>
+</div>

@@ -1,22 +1,42 @@
-<% orders.each do |order| %>
-  <article class="card mb-4">
-    <div class="card-header">
-      <h3 class="mb-0">
-        <%= link_to order.hc_id, order %> – <%= order.user_facing_title %>
-        <%= render 'warehouse/orders/status_badge', order: order %>
-      </h3>
-    </div>
-    <div class="card-body">
-      <div class="md:grid-cols-2 gap-4">
-        <div>
-          <span class="text-gray-500">Recipient:</span>
-          <%= order.address.name_line %> (<%= order.recipient_email %>)
-        </div>
-        <div>
-          <span class="text-gray-500">Tags:</span>
-          <%= render 'shared/tags', tags: order.tags %>
-        </div>
+<%= render Primer::Beta::BorderBox.new do |box|
+  box.with_header do %>
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <span style="font-weight: 600;">Order</span>
+      <div style="display: flex; gap: 48px;">
+        <span style="font-weight: 600; min-width: 140px;">Recipient</span>
+        <span style="font-weight: 600; min-width: 80px; text-align: right;">Status</span>
       </div>
     </div>
-  </article>
-<% end %> 
+  <% end
+
+  orders.each do |order|
+    box.with_row do %>
+      <a href="<%= warehouse_order_path(order) %>" style="display: flex; justify-content: space-between; align-items: center; width: 100%; text-decoration: none; color: inherit; gap: 16px;">
+        <div style="flex: 1; min-width: 0;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
+            <span style="font-weight: 600; font-family: var(--fontStack-monospace); font-size: 13px; color: var(--fgColor-accent);"><%= order.hc_id %></span>
+            <% if order.user_facing_title.present? %>
+              <span style="color: var(--fgColor-default);">·</span>
+              <span style="font-size: 14px; color: var(--fgColor-default); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px;"><%= order.user_facing_title %></span>
+            <% end %>
+          </div>
+          <div style="font-size: 12px; color: var(--fgColor-muted); margin-top: 2px;">
+            <%= order.created_at.strftime("%b %d, %Y") %>
+            <% if order.tags.present? %>
+              · <%= render 'shared/tags', tags: order.tags %>
+            <% end %>
+          </div>
+        </div>
+        <div style="display: flex; gap: 48px; align-items: center; flex-shrink: 0;">
+          <div style="min-width: 140px;">
+            <div style="font-size: 14px; font-weight: 500;"><%= order.address&.name_line || "—" %></div>
+            <div style="font-size: 12px; color: var(--fgColor-muted);"><%= order.recipient_email %></div>
+          </div>
+          <div style="min-width: 80px; text-align: right;">
+            <%= render 'warehouse/orders/status_badge', order: order %>
+          </div>
+        </div>
+      </a>
+    <% end
+  end
+end %>
