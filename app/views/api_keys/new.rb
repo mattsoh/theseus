@@ -7,12 +7,12 @@ class Views::APIKeys::New < Views::Base
   end
 
   def view_template
-      div(class: "Box mb-4") do
-        div(class: "Box-header p-3 border-bottom") do
-          h2(class: "m-0 h4") { "New API Key" }
-        end
+    div(style: "max-width: 600px; margin: 0 auto; padding: 24px;") do
+      h1(style: "font-size: 24px; font-weight: 600; margin: 0 0 24px 0;") { "New API Key" }
 
-        div(class: "Box-body p-4") do
+      render Primer::Beta::BorderBox.new(mb: 4) do |box|
+        box.with_header { "Details" }
+        box.with_body do
           form_with model: api_key, url: api_keys_path, local: true do |f|
             render Primer::Alpha::TextField.new(
               name: "api_key[name]",
@@ -20,10 +20,11 @@ class Views::APIKeys::New < Views::Base
               caption: "Short description (think \"high-seas\")",
               full_width: true,
               autofocus: true,
+              mb: 3
             )
 
-            fieldset(class: "mt-4 mb-4") do
-              legend(class: "f5 color-fg-muted mb-2") { "Permissions" }
+            fieldset(style: "border: none; padding: 0; margin: 0 0 16px 0;") do
+              legend(style: "font-size: 14px; color: var(--fgColor-muted); margin-bottom: 8px;") { "Permissions" }
 
               render Primer::Alpha::CheckBox.new(
                 name: "api_key[pii]",
@@ -39,6 +40,7 @@ class Views::APIKeys::New < Views::Base
                 )
               end
             end
+
             render Primer::Beta::Button.new(type: :submit, scheme: :primary) do |btn|
               btn.with_leading_visual_icon(icon: :key)
               "Create API Key"
@@ -47,8 +49,8 @@ class Views::APIKeys::New < Views::Base
         end
       end
 
-    render Components::Shared::BackButton.new(href: api_keys_path)
-
+      render Components::Shared::BackButton.new(href: api_keys_path)
+    end
   end
 
   private

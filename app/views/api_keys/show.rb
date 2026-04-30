@@ -8,31 +8,25 @@ class Views::APIKeys::Show < Views::Base
   end
 
   def view_template
-    div do
+    div(style: "max-width: 800px; margin: 0 auto; padding: 24px;") do
       div(style: "display: flex; align-items: center; gap: 12px; margin-bottom: 24px;") do
         div do
-          h1(style: "font-size: 24px; font-weight: 600; margin: 0 8px 8px 0; display: inline-block;") { api_key.pretty_name }
-          render Primer::Beta::Label.new(scheme: api_key.active? ? :success : :secondary) do
-            api_key.active? ? "Active" : "Revoked"
+          div(style: "display: flex; align-items: center; gap: 8px; margin-bottom: 4px;") do
+            h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { api_key.pretty_name }
+            render Primer::Beta::Label.new(scheme: api_key.active? ? :success : :secondary) do
+              api_key.active? ? "Active" : "Revoked"
+            end
           end
-          br
-          p(style: "font-size: 12px; color: var(--fgColor-muted, #656d76); margin: 0;") { "Created #{api_key.created_at.strftime('%B %d, %Y')}" }
+          p(style: "font-size: 13px; color: var(--fgColor-muted); margin: 0;") { "Created #{api_key.created_at.strftime('%B %d, %Y')}" }
         end
-
       end
 
-      # Main card with secret key
-      div(style: "background: var(--bgColor-default, #fff); border: 1px solid var(--borderColor-default, #d0d7de); border-radius: 6px; overflow: hidden; margin-bottom: 16px;") do
-        # Header
-        div(style: "padding: 12px 16px; border-bottom: 1px solid var(--borderColor-default, #d0d7de); background: var(--bgColor-muted, #f6f8fa);") do
-          h2(style: "font-size: 14px; font-weight: 600; margin: 0; color: var(--fgColor-default, #24292f);") { "Secret Key" }
-        end
-
-        # Body
-        div(style: "padding: 16px;") do
+      render Primer::Beta::BorderBox.new(mb: 3) do |box|
+        box.with_header { "Secret Key" }
+        box.with_body do
           div(style: "display: flex; align-items: center; gap: 12px;") do
             code(
-              style: "flex: 1; font-family: monospace; font-size: 13px; padding: 10px 12px; background: var(--bgColor-inset, #f6f8fa); border: 1px solid var(--borderColor-default, #d0d7de); border-radius: 4px; word-break: break-all;",
+              style: "flex: 1; font-family: var(--fontStack-monospace); font-size: 13px; padding: 10px 12px; background: var(--bgColor-inset); border: 1px solid var(--borderColor-default); border-radius: 4px; word-break: break-all;",
               data_copy_to_clipboard: api_key.token
             ) { api_key.token }
 
@@ -42,47 +36,34 @@ class Views::APIKeys::Show < Views::Base
               data_copy_to_clipboard: api_key.token
             )
           end
-
-          p(style: "font-size: 12px; color: var(--fgColor-muted, #656d76); margin: 8px 0 0 0; font-style: italic;") { "Keep this secret. Don't share it with anyone." }
+          p(style: "font-size: 12px; color: var(--fgColor-muted); margin: 8px 0 0 0; font-style: italic;") { "Keep this secret. Don't share it with anyone." }
         end
       end
 
-      # Permissions panel
-      div(style: "background: var(--bgColor-default, #fff); border: 1px solid var(--borderColor-default, #d0d7de); border-radius: 6px; overflow: hidden; margin-bottom: 16px;") do
-       # Header
-       div(style: "padding: 12px 16px; border-bottom: 1px solid var(--borderColor-default, #d0d7de); background: var(--bgColor-muted, #f6f8fa);") do
-         h3(style: "font-size: 14px; font-weight: 600; margin: 0; color: var(--fgColor-default, #24292f);") { "Permissions" }
-       end
-
-       div(style: "padding: 0;") do
-         pii_bg = api_key.pii ? "var(--bgColor-success-muted, #dafbe1)" : "var(--bgColor-default, #fff)"
-         pii_icon = api_key.pii ? "✓" : "✗"
-         pii_text = api_key.pii ? "var(--fgColor-success, #1a7f37)" : "var(--fgColor-muted, #656d76)"
-
-         div(style: "padding: 12px 16px; border-bottom: 1px solid var(--borderColor-default, #d0d7de); background: #{pii_bg};") do
-           span(style: "color: #{pii_text}; font-weight: 600;") { "#{pii_icon} PII Access" }
-         end
-
-         imp_bg = api_key.may_impersonate? ? "var(--bgColor-danger-muted, #ffebe6)" : "var(--bgColor-default, #fff)"
-         imp_icon = api_key.may_impersonate? ? "✓" : "✗"
-         imp_text = api_key.may_impersonate? ? "var(--fgColor-danger, #ae1c17)" : "var(--fgColor-muted, #656d76)"
-
-         div(style: "padding: 12px 16px; background: #{imp_bg};") do
-           span(style: "color: #{imp_text}; font-weight: 600;") { "#{imp_icon} Can Impersonate" }
-         end
-       end
-      end
-
-      # Revoked status (if applicable)
-      if api_key.revoked?
-        div(style: "background: var(--bgColor-attention-muted, #fff8c5); border: 1px solid var(--borderColor-attention-muted, #ffd480); border-radius: 6px; padding: 12px 16px; margin-bottom: 16px;") do
-          p(style: "font-size: 12px; color: var(--fgColor-attention, #9a6700); margin: 0;") do
-            strong { "Revoked on #{api_key.revoked_at.strftime('%B %d, %Y at %l:%M %p')}" }
+      render Primer::Beta::BorderBox.new(mb: 3) do |box|
+        box.with_header { "Permissions" }
+        box.with_row do
+          pii_color = api_key.pii ? "var(--fgColor-success)" : "var(--fgColor-muted)"
+          div(style: "display: flex; align-items: center; gap: 8px;#{"background: var(--bgColor-success-muted); margin: -8px -16px; padding: 8px 16px;" if api_key.pii}") do
+            span(style: "color: #{pii_color}; font-weight: 600;") { api_key.pii ? "✓" : "✗" }
+            span(style: "font-weight: 500;") { "PII Access" }
+          end
+        end
+        box.with_row do
+          imp_color = api_key.may_impersonate? ? "var(--fgColor-danger)" : "var(--fgColor-muted)"
+          div(style: "display: flex; align-items: center; gap: 8px;#{"background: var(--bgColor-danger-muted); margin: -8px -16px; padding: 8px 16px;" if api_key.may_impersonate?}") do
+            span(style: "color: #{imp_color}; font-weight: 600;") { api_key.may_impersonate? ? "✓" : "✗" }
+            span(style: "font-weight: 500;") { "Can Impersonate" }
           end
         end
       end
 
-      # Actions
+      if api_key.revoked?
+        render Primer::Beta::Flash.new(scheme: :warning, mb: 3) do
+          strong { "Revoked on #{api_key.revoked_at.strftime('%B %d, %Y at %l:%M %p')}" }
+        end
+      end
+
       div(style: "display: flex; gap: 12px;") do
         render Components::Shared::BackButton.new(href: api_keys_path)
         if api_key.active?

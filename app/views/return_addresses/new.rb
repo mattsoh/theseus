@@ -6,15 +6,12 @@ class Views::ReturnAddresses::New < Views::Base
   end
 
   def view_template
-    div(style: "max-width: 640px;") do
+    div(style: "max-width: 640px; margin: 0 auto; padding: 24px;") do
       h1(style: "font-size: 24px; font-weight: 600; margin: 0 0 24px 0;") { "New Return Address" }
 
-      div(style: "background: var(--bgColor-default, #fff); border: 1px solid var(--borderColor-default, #d0d7de); border-radius: 6px; overflow: hidden; margin-bottom: 16px;") do
-        div(style: "padding: 12px 16px; border-bottom: 1px solid var(--borderColor-default, #d0d7de); background: var(--bgColor-muted, #f6f8fa);") do
-          h2(style: "font-size: 14px; font-weight: 600; margin: 0; color: var(--fgColor-default, #24292f);") { "Address Details" }
-        end
-
-        div(style: "padding: 20px;") do
+      render Primer::Beta::BorderBox.new(mb: 3) do |box|
+        box.with_header { "Address Details" }
+        box.with_body do
           render Components::ReturnAddresses::Form.new(return_address:)
         end
       end

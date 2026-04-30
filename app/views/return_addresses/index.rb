@@ -6,28 +6,30 @@ class Views::ReturnAddresses::Index < Views::Base
   end
 
   def view_template
-    div(style: "display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;") do
-      h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "Return Addresses" }
-      render Primer::Beta::Button.new(tag: :a, href: new_return_address_path, scheme: :primary) do |btn|
-        btn.with_leading_visual_icon(icon: :plus)
-        "New Return Address"
-      end
-    end
-
-    if return_addresses.any?
-      render Primer::Beta::BorderBox.new do |box|
-        return_addresses.each do |address|
-          box.with_row do
-            render_address_row(address)
-          end
+    div(style: "max-width: 1200px; margin: 0 auto; padding: 24px;") do
+      div(style: "display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;") do
+        h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "Return Addresses" }
+        render Primer::Beta::Button.new(tag: :a, href: new_return_address_path, scheme: :primary) do |btn|
+          btn.with_leading_visual_icon(icon: :plus)
+          "New Return Address"
         end
       end
-    else
-      render Primer::Beta::Blankslate.new(border: true) do |bs|
-        bs.with_visual_icon(icon: :location)
-        bs.with_heading(tag: :h2) { "No return addresses found" }
-        bs.with_description { "Create your first return address to get started." }
-        bs.with_primary_action(href: new_return_address_path) { "Create Return Address" }
+
+      if return_addresses.any?
+        render Primer::Beta::BorderBox.new do |box|
+          return_addresses.each do |address|
+            box.with_row do
+              render_address_row(address)
+            end
+          end
+        end
+      else
+        render Primer::Beta::Blankslate.new(border: true) do |bs|
+          bs.with_visual_icon(icon: :location)
+          bs.with_heading(tag: :h2) { "No return addresses found" }
+          bs.with_description { "Create your first return address to get started." }
+          bs.with_primary_action(href: new_return_address_path) { "Create Return Address" }
+        end
       end
     end
   end
@@ -44,7 +46,7 @@ class Views::ReturnAddresses::Index < Views::Base
           render_badges(address)
         end
 
-        div(style: "font-size: 13px; color: var(--fgColor-muted, #656d76);") do
+        div(style: "font-size: 13px; color: var(--fgColor-muted);") do
           parts = [address.line_1]
           parts << address.line_2 if address.line_2.present?
           parts << "#{address.city}, #{address.state} #{address.postal_code}"
