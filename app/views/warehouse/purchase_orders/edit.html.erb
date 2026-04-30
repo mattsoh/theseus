@@ -9,7 +9,7 @@
       <% status_scheme = { "draft" => :secondary, "open" => :accent, "completed" => :success, "deleted" => :danger }[@purchase_order.status] || :secondary %>
       <%= render(Primer::Beta::Label.new(scheme: status_scheme, size: :large)) { @purchase_order.humanized_state } %>
     </div>
-    <p style="color: var(--fgColor-muted, #656d76); margin: 0; font-size: 14px;">
+    <p style="color: var(--fgColor-muted); margin: 0; font-size: 14px;">
       <%= @purchase_order.order_number.presence || "##{@purchase_order.id}" %> · <%= @purchase_order.supplier_name %>
     </p>
   </div>

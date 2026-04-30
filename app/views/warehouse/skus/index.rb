@@ -24,7 +24,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
     div(style: "display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;") do
       div do
         h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "SKUs" }
-        p(style: "color: var(--fgColor-muted, #656d76); margin: 4px 0 0; font-size: 14px;") do
+        p(style: "color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;") do
           plain "#{warehouse_skus.count} items"
           plain " (showing all)" if include_non_inventory
         end
@@ -81,36 +81,36 @@ class Views::Warehouse::SKUs::Index < Views::Base
 
   def stat_pill(label, value, scheme)
     bg_colors = {
-      success: "var(--bgColor-success-muted, #dafbe1)",
-      attention: "var(--bgColor-attention-muted, #fff8c5)",
+      success: "var(--bgColor-success-muted)",
+      attention: "var(--bgColor-attention-muted)",
       danger: "var(--bgColor-danger-muted, #ffebe9)",
-      secondary: "var(--bgColor-muted, #f6f8fa)"
+      secondary: "var(--bgColor-muted)"
     }
     border_colors = {
       success: "var(--borderColor-success-muted, #aceebb)",
       attention: "var(--borderColor-attention-muted, #f5e0a3)",
       danger: "var(--borderColor-danger-muted, #ffcecb)",
-      secondary: "var(--borderColor-default, #d0d7de)"
+      secondary: "var(--borderColor-default)"
     }
 
     div(style: "padding: 12px 16px; background: #{bg_colors[scheme]}; border: 1px solid #{border_colors[scheme]}; border-radius: 6px; text-align: center;") do
       div(style: "font-size: 24px; font-weight: 600; line-height: 1;") { value.to_s }
-      div(style: "font-size: 12px; color: var(--fgColor-muted, #656d76); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px;") { label }
+      div(style: "font-size: 12px; color: var(--fgColor-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px;") { label }
     end
   end
 
   def stat_pill_button(label, value, scheme, filter_key)
     bg_colors = {
-      success: "var(--bgColor-success-muted, #dafbe1)",
-      attention: "var(--bgColor-attention-muted, #fff8c5)",
+      success: "var(--bgColor-success-muted)",
+      attention: "var(--bgColor-attention-muted)",
       danger: "var(--bgColor-danger-muted, #ffebe9)",
-      secondary: "var(--bgColor-muted, #f6f8fa)"
+      secondary: "var(--bgColor-muted)"
     }
     border_colors = {
       success: "var(--borderColor-success-muted, #aceebb)",
       attention: "var(--borderColor-attention-muted, #f5e0a3)",
       danger: "var(--borderColor-danger-muted, #ffcecb)",
-      secondary: "var(--borderColor-default, #d0d7de)"
+      secondary: "var(--borderColor-default)"
     }
     dark_bg_colors = {
       success: "var(--bgColor-success-muted, #2d333b)",
@@ -125,7 +125,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
       data: { filter: filter_key, scheme: scheme }
     ) do
       div(style: "font-size: 24px; font-weight: 600; line-height: 1;") { value.to_s }
-      div(style: "font-size: 12px; color: var(--fgColor-muted, #656d76); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px;") { label }
+      div(style: "font-size: 12px; color: var(--fgColor-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px;") { label }
     end
   end
 
@@ -221,10 +221,10 @@ class Views::Warehouse::SKUs::Index < Views::Base
       end
     end
 
-    div(style: "overflow-x: auto; border: 1px solid var(--borderColor-default, #d0d7de); border-radius: 6px;") do
+    div(style: "overflow-x: auto; border: 1px solid var(--borderColor-default); border-radius: 6px;") do
       table(style: "width: 100%; border-collapse: collapse; font-size: 13px;") do
         thead do
-          tr(style: "background: var(--bgColor-muted, #f6f8fa); border-bottom: 1px solid var(--borderColor-default, #d0d7de);") do
+          tr(style: "background: var(--bgColor-muted); border-bottom: 1px solid var(--borderColor-default);") do
             th(style: "padding: 12px 16px; text-align: left; font-weight: 600; color: var(--fgColor-default, #1f2328);") { "SKU" }
             th(style: "padding: 12px 16px; text-align: left; font-weight: 600; color: var(--fgColor-default, #1f2328);") { "Name" }
             th(style: "padding: 12px 16px; text-align: left; font-weight: 600; color: var(--fgColor-default, #1f2328);") { "Category" }
@@ -241,7 +241,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
             stock_status = get_stock_status(sku)
             tr(
               classes: "flat-view-row",
-              style: "border-bottom: 1px solid var(--borderColor-default, #d0d7de);",
+              style: "border-bottom: 1px solid var(--borderColor-default);",
               data: { 
                 search: search_text, 
                 status: stock_status,
@@ -255,9 +255,9 @@ class Views::Warehouse::SKUs::Index < Views::Base
                 a(href: warehouse_sku_path(sku), style: "text-decoration: none; color: inherit;") { sku.sku }
               end
               td(style: "padding: 12px 16px; color: var(--fgColor-default, #1f2328);") { sku.name }
-              td(style: "padding: 12px 16px; color: var(--fgColor-muted, #656d76);") { sku.category&.humanize || "Uncategorized" }
+              td(style: "padding: 12px 16px; color: var(--fgColor-muted);") { sku.category&.humanize || "Uncategorized" }
               td(style: "padding: 12px 16px; text-align: right; font-weight: 600;") { sku.in_stock&.to_s || "—" }
-              td(style: "padding: 12px 16px; text-align: right; color: var(--fgColor-muted, #656d76);") { sku.inbound&.to_s || "—" }
+              td(style: "padding: 12px 16px; text-align: right; color: var(--fgColor-muted);") { sku.inbound&.to_s || "—" }
               td(style: "padding: 12px 16px; text-align: right;") { helpers.number_to_currency(sku.declared_unit_cost) }
               td(style: "padding: 12px 16px;") do
                 render(Primer::Beta::Label.new(scheme: get_badge_scheme(sku), size: :medium)) { get_badge_text(sku) }
@@ -334,16 +334,16 @@ class Views::Warehouse::SKUs::Index < Views::Base
           function resetPill(pill) {
             const scheme = pill.dataset.scheme;
             const bgColors = {
-              success: 'var(--bgColor-success-muted, #dafbe1)',
-              attention: 'var(--bgColor-attention-muted, #fff8c5)',
+              success: 'var(--bgColor-success-muted)',
+              attention: 'var(--bgColor-attention-muted)',
               danger: 'var(--bgColor-danger-muted, #ffebe9)',
-              secondary: 'var(--bgColor-muted, #f6f8fa)'
+              secondary: 'var(--bgColor-muted)'
             };
             const borderColors = {
               success: 'var(--borderColor-success-muted, #aceebb)',
               attention: 'var(--borderColor-attention-muted, #f5e0a3)',
               danger: 'var(--borderColor-danger-muted, #ffcecb)',
-              secondary: 'var(--borderColor-default, #d0d7de)'
+              secondary: 'var(--borderColor-default)'
             };
             
             pill.style.background = bgColors[scheme];
@@ -354,7 +354,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
             
             const divs = pill.querySelectorAll('div');
             divs.forEach((div, i) => {
-              div.style.color = i === 0 ? '' : 'var(--fgColor-muted, #656d76)';
+              div.style.color = i === 0 ? '' : 'var(--fgColor-muted)';
             });
           }
 
@@ -524,7 +524,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
       style: "margin-bottom: 16px;",
       data: { category: category }
     ) do
-      summary(style: "cursor: pointer; list-style: none; padding: 12px 16px; background: var(--bgColor-muted, #f6f8fa); border: 1px solid var(--borderColor-default, #d0d7de); border-radius: 6px; display: flex; align-items: center; justify-content: space-between;") do
+      summary(style: "cursor: pointer; list-style: none; padding: 12px 16px; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px; display: flex; align-items: center; justify-content: space-between;") do
         div(style: "display: flex; align-items: center; gap: 12px;") do
           render Primer::Beta::Octicon.new(icon: category_icon(category), size: :small, color: :muted)
           span(style: "font-weight: 600; font-size: 15px;") { category&.humanize || "Uncategorized" }
@@ -540,7 +540,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
         end
       end
 
-      div(style: "margin-top: -1px; border: 1px solid var(--borderColor-default, #d0d7de); border-top: none; border-radius: 0 0 6px 6px; overflow: hidden;") do
+      div(style: "margin-top: -1px; border: 1px solid var(--borderColor-default); border-top: none; border-radius: 0 0 6px 6px; overflow: hidden;") do
         render Primer::Beta::BorderBox.new(padding: :condensed) do |box|
           skus.sort_by { |s| [s.in_stock.to_i > 0 ? 0 : 1, s.sku] }.each do |sku|
             search_text = [sku.sku, sku.name, sku.description].compact.join(" ").downcase
@@ -565,21 +565,21 @@ class Views::Warehouse::SKUs::Index < Views::Base
         end
         div(style: "font-size: 14px; color: var(--fgColor-default, #1f2328);") { sku.name }
         if sku.description.present? && sku.description != sku.name
-          div(style: "font-size: 13px; color: var(--fgColor-muted, #656d76); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 500px;") { sku.description }
+          div(style: "font-size: 13px; color: var(--fgColor-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 500px;") { sku.description }
         end
       end
 
       div(style: "display: flex; align-items: center; gap: 24px; flex-shrink: 0;") do
         div(style: "text-align: right; min-width: 80px;") do
-          div(style: "font-size: 13px; color: var(--fgColor-muted, #656d76);") { "Stock" }
+          div(style: "font-size: 13px; color: var(--fgColor-muted);") { "Stock" }
           div(style: "font-weight: 600; font-size: 15px;") { sku.in_stock&.to_s || "—" }
         end
         div(style: "text-align: right; min-width: 60px;") do
-          div(style: "font-size: 13px; color: var(--fgColor-muted, #656d76);") { "Inbound" }
-          div(style: "font-weight: 500; font-size: 15px; color: var(--fgColor-muted, #656d76);") { sku.inbound&.to_s || "—" }
+          div(style: "font-size: 13px; color: var(--fgColor-muted);") { "Inbound" }
+          div(style: "font-weight: 500; font-size: 15px; color: var(--fgColor-muted);") { sku.inbound&.to_s || "—" }
         end
         div(style: "text-align: right; min-width: 70px;") do
-          div(style: "font-size: 13px; color: var(--fgColor-muted, #656d76);") { "Cost" }
+          div(style: "font-size: 13px; color: var(--fgColor-muted);") { "Cost" }
           div(style: "font-weight: 500; font-size: 15px;") { helpers.number_to_currency(sku.declared_unit_cost) }
         end
 
