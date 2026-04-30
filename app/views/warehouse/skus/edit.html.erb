@@ -1,12 +1,14 @@
-<% content_for :title, "Editing sku" %>
+<% content_for :title, "Edit SKU #{@warehouse_sku.sku}" %>
 
-<h1>Editing SKU: <%= @warehouse_sku.sku %></h1>
+<div style="max-width: 800px; margin: 0 auto; padding: 24px;">
+  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Edit SKU</h1>
+    <code style="font-size: 16px; color: var(--fgColor-accent);"><%= @warehouse_sku.sku %></code>
+  </div>
 
-<%= render "form", warehouse_sku: @warehouse_sku %>
+  <%= render "form", warehouse_sku: @warehouse_sku %>
 
-<br>
-
-<div>
-  <%= link_to "back to this SKU", @warehouse_sku %> |
-  <%= link_to "back to SKUs", warehouse_skus_path %>
+  <div style="margin-top: 32px; display: flex; gap: 16px;">
+    <%= link_to "← Back to SKU", warehouse_sku_path(@warehouse_sku), style: "color: var(--fgColor-muted); text-decoration: none;" %>
+  </div>
 </div>

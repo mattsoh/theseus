@@ -1,11 +1,11 @@
-<% content_for :title, "New sku" %>
+<% content_for :title, "New SKU" %>
 
-<h1>New sku</h1>
+<div style="max-width: 800px; margin: 0 auto; padding: 24px;">
+  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px 0;">New SKU</h1>
 
-<%= render "form", warehouse_sku: @warehouse_sku %>
+  <%= render "form", warehouse_sku: @warehouse_sku %>
 
-<br>
-
-<div>
-  <%= link_to "Back to skus", warehouse_skus_path %>
+  <div style="margin-top: 32px;">
+    <%= link_to "�� Back to SKUs", warehouse_skus_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+  </div>
 </div>
