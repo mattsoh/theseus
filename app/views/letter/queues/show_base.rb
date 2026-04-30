@@ -51,8 +51,11 @@ class Views::Letter::Queues::ShowBase < Views::Base
           "Edit"
         end
         admin_tool do
-          button_to queue_show_path, method: :delete, class: "btn btn-danger btn-sm" do
-            "Delete"
+          form_with(url: queue_show_path, method: :delete, style: "display: inline;") do
+            render Primer::Beta::Button.new(type: :submit, scheme: :danger, size: :small) do |btn|
+              btn.with_leading_visual_icon(icon: :trash)
+              "Delete"
+            end
           end
         end
       end
@@ -299,11 +302,11 @@ class Views::Letter::Queues::ShowBase < Views::Base
     admin_tool do
       details(style: "margin-top: 24px;") do
         summary { "Inspect \"#{record.class.name.underscore}\" record" }
-        div(class: "border-left ml1") do
-          details(class: "ml2") do
+        div(style: "border-left: 1px solid var(--borderColor-default); margin-left: 8px;") do
+          details(style: "margin-left: 16px;") do
             summary { "View JSON" }
-            div(class: "overflow-x-auto") do
-              pre(class: "w-max") { JSON.pretty_generate(record.as_json) }
+            div(style: "overflow-x: auto;") do
+              pre(style: "width: max-content;") { JSON.pretty_generate(record.as_json) }
             end
           end
         end

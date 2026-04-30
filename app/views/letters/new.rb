@@ -37,31 +37,31 @@ class Views::Letters::New < Views::Base
         header.with_title(tag: :h3) { "Postage Rates" }
       end
       box.with_body do
-        p(class: "f6 text-bold mb-1") { "Letters (stamps)" }
-        table(class: "f6 mb-3", style: "border-collapse: collapse;") do
+        p(style: "font-size: 12px; font-weight: 600; margin-bottom: 4px;") { "Letters (stamps)" }
+        table(style: "font-size: 12px; margin-bottom: 16px; border-collapse: collapse;") do
           USPS::PricingEngine::US_STAMP_LETTER_RATES.first(4).each do |oz, price|
             tr do
-              td(class: "color-fg-muted pr-3") { oz == oz.to_i ? "#{oz.to_i} oz" : "#{oz} oz" }
+              td(style: "color: var(--fgColor-muted); padding-right: 12px;") { oz == oz.to_i ? "#{oz.to_i} oz" : "#{oz} oz" }
               td(style: "font-family: var(--fontStack-monospace);") { helpers.number_to_currency(price) }
             end
           end
         end
 
-        p(class: "f6 text-bold mb-1") { "Flats (stamps)" }
-        table(class: "f6 mb-3", style: "border-collapse: collapse;") do
+        p(style: "font-size: 12px; font-weight: 600; margin-bottom: 4px;") { "Flats (stamps)" }
+        table(style: "font-size: 12px; margin-bottom: 16px; border-collapse: collapse;") do
           USPS::PricingEngine::US_STAMP_FLAT_RATES.first(3).each do |oz, price|
             tr do
-              td(class: "color-fg-muted pr-3") { oz == oz.to_i ? "#{oz.to_i} oz" : "#{oz} oz" }
+              td(style: "color: var(--fgColor-muted); padding-right: 12px;") { oz == oz.to_i ? "#{oz.to_i} oz" : "#{oz} oz" }
               td(style: "font-family: var(--fontStack-monospace);") { helpers.number_to_currency(price) }
             end
           end
         end
 
-        p(class: "f6 color-fg-muted mb-1") do
+        p(style: "font-size: 12px; color: var(--fgColor-muted); margin-bottom: 4px;") do
           plain "Non-machinable surcharge: +"
           plain helpers.number_to_currency(USPS::PricingEngine::FCMI_NON_MACHINABLE_SURCHARGE)
         end
-        p(class: "f6 color-fg-muted") { "Indicia is slightly cheaper for standard letters." }
+        p(style: "font-size: 12px; color: var(--fgColor-muted);") { "Indicia is slightly cheaper for standard letters." }
       end
     end
   end
@@ -72,13 +72,13 @@ class Views::Letters::New < Views::Base
         header.with_title(tag: :h3) { "Size Limits" }
       end
       box.with_body do
-        dl(class: "f6") do
-          dt(class: "text-bold") { "Letter" }
-          dd(class: "color-fg-muted mb-2") do
+        dl(style: "font-size: 12px;") do
+          dt(style: "font-weight: 600;") { "Letter" }
+          dd(style: "color: var(--fgColor-muted); margin-bottom: 8px;") do
             raw "Up to 11.5 &times; 6.125 in, 3.5 oz"
           end
-          dt(class: "text-bold") { "Flat" }
-          dd(class: "color-fg-muted") do
+          dt(style: "font-weight: 600;") { "Flat" }
+          dd(style: "color: var(--fgColor-muted);") do
             raw "Up to 15 &times; 12 in, 13 oz"
           end
         end
