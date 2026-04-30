@@ -110,15 +110,15 @@
 
   const bgColors = {
     secondary: 'var(--bgColor-muted)',
-    accent: 'var(--bgColor-accent-muted, #ddf4ff)',
-    success: 'var(--bgColor-success-muted, #dafbe1)',
-    danger: 'var(--bgColor-danger-muted, #ffebe9)'
+    accent: 'var(--bgColor-accent-muted)',
+    success: 'var(--bgColor-success-muted)',
+    danger: 'var(--bgColor-danger-muted)'
   };
   const borderColors = {
     secondary: 'var(--borderColor-default)',
-    accent: 'var(--borderColor-accent-muted, #54aeff)',
-    success: 'var(--borderColor-success-muted, #aceebb)',
-    danger: 'var(--borderColor-danger-muted, #ffcecb)'
+    accent: 'var(--borderColor-accent-muted)',
+    success: 'var(--borderColor-success-muted)',
+    danger: 'var(--borderColor-danger-muted)'
   };
 
   function getStatPills() {
@@ -138,8 +138,8 @@
 
   function setActivePill(pill) {
     const scheme = pill.dataset.scheme;
-    pill.style.borderColor = 'var(--fgColor-default, #1f2328)';
-    pill.style.boxShadow = '0 0 0 1px var(--fgColor-default, #1f2328)';
+    pill.style.borderColor = 'var(--fgColor-default)';
+    pill.style.boxShadow = '0 0 0 1px var(--fgColor-default)';
   }
 
   function updateDisplay() {

@@ -9,11 +9,11 @@ class Components::Batches::Form < Components::Base
 
   def view_template
     if batch.errors.any?
-      div(style: "background: var(--bgColor-danger-muted, #ffebe6); border: 1px solid var(--borderColor-danger-muted, #ff8182); border-radius: 6px; padding: 12px 16px; margin-bottom: 16px;") do
-        p(style: "font-size: 14px; font-weight: 600; color: var(--fgColor-danger, #ae1c17); margin: 0 0 8px 0;") do
+      div(style: "background: var(--bgColor-danger-muted); border: 1px solid var(--borderColor-danger-muted); border-radius: 6px; padding: 12px 16px; margin-bottom: 16px;") do
+        p(style: "font-size: 14px; font-weight: 600; color: var(--fgColor-danger); margin: 0 0 8px 0;") do
           plain "#{batch.errors.count} error(s) prohibited this batch from being saved:"
         end
-        ul(style: "margin: 0; padding-left: 20px; color: var(--fgColor-danger, #ae1c17); font-size: 13px;") do
+        ul(style: "margin: 0; padding-left: 20px; color: var(--fgColor-danger); font-size: 13px;") do
           batch.errors.full_messages.each do |message|
             li { message }
           end
@@ -25,9 +25,9 @@ class Components::Batches::Form < Components::Base
       div(style: "display: flex; flex-direction: column; gap: 16px;") do
         # File input
         div do
-          label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--fgColor-default, #24292f);") do
+          label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--fgColor-default);") do
             plain "CSV File"
-            span(style: "color: var(--fgColor-danger, #ae1c17); margin-left: 2px;") { "*" }
+            span(style: "color: var(--fgColor-danger); margin-left: 2px;") { "*" }
           end
           p(style: "font-size: 13px; color: var(--fgColor-muted); margin: 0 0 6px 0;") do
             plain "Upload a CSV file with addresses to process"

@@ -62,6 +62,6 @@ class Components::Shared::Pagination < Components::Base
   end
 
   def current_style
-    "padding: 6px 10px; border-radius: 6px; background: var(--bgColor-accent-emphasis); color: #fff; font-weight: 600; font-size: 14px;"
+    "padding: 6px 10px; border-radius: 6px; background: var(--bgColor-accent-emphasis); color: var(--fgColor-onEmphasis); font-weight: 600; font-size: 14px;"
   end
 end

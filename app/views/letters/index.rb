@@ -68,10 +68,10 @@ class Views::Letters::Index < Views::Base
            end
 
     schemes = {
-      secondary: { bg: "var(--bgColor-muted)", border: "var(--borderColor-default)", active_bg: "#444c56" },
-      accent: { bg: "var(--bgColor-accent-muted)", border: "var(--borderColor-accent-muted)", active_bg: "#0969da" },
-      success: { bg: "var(--bgColor-success-muted)", border: "var(--borderColor-success-muted)", active_bg: "#238636" },
-      attention: { bg: "var(--bgColor-attention-muted)", border: "var(--borderColor-attention-muted)", active_bg: "#9e6a03" }
+      secondary: { bg: "var(--bgColor-muted)", border: "var(--borderColor-default)", active_bg: "var(--bgColor-neutral-emphasis)" },
+      accent: { bg: "var(--bgColor-accent-muted)", border: "var(--borderColor-accent-muted)", active_bg: "var(--bgColor-accent-emphasis)" },
+      success: { bg: "var(--bgColor-success-muted)", border: "var(--borderColor-success-muted)", active_bg: "var(--bgColor-success-emphasis)" },
+      attention: { bg: "var(--bgColor-attention-muted)", border: "var(--borderColor-attention-muted)", active_bg: "var(--bgColor-attention-emphasis)" }
     }
     s = schemes[scheme]
 
@@ -81,7 +81,7 @@ class Views::Letters::Index < Views::Base
              "background: #{is_active ? s[:active_bg] : s[:bg]}; " \
              "border: 1px solid #{is_active ? s[:active_bg] : s[:border]}; " \
              "border-radius: 6px; text-decoration: none; " \
-             "color: #{is_active ? '#fff' : 'inherit'}; font-size: 14px;"
+             "color: #{is_active ? 'var(--fgColor-onEmphasis)' : 'inherit'}; font-size: 14px;"
     ) do
       span(style: "font-weight: 600;") { count.to_s }
       span(style: is_active ? "" : "color: var(--fgColor-muted);") { label }

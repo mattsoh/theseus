@@ -10,11 +10,11 @@ class Components::ReturnAddresses::Form < Components::Base
 
   def view_template
     if return_address.errors.any?
-      div(style: "background: var(--bgColor-danger-muted, #ffebe6); border: 1px solid var(--borderColor-danger-muted, #ff8182); border-radius: 6px; padding: 12px 16px; margin-bottom: 16px;") do
-        p(style: "font-size: 14px; font-weight: 600; color: var(--fgColor-danger, #ae1c17); margin: 0 0 8px 0;") do
+      div(style: "background: var(--bgColor-danger-muted); border: 1px solid var(--borderColor-danger-muted); border-radius: 6px; padding: 12px 16px; margin-bottom: 16px;") do
+        p(style: "font-size: 14px; font-weight: 600; color: var(--fgColor-danger); margin: 0 0 8px 0;") do
           plain "#{return_address.errors.count} error(s) prohibited this return address from being saved:"
         end
-        ul(style: "margin: 0; padding-left: 20px; color: var(--fgColor-danger, #ae1c17); font-size: 13px;") do
+        ul(style: "margin: 0; padding-left: 20px; color: var(--fgColor-danger); font-size: 13px;") do
           return_address.errors.full_messages.each do |message|
             li { message }
           end
@@ -79,13 +79,13 @@ class Components::ReturnAddresses::Form < Components::Base
         end
 
         div do
-          label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--fgColor-default, #24292f);") do
+          label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--fgColor-default);") do
             plain "Country"
-            span(style: "color: var(--fgColor-danger, #ae1c17); margin-left: 2px;") { "*" }
+            span(style: "color: var(--fgColor-danger); margin-left: 2px;") { "*" }
           end
           select(
             name: "return_address[country]",
-            style: "width: 100%; padding: 8px 12px; font-size: 14px; border: 1px solid var(--borderColor-default, #d0d7de); border-radius: 6px; background: var(--bgColor-default, #fff); color: var(--fgColor-default, #24292f);"
+            style: "width: 100%; padding: 8px 12px; font-size: 14px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
           ) do
             option(value: "") { "Select a country..." }
             ReturnAddress.countries_for_select.each do |code, name|
@@ -98,7 +98,7 @@ class Components::ReturnAddresses::Form < Components::Base
           end
         end
 
-        div(style: "padding: 12px; background: var(--bgColor-muted, #f6f8fa); border-radius: 6px; border: 1px solid var(--borderColor-default, #d0d7de);") do
+        div(style: "padding: 12px; background: var(--bgColor-muted); border-radius: 6px; border: 1px solid var(--borderColor-default);") do
           render Primer::Alpha::CheckBox.new(
             name: "return_address[shared]",
             label: "Make this address shared",

@@ -83,13 +83,13 @@ class Views::Warehouse::SKUs::Index < Views::Base
     bg_colors = {
       success: "var(--bgColor-success-muted)",
       attention: "var(--bgColor-attention-muted)",
-      danger: "var(--bgColor-danger-muted, #ffebe9)",
+      danger: "var(--bgColor-danger-muted)",
       secondary: "var(--bgColor-muted)"
     }
     border_colors = {
-      success: "var(--borderColor-success-muted, #aceebb)",
-      attention: "var(--borderColor-attention-muted, #f5e0a3)",
-      danger: "var(--borderColor-danger-muted, #ffcecb)",
+      success: "var(--borderColor-success-muted)",
+      attention: "var(--borderColor-attention-muted)",
+      danger: "var(--borderColor-danger-muted)",
       secondary: "var(--borderColor-default)"
     }
 
@@ -103,20 +103,20 @@ class Views::Warehouse::SKUs::Index < Views::Base
     bg_colors = {
       success: "var(--bgColor-success-muted)",
       attention: "var(--bgColor-attention-muted)",
-      danger: "var(--bgColor-danger-muted, #ffebe9)",
+      danger: "var(--bgColor-danger-muted)",
       secondary: "var(--bgColor-muted)"
     }
     border_colors = {
-      success: "var(--borderColor-success-muted, #aceebb)",
-      attention: "var(--borderColor-attention-muted, #f5e0a3)",
-      danger: "var(--borderColor-danger-muted, #ffcecb)",
+      success: "var(--borderColor-success-muted)",
+      attention: "var(--borderColor-attention-muted)",
+      danger: "var(--borderColor-danger-muted)",
       secondary: "var(--borderColor-default)"
     }
     dark_bg_colors = {
-      success: "var(--bgColor-success-muted, #2d333b)",
-      attention: "var(--bgColor-attention-muted, #2d333b)",
-      danger: "var(--bgColor-danger-muted, #2d333b)",
-      secondary: "var(--bgColor-muted, #2d333b)"
+      success: "var(--bgColor-success-muted)",
+      attention: "var(--bgColor-attention-muted)",
+      danger: "var(--bgColor-danger-muted)",
+      secondary: "var(--bgColor-muted)"
     }
 
     button(
@@ -225,14 +225,14 @@ class Views::Warehouse::SKUs::Index < Views::Base
       table(style: "width: 100%; border-collapse: collapse; font-size: 13px;") do
         thead do
           tr(style: "background: var(--bgColor-muted); border-bottom: 1px solid var(--borderColor-default);") do
-            th(style: "padding: 12px 16px; text-align: left; font-weight: 600; color: var(--fgColor-default, #1f2328);") { "SKU" }
-            th(style: "padding: 12px 16px; text-align: left; font-weight: 600; color: var(--fgColor-default, #1f2328);") { "Name" }
-            th(style: "padding: 12px 16px; text-align: left; font-weight: 600; color: var(--fgColor-default, #1f2328);") { "Category" }
-            th(style: "padding: 12px 16px; text-align: right; font-weight: 600; color: var(--fgColor-default, #1f2328);") { "Stock" }
-            th(style: "padding: 12px 16px; text-align: right; font-weight: 600; color: var(--fgColor-default, #1f2328);") { "Inbound" }
-            th(style: "padding: 12px 16px; text-align: right; font-weight: 600; color: var(--fgColor-default, #1f2328);") { "Cost" }
-            th(style: "padding: 12px 16px; text-align: left; font-weight: 600; color: var(--fgColor-default, #1f2328);") { "Status" }
-            th(style: "padding: 12px 16px; text-align: center; font-weight: 600; color: var(--fgColor-default, #1f2328);") { "Actions" }
+            th(style: "padding: 12px 16px; text-align: left; font-weight: 600; color: var(--fgColor-default);") { "SKU" }
+            th(style: "padding: 12px 16px; text-align: left; font-weight: 600; color: var(--fgColor-default);") { "Name" }
+            th(style: "padding: 12px 16px; text-align: left; font-weight: 600; color: var(--fgColor-default);") { "Category" }
+            th(style: "padding: 12px 16px; text-align: right; font-weight: 600; color: var(--fgColor-default);") { "Stock" }
+            th(style: "padding: 12px 16px; text-align: right; font-weight: 600; color: var(--fgColor-default);") { "Inbound" }
+            th(style: "padding: 12px 16px; text-align: right; font-weight: 600; color: var(--fgColor-default);") { "Cost" }
+            th(style: "padding: 12px 16px; text-align: left; font-weight: 600; color: var(--fgColor-default);") { "Status" }
+            th(style: "padding: 12px 16px; text-align: center; font-weight: 600; color: var(--fgColor-default);") { "Actions" }
           end
         end
         tbody(id: "flat-table-body") do
@@ -251,10 +251,10 @@ class Views::Warehouse::SKUs::Index < Views::Base
                 sort_stock: sku.in_stock.to_i
               }
             ) do
-              td(style: "padding: 12px 16px; font-family: var(--fontStack-monospace); font-weight: 600; color: var(--fgColor-accent, #0969da);") do
+              td(style: "padding: 12px 16px; font-family: var(--fontStack-monospace); font-weight: 600; color: var(--fgColor-accent);") do
                 a(href: warehouse_sku_path(sku), style: "text-decoration: none; color: inherit;") { sku.sku }
               end
-              td(style: "padding: 12px 16px; color: var(--fgColor-default, #1f2328);") { sku.name }
+              td(style: "padding: 12px 16px; color: var(--fgColor-default);") { sku.name }
               td(style: "padding: 12px 16px; color: var(--fgColor-muted);") { sku.category&.humanize || "Uncategorized" }
               td(style: "padding: 12px 16px; text-align: right; font-weight: 600;") { sku.in_stock&.to_s || "—" }
               td(style: "padding: 12px 16px; text-align: right; color: var(--fgColor-muted);") { sku.inbound&.to_s || "—" }
@@ -306,28 +306,22 @@ class Views::Warehouse::SKUs::Index < Views::Base
 
           function setActivePill(pill) {
             const scheme = pill.dataset.scheme;
-            const darkColors = {
-              success: '#238636',
-              attention: '#9e6a03',
-              danger: '#da3633',
-              secondary: '#444c56'
+            const emphasisColors = {
+              success: 'var(--bgColor-success-emphasis)',
+              attention: 'var(--bgColor-attention-emphasis)',
+              danger: 'var(--bgColor-danger-emphasis)',
+              secondary: 'var(--bgColor-neutral-emphasis)'
             };
-            const lightColors = {
-              success: '#dafbe1',
-              attention: '#fff8c5',
-              danger: '#ffebe9',
-              secondary: '#f6f8fa'
-            };
-            
-            pill.style.background = darkColors[scheme];
-            pill.style.borderColor = darkColors[scheme];
-            pill.style.color = '#ffffff';
+
+            pill.style.background = emphasisColors[scheme];
+            pill.style.borderColor = emphasisColors[scheme];
+            pill.style.color = 'var(--fgColor-onEmphasis)';
             pill.style.fontWeight = '700';
             pill.style.boxShadow = '0 0 0 3px rgba(0,0,0,0.1)';
             
             const divs = pill.querySelectorAll('div');
             divs.forEach(div => {
-              div.style.color = '#ffffff';
+              div.style.color = 'var(--fgColor-onEmphasis)';
             });
           }
 
@@ -336,13 +330,13 @@ class Views::Warehouse::SKUs::Index < Views::Base
             const bgColors = {
               success: 'var(--bgColor-success-muted)',
               attention: 'var(--bgColor-attention-muted)',
-              danger: 'var(--bgColor-danger-muted, #ffebe9)',
+              danger: 'var(--bgColor-danger-muted)',
               secondary: 'var(--bgColor-muted)'
             };
             const borderColors = {
-              success: 'var(--borderColor-success-muted, #aceebb)',
-              attention: 'var(--borderColor-attention-muted, #f5e0a3)',
-              danger: 'var(--borderColor-danger-muted, #ffcecb)',
+              success: 'var(--borderColor-success-muted)',
+              attention: 'var(--borderColor-attention-muted)',
+              danger: 'var(--borderColor-danger-muted)',
               secondary: 'var(--borderColor-default)'
             };
             
@@ -558,12 +552,12 @@ class Views::Warehouse::SKUs::Index < Views::Base
     div(style: "display: flex; align-items: flex-start; justify-content: space-between; width: 100%; gap: 16px;") do
       div(style: "flex: 1; min-width: 0;") do
         div(style: "display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;") do
-          a(href: warehouse_sku_path(sku), style: "font-weight: 600; font-family: var(--fontStack-monospace); font-size: 13px; text-decoration: none; color: var(--fgColor-accent, #0969da);") { sku.sku }
+          a(href: warehouse_sku_path(sku), style: "font-weight: 600; font-family: var(--fontStack-monospace); font-size: 13px; text-decoration: none; color: var(--fgColor-accent);") { sku.sku }
           stock_badge(sku)
           render(Primer::Beta::Label.new(scheme: :accent, size: :medium)) { "AI enabled" } if sku.ai_enabled
           render(Primer::Beta::Label.new(scheme: :secondary, size: :medium)) { "Disabled" } unless sku.enabled
         end
-        div(style: "font-size: 14px; color: var(--fgColor-default, #1f2328);") { sku.name }
+        div(style: "font-size: 14px; color: var(--fgColor-default);") { sku.name }
         if sku.description.present? && sku.description != sku.name
           div(style: "font-size: 13px; color: var(--fgColor-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 500px;") { sku.description }
         end
