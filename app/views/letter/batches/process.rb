@@ -71,9 +71,18 @@ class Views::Letter::Batches::Process < Views::Base
             header.with_title(tag: :h3) { "Options" }
           end
           box.with_body do
-            label(style: "display: flex; align-items: center; gap: 8px; cursor: pointer;") do
+            label(style: "display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 12px;") do
               input(type: "checkbox", name: "batch[include_qr_code]", value: "1", checked: true)
               span { "Include QR code on labels" }
+            end
+            div do
+              label(style: "display: flex; align-items: center; gap: 8px; cursor: pointer;") do
+                input(type: "checkbox", name: "batch[non_machinable]", value: "1", id: "batch_non_machinable")
+                span { "Non-machinable surcharge" }
+              end
+              p(style: "color: var(--fgColor-muted); font-size: 12px; margin: 4px 0 0 28px;") do
+                plain "Check this if the mail pieces are rigid, square, or otherwise non-machinable (e.g. envelopes containing circuit boards, pins, or other bulky items)."
+              end
             end
           end
         end
@@ -241,10 +250,12 @@ class Views::Letter::Batches::Process < Views::Base
             'input[name="batch[us_postage_type]"], input[name="batch[intl_postage_type]"]'
           );
           var paymentSelect = document.getElementById('batch_usps_payment_account_id');
+          var nonMachinableCheckbox = document.getElementById('batch_non_machinable');
 
           function updateCosts() {
             var usType = document.querySelector('input[name="batch[us_postage_type]"]:checked').value;
             var intlType = document.querySelector('input[name="batch[intl_postage_type]"]:checked').value;
+            var nonMachinable = nonMachinableCheckbox ? nonMachinableCheckbox.checked : false;
 
             if (paymentSelect) {
               paymentSelect.required = (usType === 'indicia' || intlType === 'indicia');
@@ -256,7 +267,7 @@ class Views::Letter::Batches::Process < Views::Base
                 'Content-Type': 'application/json',
                 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
               },
-              body: JSON.stringify({ us_postage_type: usType, intl_postage_type: intlType })
+              body: JSON.stringify({ us_postage_type: usType, intl_postage_type: intlType, non_machinable: nonMachinable })
             })
             .then(function(r) { return r.json(); })
             .then(function(data) {
@@ -269,6 +280,7 @@ class Views::Letter::Batches::Process < Views::Base
           postageInputs.forEach(function(input) {
             input.addEventListener('change', updateCosts);
           });
+          if (nonMachinableCheckbox) nonMachinableCheckbox.addEventListener('change', updateCosts);
         })();
       JS
     end
