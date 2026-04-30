@@ -1,22 +1,28 @@
 <% content_for :title, "Template Previews" %>
 
-<div class="max-w-4xl mx-auto p-8">
-  <h1 class="text-3xl font-bold mb-8">Letter Template Previews</h1>
-  
-  <div class="grid gap-4">
-    <% @templates.each do |template| %>
-      <div class="border rounded-lg p-4 bg-white shadow-sm">
-        <h2 class="text-xl font-semibold mb-2"><%= template.to_s.split("::").last.humanize %></h2>
-        <p class="text-gray-600 mb-4 font-mono text-sm"><%= template %></p>
-        <div class="flex gap-3">
-          <%= link_to "Preview PDF", template_preview_path(template), 
-              target: "_blank", 
-              class: "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" %>
-          <%= link_to "Preview with QR", template_preview_path(template, qr: true), 
-              target: "_blank", 
-              class: "bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded" %>
+<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px 0;">Letter Template Previews</h1>
+
+  <%= render Primer::Beta::BorderBox.new do |box|
+    @templates.each do |template|
+      box.with_row do %>
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <div>
+            <div style="font-weight: 600;"><%= template.to_s.split("::").last.humanize %></div>
+            <code style="font-size: 12px; color: var(--fgColor-muted);"><%= template %></code>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <%= render Primer::Beta::Button.new(tag: :a, href: template_preview_path(template), scheme: :secondary, size: :small, target: "_blank") do |btn|
+              btn.with_leading_visual_icon(icon: :file)
+              "Preview PDF"
+            end %>
+            <%= render Primer::Beta::Button.new(tag: :a, href: template_preview_path(template, qr: true), scheme: :secondary, size: :small, target: "_blank") do |btn|
+              btn.with_leading_visual_icon(icon: :file)
+              "With QR"
+            end %>
+          </div>
         </div>
-      </div>
-    <% end %>
-  </div>
+      <% end
+    end
+  end %>
 </div>

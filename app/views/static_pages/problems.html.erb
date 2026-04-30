@@ -1,113 +1,141 @@
-<h1>Problems</h1>
+<% content_for :title, "Problems" %>
 
-<% if @blocking.empty? && @no_po_cost.empty? && @backordered.empty? && @stuck_orders.empty? %>
-  <p>no problems! go take a nap or something.</p>
-<% end %>
+<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px 0;">Problems</h1>
 
-<% if @blocking.any? %>
-  <h2 style="color: red;">Dispatch blockers</h2>
-  <p>These enabled SKUs have <strong>no cost data at all</strong> &mdash; no PO cost, no override. Any order containing them will refuse to dispatch.</p>
-  <table class="table-fixed text-left border border-gray-300 border-collapse" style="width: 100%;">
-    <tr>
-      <th class="border border-gray-300">SKU</th>
-      <th class="border border-gray-300">Name</th>
-      <th class="border border-gray-300">In stock</th>
-      <th class="border border-gray-300">Zenventory</th>
-    </tr>
-    <% @blocking.each do |sku| %>
-      <tr>
-        <td class="border border-gray-400"><%= link_to sku.sku, warehouse_sku_path(sku) %></td>
-        <td class="border border-gray-400"><%= sku.name %></td>
-        <td class="border border-gray-400"><%= sku.in_stock || "—" %></td>
-        <td class="border border-gray-400">
-          <% if sku.zenventory_url %>
-            <%= link_to "view", sku.zenventory_url, target: "_blank" %>
-          <% end %>
-        </td>
-      </tr>
-    <% end %>
-  </table>
-<% end %>
+  <% if @blocking.empty? && @no_po_cost.empty? && @backordered.empty? && @stuck_orders.empty? %>
+    <%= render Primer::Beta::Blankslate.new(border: true) do |bs|
+      bs.with_visual_icon(icon: :check_circle)
+      bs.with_heading(tag: :h2) { "No problems!" }
+      bs.with_description { "Go take a nap or something." }
+    end %>
+  <% end %>
 
-<% if @no_po_cost.any? %>
-  <h2 style="color: orange;">Missing PO cost data</h2>
-  <p>These enabled SKUs have no <code>average_po_cost</code> from Zenventory but are covered by an override or other fallback. They work, but the PO data in Zenventory should be fixed.</p>
-  <table class="table-fixed text-left border border-gray-300 border-collapse" style="width: 100%;">
-    <tr>
-      <th class="border border-gray-300">SKU</th>
-      <th class="border border-gray-300">Name</th>
-      <th class="border border-gray-300">Declared cost</th>
-      <th class="border border-gray-300">Source</th>
-      <th class="border border-gray-300">Zenventory</th>
-    </tr>
-    <% @no_po_cost.each do |sku| %>
-      <tr>
-        <td class="border border-gray-400"><%= link_to sku.sku, warehouse_sku_path(sku) %></td>
-        <td class="border border-gray-400"><%= sku.name %></td>
-        <td class="border border-gray-400"><%= number_to_currency sku.declared_unit_cost %></td>
-        <td class="border border-gray-400">
-          <% if sku.declared_unit_cost_override&.positive? %>
-            override
-          <% else %>
-            ???
-          <% end %>
-        </td>
-        <td class="border border-gray-400">
-          <% if sku.zenventory_url %>
-            <%= link_to "view", sku.zenventory_url, target: "_blank" %>
-          <% end %>
-        </td>
-      </tr>
-    <% end %>
-  </table>
-<% end %>
+  <% if @blocking.any? %>
+    <div style="margin-bottom: 32px;">
+      <h2 style="font-size: 16px; font-weight: 600; margin: 0 0 8px 0; color: var(--fgColor-danger);">Dispatch Blockers</h2>
+      <p style="color: var(--fgColor-muted); font-size: 14px; margin: 0 0 12px 0;">These enabled SKUs have no cost data at all — no PO cost, no override. Orders containing them will refuse to dispatch.</p>
+      <%= render Primer::Beta::BorderBox.new do |box|
+        box.with_header do %>
+          <div style="display: flex; justify-content: space-between; width: 100%;">
+            <span style="font-weight: 600; min-width: 120px;">SKU</span>
+            <span style="font-weight: 600; flex: 1;">Name</span>
+            <span style="font-weight: 600; min-width: 80px; text-align: right;">In Stock</span>
+            <span style="font-weight: 600; min-width: 100px; text-align: right;">Zenventory</span>
+          </div>
+        <% end
+        @blocking.each do |sku|
+          box.with_row do %>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+              <code style="min-width: 120px;"><%= link_to sku.sku, warehouse_sku_path(sku), style: "color: var(--fgColor-accent);" %></code>
+              <span style="flex: 1;"><%= sku.name %></span>
+              <span style="min-width: 80px; text-align: right;"><%= sku.in_stock || "—" %></span>
+              <span style="min-width: 100px; text-align: right;">
+                <% if sku.zenventory_url %>
+                  <%= link_to "view", sku.zenventory_url, target: "_blank", style: "color: var(--fgColor-accent); font-size: 13px;" %>
+                <% end %>
+              </span>
+            </div>
+          <% end
+        end
+      end %>
+    </div>
+  <% end %>
 
-<% if @backordered.any? %>
-  <h2 style="color: orange;">Backordered without enough inbound</h2>
-  <p>These SKUs are oversold and don't have enough inbound stock to cover the deficit.</p>
-  <table class="table-fixed text-left border border-gray-300 border-collapse" style="width: 100%;">
-    <tr>
-      <th class="border border-gray-300">SKU</th>
-      <th class="border border-gray-300">Name</th>
-      <th class="border border-gray-300">In stock</th>
-      <th class="border border-gray-300">Inbound</th>
-      <th class="border border-gray-300">Shortfall</th>
-    </tr>
-    <% @backordered.each do |sku| %>
-      <tr>
-        <td class="border border-gray-400"><%= link_to sku.sku, warehouse_sku_path(sku) %></td>
-        <td class="border border-gray-400"><%= sku.name %></td>
-        <td class="border border-gray-400" style="color: red;"><%= sku.in_stock %></td>
-        <td class="border border-gray-400"><%= sku.inbound || 0 %></td>
-        <td class="border border-gray-400" style="color: red;"><%= sku.in_stock.abs - (sku.inbound || 0) %></td>
-      </tr>
-    <% end %>
-  </table>
-<% end %>
+  <% if @no_po_cost.any? %>
+    <div style="margin-bottom: 32px;">
+      <h2 style="font-size: 16px; font-weight: 600; margin: 0 0 8px 0; color: var(--fgColor-attention);">Missing PO Cost Data</h2>
+      <p style="color: var(--fgColor-muted); font-size: 14px; margin: 0 0 12px 0;">These enabled SKUs have no <code>average_po_cost</code> from Zenventory but are covered by a fallback. The PO data should be fixed.</p>
+      <%= render Primer::Beta::BorderBox.new do |box|
+        box.with_header do %>
+          <div style="display: flex; justify-content: space-between; width: 100%;">
+            <span style="font-weight: 600; min-width: 120px;">SKU</span>
+            <span style="font-weight: 600; flex: 1;">Name</span>
+            <span style="font-weight: 600; min-width: 80px; text-align: right;">Cost</span>
+            <span style="font-weight: 600; min-width: 80px; text-align: right;">Source</span>
+            <span style="font-weight: 600; min-width: 100px; text-align: right;">Zenventory</span>
+          </div>
+        <% end
+        @no_po_cost.each do |sku|
+          box.with_row do %>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+              <code style="min-width: 120px;"><%= link_to sku.sku, warehouse_sku_path(sku), style: "color: var(--fgColor-accent);" %></code>
+              <span style="flex: 1;"><%= sku.name %></span>
+              <span style="min-width: 80px; text-align: right;"><%= number_to_currency(sku.declared_unit_cost) %></span>
+              <span style="min-width: 80px; text-align: right; color: var(--fgColor-muted);">
+                <%= sku.declared_unit_cost_override&.positive? ? "override" : "???" %>
+              </span>
+              <span style="min-width: 100px; text-align: right;">
+                <% if sku.zenventory_url %>
+                  <%= link_to "view", sku.zenventory_url, target: "_blank", style: "color: var(--fgColor-accent); font-size: 13px;" %>
+                <% end %>
+              </span>
+            </div>
+          <% end
+        end
+      end %>
+    </div>
+  <% end %>
 
-<% if @stuck_orders.any? %>
-  <h2 style="color: red;">Stuck orders</h2>
-  <p>These orders were dispatched to the warehouse over 2 weeks ago but never marked as mailed. Something might be wrong with the Zenventory sync, or they're stuck at the warehouse.</p>
-  <table class="table-fixed text-left border border-gray-300 border-collapse" style="width: 100%;">
-    <tr>
-      <th class="border border-gray-300">Order</th>
-      <th class="border border-gray-300">Recipient</th>
-      <th class="border border-gray-300">Dispatched</th>
-      <th class="border border-gray-300">Age</th>
-      <th class="border border-gray-300">Zenventory</th>
-    </tr>
-    <% @stuck_orders.each do |order| %>
-      <tr>
-        <td class="border border-gray-400"><%= link_to order.hc_id, warehouse_order_path(order) %></td>
-        <td class="border border-gray-400"><%= order.recipient_email %></td>
-        <td class="border border-gray-400"><%= order.dispatched_at.strftime("%b %d, %Y") %></td>
-        <td class="border border-gray-400" style="color: red;"><%= distance_of_time_in_words_to_now(order.dispatched_at) %> ago</td>
-        <td class="border border-gray-400">
-          <% if order.zenventory_url %>
-            <%= link_to "view", order.zenventory_url, target: "_blank" %>
-          <% end %>
-        </td>
-      </tr>
-    <% end %>
-  </table>
-<% end %>
+  <% if @backordered.any? %>
+    <div style="margin-bottom: 32px;">
+      <h2 style="font-size: 16px; font-weight: 600; margin: 0 0 8px 0; color: var(--fgColor-attention);">Backordered Without Enough Inbound</h2>
+      <p style="color: var(--fgColor-muted); font-size: 14px; margin: 0 0 12px 0;">These SKUs are oversold and don't have enough inbound stock to cover the deficit.</p>
+      <%= render Primer::Beta::BorderBox.new do |box|
+        box.with_header do %>
+          <div style="display: flex; justify-content: space-between; width: 100%;">
+            <span style="font-weight: 600; min-width: 120px;">SKU</span>
+            <span style="font-weight: 600; flex: 1;">Name</span>
+            <span style="font-weight: 600; min-width: 80px; text-align: right;">In Stock</span>
+            <span style="font-weight: 600; min-width: 80px; text-align: right;">Inbound</span>
+            <span style="font-weight: 600; min-width: 80px; text-align: right;">Shortfall</span>
+          </div>
+        <% end
+        @backordered.each do |sku|
+          box.with_row do %>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+              <code style="min-width: 120px;"><%= link_to sku.sku, warehouse_sku_path(sku), style: "color: var(--fgColor-accent);" %></code>
+              <span style="flex: 1;"><%= sku.name %></span>
+              <span style="min-width: 80px; text-align: right; color: var(--fgColor-danger); font-weight: 600;"><%= sku.in_stock %></span>
+              <span style="min-width: 80px; text-align: right;"><%= sku.inbound || 0 %></span>
+              <span style="min-width: 80px; text-align: right; color: var(--fgColor-danger); font-weight: 600;"><%= sku.in_stock.abs - (sku.inbound || 0) %></span>
+            </div>
+          <% end
+        end
+      end %>
+    </div>
+  <% end %>
+
+  <% if @stuck_orders.any? %>
+    <div style="margin-bottom: 32px;">
+      <h2 style="font-size: 16px; font-weight: 600; margin: 0 0 8px 0; color: var(--fgColor-danger);">Stuck Orders</h2>
+      <p style="color: var(--fgColor-muted); font-size: 14px; margin: 0 0 12px 0;">Dispatched over 2 weeks ago but never marked as mailed. Possible Zenventory sync issue or stuck at warehouse.</p>
+      <%= render Primer::Beta::BorderBox.new do |box|
+        box.with_header do %>
+          <div style="display: flex; justify-content: space-between; width: 100%;">
+            <span style="font-weight: 600; min-width: 120px;">Order</span>
+            <span style="font-weight: 600; flex: 1;">Recipient</span>
+            <span style="font-weight: 600; min-width: 100px;">Dispatched</span>
+            <span style="font-weight: 600; min-width: 80px; text-align: right;">Age</span>
+            <span style="font-weight: 600; min-width: 100px; text-align: right;">Zenventory</span>
+          </div>
+        <% end
+        @stuck_orders.each do |order|
+          box.with_row do %>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+              <code style="min-width: 120px;"><%= link_to order.hc_id, warehouse_order_path(order), style: "color: var(--fgColor-accent);" %></code>
+              <span style="flex: 1;"><%= order.recipient_email %></span>
+              <span style="min-width: 100px;"><%= order.dispatched_at.strftime("%b %d, %Y") %></span>
+              <span style="min-width: 80px; text-align: right; color: var(--fgColor-danger);"><%= distance_of_time_in_words_to_now(order.dispatched_at) %></span>
+              <span style="min-width: 100px; text-align: right;">
+                <% if order.zenventory_url %>
+                  <%= link_to "view", order.zenventory_url, target: "_blank", style: "color: var(--fgColor-accent); font-size: 13px;" %>
+                <% end %>
+              </span>
+            </div>
+          <% end
+        end
+      end %>
+    </div>
+  <% end %>
+</div>
