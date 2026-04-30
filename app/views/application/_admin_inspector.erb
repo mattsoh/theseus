@@ -6,9 +6,9 @@
 
     <% unless record.nil? %>
       <% if record.is_a?(Norairrecord::Table) %>
-        <%== ap record.fields%>
+        <%== sanitize(ap(record.fields), tags: %w[kbd span b i em strong code], attributes: %w[class style]) %>
       <% else %>
-        <%== ap record %>
+        <%== sanitize(ap(record), tags: %w[kbd span b i em strong code], attributes: %w[class style]) %>
       <% end %>
       <div class="border-left ml1">
 

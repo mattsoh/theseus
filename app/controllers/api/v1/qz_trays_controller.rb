@@ -3,6 +3,8 @@ module API
     class QZTraysController < ApplicationController
       before_action :set_cors_headers
       skip_before_action :verify_authenticity_token, only: [:sign]
+      skip_before_action :require_not_qz_only!
+      skip_before_action :authenticate!, only: [:preflight]
 
       def cert
         send_data QZTrayService.certificate
@@ -10,6 +12,10 @@ module API
 
       def sign
         send_data QZTrayService.sign(params.require(:request))
+      end
+
+      def preflight
+        head :ok
       end
 
       private

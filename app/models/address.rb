@@ -7,6 +7,7 @@
 #  country      :integer
 #  email        :string
 #  first_name   :string
+#  import_token :uuid
 #  last_name    :string
 #  line_1       :string
 #  line_2       :string
@@ -19,7 +20,8 @@
 #
 # Indexes
 #
-#  index_addresses_on_batch_id  (batch_id)
+#  index_addresses_on_batch_id      (batch_id)
+#  index_addresses_on_import_token  (import_token) WHERE (import_token IS NOT NULL)
 #
 # Foreign Keys
 #

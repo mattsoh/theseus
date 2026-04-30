@@ -5,11 +5,13 @@ module API
       attr_reader :current_user
 
       before_action :authenticate!
+      before_action :require_not_qz_only!
       before_action :set_expand
       before_action :set_pii
 
       include Pundit::Authorization
       include ActionController::HttpAuthentication::Token::ControllerMethods
+      include PaperTrail::Rails::Controller
 
       rescue_from Pundit::NotAuthorizedError do |e|
         render json: { error: "not_authorized" }, status: :forbidden
@@ -33,11 +35,25 @@ module API
 
       private
 
+      def user_for_paper_trail
+        current_user&.id
+      end
+
+      def info_for_paper_trail
+        { ip: request.remote_ip, api_key_id: current_token&.id }
+      end
+
       def set_expand
         @expand = params[:expand].to_s.split(",").map { |e| e.strip.to_sym }
       end
 
       def set_pii = @pii = current_token&.pii?
+
+      def require_not_qz_only!
+        if current_token&.qz_only?
+          render json: { error: "qz_only_key" }, status: :forbidden
+        end
+      end
 
       def authenticate!
         @current_token = authenticate_with_http_token { |t, _options| APIKey.find_by(token: t) }

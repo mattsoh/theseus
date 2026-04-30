@@ -1,0 +1,13 @@
+hey nora!! just ran the inventory sync and found some SKUs that will block dispatch.
+
+these enabled SKUs have NO cost data at all — no PO cost and no override. any order containing them will refuse to ship:
+<ul>
+<% @costless_skus.each do |sku| -%>
+  <li><%= link_to sku.sku, sku.zenventory_url || "#" %></li>
+<% end -%>
+</ul>
+
+you can fix this by adding a declared_unit_cost_override on the SKU.
+
+ok that's all!!
+- your favorite cronjob

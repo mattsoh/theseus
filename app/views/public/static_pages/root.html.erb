@@ -18,10 +18,12 @@
     <% else %>
       <p>if you're interested in <b>your</b> mail in particular, you can always...</p>
       <%= link_to public_login_path do %>
-        <button>
-          log in!
-        </button>
+        <button>log in with email</button>
       <% end %>
+      <form action="/auth/public_hackclub" method="post" style="display: inline">
+        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+        <button type="submit">log in with hack club auth</button>
+      </form>
     <% end %>
   </div>
 </div>
@@ -30,7 +32,7 @@
     <div class="title-bar-text">Letterboard</div>
   </div>
   <div class="window-body" style="padding: 0">
-    <iframe src="<%= this_week_leaderboards_path %>"></iframe>
+    <iframe src="<%= this_week_leaderboards_path %>" title="Letterboard"></iframe>
   </div>
 </div>
 <div class="window" style="width: 320px;">
@@ -41,6 +43,12 @@
     </div>
   </div>
   <div class="window-body" style="padding: 0">
-    <iframe src="<%= map_path %>" style="width: 320px; height: 200px; border: none;"></iframe>
+    <iframe id="map-iframe" data-src="<%= map_path %>" style="width: 320px; height: 200px; border: none;" title="Letter Tracking Map"></iframe>
   </div>
 </div>
+<script>
+  window.addEventListener("load", function() {
+    var iframe = document.getElementById("map-iframe");
+    if (iframe) iframe.src = iframe.dataset.src;
+  });
+</script>

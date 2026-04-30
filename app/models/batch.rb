@@ -13,7 +13,6 @@
 #  letter_weight               :decimal(, )
 #  letter_width                :decimal(, )
 #  tags                        :citext           default([]), is an Array
-#  template_cycle              :string           default([]), is an Array
 #  type                        :string           not null
 #  warehouse_user_facing_title :string
 #  created_at                  :datetime         not null
@@ -47,6 +46,8 @@
 #  fk_rails_...  (warehouse_template_id => warehouse_templates.id)
 #
 class Batch < ApplicationRecord
+  has_paper_trail
+
   include AASM
   include PublicIdentifiable
   set_public_id_prefix "bat"
@@ -165,58 +166,47 @@ class Batch < ApplicationRecord
   def run_map!
     rows = CSV.parse(csv_data, headers: true, converters: [->(s) { s&.strip&.delete(GREMLINS).presence }])
 
-    # Phase 1: Collect all address data
-    address_attributes = []
-    row_map = {}  # Keep rows in a hash
-    Parallel.each(rows.each_with_index, in_threads: 8) do |row, i|
+    # Phase 1: Build address attributes in parallel with correlation tokens
+    # Parallel.map returns results in input order and avoids shared mutable state
+    items = Parallel.map(rows.each_with_index, in_threads: 8) do |row, i|
       begin
-        # Skip rows where first_name is blank
         next if row[field_mapping["first_name"]].blank?
 
         address_attrs = build_address_attributes(row)
-        if address_attrs
-          address_attributes << address_attrs
-          row_map[i] = row  # Store row in hash
-        end
+        next unless address_attrs
+
+        # UUID token correlates this row with its address after bulk insert
+        { token: SecureRandom.uuid, row: row, attrs: address_attrs }
       rescue => e
         Rails.logger.error("Error processing row #{i} in batch #{id}: #{e.message}")
         raise
       end
+    end.compact
+
+    return mark_fields_mapped && save! if items.empty?
+
+    # Bulk insert addresses with correlation tokens
+    now = Time.current
+    address_attributes = items.map do |item|
+      item[:attrs].merge(batch_id: id, import_token: item[:token], created_at: now, updated_at: now)
     end
 
-    # Bulk insert all addresses
-    if address_attributes.any?
-      now = Time.current
-      address_attributes.each do |attrs|
-        attrs[:created_at] = now
-        attrs[:updated_at] = now
-        attrs[:batch_id] = id
-      end
+    Address.insert_all!(address_attributes)
 
-      begin
-        Address.insert_all!(address_attributes)
-      rescue ActiveRecord::RecordInvalid => e
-        Rails.logger.error("Failed to insert addresses: #{e.message}")
-        raise
-      end
+    # Phase 2: Fetch addresses by token and create associated records
+    tokens = items.map { |item| item[:token] }
+    addresses_by_token = Address.where(import_token: tokens).index_by(&:import_token)
 
-      # Phase 2: Create associated records (letters) for each address
-      # Fetch all addresses we just created
-      addresses = Address.where(batch_id: id).where(created_at: now).to_a
+    items.each do |item|
+      address = addresses_by_token.fetch(item[:token])
 
-      Parallel.each(addresses.each_with_index, in_threads: 8) do |address, i|
-        begin
-          ActiveRecord::Base.connection_pool.with_connection do
-            ActiveRecord::Base.transaction do
-              build_mapping(row_map[i], address)
-            end
-          end
-        rescue => e
-          Rails.logger.error("Error creating associated records for address #{address.id} in batch #{id}: #{e.message}")
-          raise
-        end
+      ActiveRecord::Base.transaction do
+        build_mapping(item[:row], address)
       end
     end
+
+    # Clear tokens after successful mapping
+    Address.where(import_token: tokens).update_all(import_token: nil)
 
     mark_fields_mapped
     save!
@@ -298,7 +288,6 @@ class Batch < ApplicationRecord
         end
       rescue => e
         Rails.logger.error("AI translation failed for batch #{id}: #{e.message}")
-        raise
       end
     end
 

@@ -56,9 +56,10 @@ group :development do
 end
 
 group :test do
-  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem "rspec-rails"
+  gem "factory_bot_rails"
 end
 
 gem "foreman", "~> 0.88.1"
@@ -175,6 +176,8 @@ gem "phlex-rails", "~> 2.3"
 gem "xsv", "~> 1.3"
 
 gem "phlex-pdf", "~> 0.1.2"
+
+gem "paper_trail", "~> 16.0"
 
 gem "ttfunk", github: "24c02/ttfunk"
 

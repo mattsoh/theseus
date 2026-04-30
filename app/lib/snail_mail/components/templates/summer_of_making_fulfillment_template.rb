@@ -43,15 +43,15 @@ module SnailMail
 
           # Render postal elements
           render_imb(124, 180-67-5, 200)
-          render_qr_code(5, 65, 60)
+          render_qr_code(5, 45, 40)
           render_letter_id(10, 19, 10)
 
-            bounding_box [10, 220 ],
+            bounding_box [10, 235 ],
                          width: 100,
-                         height: 140,
+                         height: 168,
                          valign: :bottom do
               font_size 8
-              font_size(10) { font("comic") { text "it's here!" } }
+              font_size(7) { font("comic") { text "it's here!" } }
               text "contents:", style: :bold
               font_size 6.2
               text letter.rubber_stamps.gsub(", ","\n") || ""

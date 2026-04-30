@@ -465,6 +465,7 @@ Rails.application.routes.draw do
         post :undo_mark_mailed
         post :mark_received
         post :clear_label
+        post :clear_indicium
         get :preview_template if Rails.env.development?
       end
     end
@@ -567,13 +568,13 @@ Rails.application.routes.draw do
       end
       resources :skus
     end
-    resources :users
     resources :return_addresses do
       member do
         post :set_as_home
       end
     end
     root "static_pages#index"
+    get "/problems" => "static_pages#problems"
 
     delete "signout", to: "sessions#destroy", as: :signout
     get "/login" => "static_pages#login"
@@ -587,6 +588,7 @@ Rails.application.routes.draw do
   get "/login" => "public/static_pages#login", as: :public_login
   post "/login" => "public/sessions#send_email", as: :send_email
   get "/login/:token", to: "public/sessions#login_code", as: :login_code
+  get "/auth/public_hackclub/callback", to: "public/sessions#hackclub_callback", as: :public_hackclub_callback
   delete "logout", to: "public/sessions#destroy", as: :public_logout
 
   scope :my do
