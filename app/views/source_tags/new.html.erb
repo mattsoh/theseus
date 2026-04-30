@@ -1,11 +1,11 @@
-<% content_for :title, "New source tag" %>
+<% content_for :title, "New Source Tag" %>
 
-<h1>New source tag</h1>
+<div style="max-width: 600px; margin: 0 auto; padding: 24px;">
+  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px 0;">New Source Tag</h1>
 
-<%= render "form", source_tag: @source_tag %>
+  <%= render "form", source_tag: @source_tag %>
 
-<br>
-
-<div>
-  <%= link_to "Back to source tags", source_tags_path %>
+  <div style="margin-top: 32px;">
+    <%= link_to "← Back to source tags", source_tags_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+  </div>
 </div>

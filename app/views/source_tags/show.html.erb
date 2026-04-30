@@ -1,8 +1,43 @@
-<%= render @source_tag %>
+<% content_for :title, @source_tag.name %>
 
-<div>
-  <%= link_to "Edit this source tag", edit_source_tag_path(@source_tag) %> |
-  <%= link_to "Back to source tags", source_tags_path %>
+<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
+        <h1 style="font-size: 24px; font-weight: 600; margin: 0;"><%= @source_tag.name %></h1>
+      </div>
+      <code style="color: var(--fgColor-muted);"><%= @source_tag.slug %></code>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <%= render Primer::Beta::Button.new(tag: :a, href: edit_source_tag_path(@source_tag), scheme: :secondary, size: :medium) do |btn|
+        btn.with_leading_visual_icon(icon: :pencil)
+        "Edit"
+      end %>
+    </div>
+  </div>
 
-  <%= button_to "Destroy this source tag", @source_tag, method: :delete %>
+  <%= render Primer::Beta::BorderBox.new(mb: 4) do |box|
+    box.with_row do %>
+      <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Slug</span><code><%= @source_tag.slug %></code></div>
+    <% end
+    box.with_row do %>
+      <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Name</span><span><%= @source_tag.name %></span></div>
+    <% end
+    box.with_row do %>
+      <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Owner</span><span><%= @source_tag.owner.presence || "—" %></span></div>
+    <% end
+  end %>
+
+  <div style="display: flex; gap: 8px; padding-top: 16px; border-top: 1px solid var(--borderColor-muted); margin-bottom: 24px;">
+    <%= form_with url: source_tag_path(@source_tag), method: :delete, data: { turbo_confirm: "Are you sure you want to delete this source tag?" }, style: "display: inline;" do %>
+      <%= render Primer::Beta::Button.new(type: :submit, scheme: :danger, size: :small) do |btn|
+        btn.with_leading_visual_icon(icon: :trash)
+        "Delete"
+      end %>
+    <% end %>
+  </div>
+
+  <div style="margin-top: 32px;">
+    <%= link_to "← Back to source tags", source_tags_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+  </div>
 </div>

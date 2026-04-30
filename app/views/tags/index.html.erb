@@ -1,15 +1,38 @@
 <% content_for :title, "Tags" %>
 
-<h1>Tags</h1>
-<div class="banner banner-info">
-  this page is kinda expensive so it's cached – if you want, click the refresh button
+<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <div>
+      <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Tags</h1>
+      <p style="color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;">Cost tracking and reporting by tag</p>
+    </div>
+    <%= form_with url: refresh_tags_path, method: :post, style: "display: inline;" do %>
+      <%= render Primer::Beta::Button.new(type: :submit, scheme: :secondary, size: :medium) do |btn|
+        btn.with_leading_visual_icon(icon: :sync)
+        "Refresh"
+      end %>
+    <% end %>
+  </div>
+
+  <%= render Primer::Beta::Flash.new(scheme: :default, mb: 3) do %>
+    This page is cached for performance. Hit refresh if you need fresh data.
+  <% end %>
+
+  <div style="margin-bottom: 24px;">
+    <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Common Tags</h2>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <% @common_tags.each do |tag| %>
+        <%= render(Primer::Beta::Label.new(tag: :a, href: tag_stats_path(tag.tag), scheme: :accent, size: :large)) { tag.tag } %>
+      <% end %>
+    </div>
+  </div>
+
+  <div>
+    <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">All Tags</h2>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <% @tags.each do |tag| %>
+        <%= render(Primer::Beta::Label.new(tag: :a, href: tag_stats_path(tag), scheme: :secondary, size: :medium)) { tag } %>
+      <% end %>
+    </div>
+  </div>
 </div>
-<%= button_to "↻", refresh_tags_path %>
-<h4>Common tags:</h4>
-<% @common_tags.each do |tag| %>
-  <%= render 'tag', tag: tag.tag %>
-<% end %>
-<h4>Other tags:</h4>
-<% @tags.each do |tag| %>
-  <%= render 'tag', tag: %>
-<% end %>

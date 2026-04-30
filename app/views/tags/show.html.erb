@@ -1,81 +1,121 @@
-<h1>Tag: "<%= @tag %>"</h1>
-<div class="time-period-selector" style="margin-bottom: var(--spacing);">
-  <span>currently showing:</span>
-  <select id="time_period">
-    <option value="all_time" <%= 'selected' if @time_period == 'all_time' %>>all-time</option>
-        <option value="ytd" <%= 'selected' if @time_period == 'ytd' %>>year-to-date</option>
-        <option value="month" <%= 'selected' if @time_period == 'month' %>>specific month</option>
-        <option value="last_week" <%= 'selected' if @time_period == 'last_week' %>>last week</option>
-        <option value="last_month" <%= 'selected' if @time_period == 'last_month' %>>last month</option>
-        <option value="last_year" <%= 'selected' if @time_period == 'last_year' %>>last year</option>
-      </select>
+<% content_for :title, "Tag: #{@tag}" %>
 
-      <span id="year_selector" style="display: <%= @time_period.in?(%w[ytd month]) ? 'inline' : 'none' %>">
-      <select id="year">
-        <% @years.each do |y| %>
-          <option value="<%= y %>" <%= 'selected' if y == @year %>><%= y %></option>
-          <% end %>
-        </select>
-      </span>
-      <span id="month_selector" style="display: <%= @time_period == 'month' ? 'inline' : 'none' %>">
-        <select id="month">
-          <% @months.each do |name, num| %>
-            <option value="<%= num %>" <%= 'selected' if num == @month %>><%= name %></option>
-            <% end %>
+<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+  <div style="margin-bottom: 24px;">
+    <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 8px 0;">
+      <%= render(Primer::Beta::Label.new(scheme: :accent, size: :large)) { @tag } %>
+    </h1>
+  </div>
+
+  <div style="margin-bottom: 24px;">
+    <%= render Primer::Beta::BorderBox.new do |box|
+      box.with_body do %>
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <span style="color: var(--fgColor-muted); font-size: 14px;">Showing:</span>
+          <select id="time_period" style="padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; font-size: 14px; background: var(--bgColor-default); color: var(--fgColor-default);">
+            <option value="all_time" <%= 'selected' if @time_period == 'all_time' %>>All-time</option>
+            <option value="ytd" <%= 'selected' if @time_period == 'ytd' %>>Year-to-date</option>
+            <option value="month" <%= 'selected' if @time_period == 'month' %>>Specific month</option>
+            <option value="last_week" <%= 'selected' if @time_period == 'last_week' %>>Last week</option>
+            <option value="last_month" <%= 'selected' if @time_period == 'last_month' %>>Last month</option>
+            <option value="last_year" <%= 'selected' if @time_period == 'last_year' %>>Last year</option>
           </select>
-        </span>
-        <button onclick="updateTimePeriod()">go!</button>
-      </div>
-      <br/>
-      <p>
-        <%= pluralize(@warehouse_order_count, 'warehouse order') %>, <%= pluralize(@letter_count, 'letter') %>
-      </p>
-      <p>
-        <b>Letter postage spent:</b>
-        <%= number_to_currency(@letter_postage_cost) %>
-      </p>
-      <br/>
-      <p>
-        <b>Warehouse costs:</b> <br/>
-        <br/>
-        <b>Postage:</b> <%= number_to_currency(@warehouse_order_postage_cost) %> <br/>
-        <b>Labor:</b> <%= number_to_currency(@warehouse_order_labor_cost) %> <br/>
-        <b>Contents:</b> <%= number_to_currency(@warehouse_order_contents_cost) %> <br/>
-        <b>Total:</b> <%= number_to_currency(@warehouse_order_total_cost) %>
-      </p>
-      <div>
-        <%= link_to "< back to tags", tags_path %>
-      </div>
-      <script>
-        function updateTimePeriod() {
-          const timePeriod = document.getElementById('time_period').value;
-          const year = document.getElementById('year').value;
-          const month = document.getElementById('month').value;
 
-          // Show/hide year and month selectors
-          document.getElementById('year_selector').style.display =
-            timePeriod === 'ytd' || timePeriod === 'month' ? 'inline' : 'none';
-          document.getElementById('month_selector').style.display =
-            timePeriod === 'month' ? 'inline' : 'none';
+          <span id="year_selector" style="display: <%= @time_period.in?(%w[ytd month]) ? 'inline' : 'none' %>">
+            <select id="year" style="padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; font-size: 14px; background: var(--bgColor-default); color: var(--fgColor-default);">
+              <% @years.each do |y| %>
+                <option value="<%= y %>" <%= 'selected' if y == @year %>><%= y %></option>
+              <% end %>
+            </select>
+          </span>
 
-          // Build URL
-          let url = '<%= tag_stats_path(@tag) %>?time_period=' + timePeriod;
-          if (timePeriod === 'ytd' || timePeriod === 'month') {
-            url += '&year=' + year;
-          }
-          if (timePeriod === 'month') {
-            url += '&month=' + month;
-          }
+          <span id="month_selector" style="display: <%= @time_period == 'month' ? 'inline' : 'none' %>">
+            <select id="month" style="padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; font-size: 14px; background: var(--bgColor-default); color: var(--fgColor-default);">
+              <% @months.each do |name, num| %>
+                <option value="<%= num %>" <%= 'selected' if num == @month %>><%= name %></option>
+              <% end %>
+            </select>
+          </span>
 
-          window.location.href = url;
-        }
+          <%= render Primer::Beta::Button.new(scheme: :secondary, size: :small, tag: :button, "onclick": "updateTimePeriod()") do
+            "Go"
+          end %>
+        </div>
+      <% end
+    end %>
+  </div>
 
-        // Update selectors visibility when time period changes
-        document.getElementById('time_period').addEventListener('change', function() {
-          const timePeriod = this.value;
-          document.getElementById('year_selector').style.display =
-            timePeriod === 'ytd' || timePeriod === 'month' ? 'inline' : 'none';
-          document.getElementById('month_selector').style.display =
-            timePeriod === 'month' ? 'inline' : 'none';
-        });
-      </script>
+  <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+    <div style="padding: 12px 16px; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px; text-align: center; min-width: 100px;">
+      <div style="font-size: 24px; font-weight: 600; line-height: 1;"><%= @warehouse_order_count %></div>
+      <div style="font-size: 12px; color: var(--fgColor-muted); margin-top: 4px;">Warehouse Orders</div>
+    </div>
+    <div style="padding: 12px 16px; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px; text-align: center; min-width: 100px;">
+      <div style="font-size: 24px; font-weight: 600; line-height: 1;"><%= @letter_count %></div>
+      <div style="font-size: 12px; color: var(--fgColor-muted); margin-top: 4px;">Letters</div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+    <div>
+      <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Letter Costs</h2>
+      <%= render Primer::Beta::BorderBox.new do |box|
+        box.with_row do %>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--fgColor-muted);">Postage</span>
+            <span style="font-weight: 600;"><%= number_to_currency(@letter_postage_cost) %></span>
+          </div>
+        <% end
+      end %>
+    </div>
+
+    <div>
+      <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Warehouse Costs</h2>
+      <%= render Primer::Beta::BorderBox.new do |box|
+        box.with_row do %>
+          <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Postage</span><span><%= number_to_currency(@warehouse_order_postage_cost) %></span></div>
+        <% end
+        box.with_row do %>
+          <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Labor</span><span><%= number_to_currency(@warehouse_order_labor_cost) %></span></div>
+        <% end
+        box.with_row do %>
+          <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Contents</span><span><%= number_to_currency(@warehouse_order_contents_cost) %></span></div>
+        <% end
+        box.with_footer do %>
+          <div style="display: flex; justify-content: space-between;"><span style="font-weight: 600;">Total</span><span style="font-weight: 600;"><%= number_to_currency(@warehouse_order_total_cost) %></span></div>
+        <% end
+      end %>
+    </div>
+  </div>
+
+  <div style="margin-top: 32px;">
+    <%= link_to "← Back to tags", tags_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+  </div>
+</div>
+
+<script>
+  function updateTimePeriod() {
+    const timePeriod = document.getElementById('time_period').value;
+    const year = document.getElementById('year').value;
+    const month = document.getElementById('month').value;
+
+    document.getElementById('year_selector').style.display =
+      timePeriod === 'ytd' || timePeriod === 'month' ? 'inline' : 'none';
+    document.getElementById('month_selector').style.display =
+      timePeriod === 'month' ? 'inline' : 'none';
+
+    let url = '<%= tag_stats_path(@tag) %>?time_period=' + timePeriod;
+    if (timePeriod === 'ytd' || timePeriod === 'month') url += '&year=' + year;
+    if (timePeriod === 'month') url += '&month=' + month;
+
+    window.location.href = url;
+  }
+
+  document.getElementById('time_period').addEventListener('change', function() {
+    const timePeriod = this.value;
+    document.getElementById('year_selector').style.display =
+      timePeriod === 'ytd' || timePeriod === 'month' ? 'inline' : 'none';
+    document.getElementById('month_selector').style.display =
+      timePeriod === 'month' ? 'inline' : 'none';
+  });
+</script>
