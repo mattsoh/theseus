@@ -77,7 +77,7 @@ class Views::Warehouse::Batches::New < Views::Base
         tag_picker(f)
 
         # Actions
-        div(class: "d-flex gap-2") do
+        div(style: "display: flex; gap: 8px;") do
           render Primer::Beta::Button.new(tag: :a, href: warehouse_batches_path, scheme: :secondary) do
             "Cancel"
           end
@@ -106,18 +106,19 @@ class Views::Warehouse::Batches::New < Views::Base
   end
 
   def tag_picker(f)
-    div(class: "FormControl mb-3") do
-      label(class: "FormControl-label") { "Tags" }
+    div(style: "margin-bottom: 16px;") do
+      label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;") { "Tags" }
       select(
         name: "batch[tags][]",
         multiple: true,
-        class: "selectize-tags width-full"
+        class: "selectize-tags",
+        style: "width: 100%;"
       ) do
         available_tags.each do |tag|
           option(value: tag) { tag }
         end
       end
-      p(class: "FormControl-caption") { "Select from common tags or create your own" }
+      p(style: "color: var(--fgColor-muted); font-size: 12px; margin-top: 4px;") { "Select from common tags or create your own" }
     end
   end
 end

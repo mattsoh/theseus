@@ -58,7 +58,7 @@ class Views::Warehouse::Batches::Process < Views::Base
       end
 
       # Submit
-      div(class: "d-flex gap-2") do
+      div(style: "display: flex; gap: 8px;") do
         render Primer::Beta::Button.new(tag: :a, href: warehouse_batch_path(@batch), scheme: :secondary) do
           "Cancel"
         end

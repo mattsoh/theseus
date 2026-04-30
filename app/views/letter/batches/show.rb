@@ -77,7 +77,7 @@ class Views::Letter::Batches::Show < Views::Base
         header.with_title(tag: :h3) { "Actions" }
       end
       box.with_body do
-        div(class: "d-flex gap-2 flex-wrap") do
+        div(style: "display: flex; gap: 8px; flex-wrap: wrap;") do
           if @batch.pdf_label.attached?
             render Primer::Beta::Button.new(
               tag: :a,
