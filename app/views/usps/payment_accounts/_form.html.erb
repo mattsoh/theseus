@@ -24,17 +24,30 @@
       ) %>
 
       <div style="margin-bottom: 12px;">
-        <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;">CRID/MID</label>
-        <%= form.collection_select(:usps_mailer_id_id, USPS::MailerId.all, :id, :display_name,
-          { prompt: 'Select one...', selected: usps_payment_account.usps_mailer_id_id },
-          { required: true, style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; font-size: 14px; background: var(--bgColor-default); color: var(--fgColor-default);" }) %>
+        <%= render Primer::Alpha::Select.new(
+          name: "usps_payment_account[usps_mailer_id_id]",
+          label: "CRID/MID",
+          full_width: true,
+          required: true
+        ) do |select|
+          select.with_option(value: "", label: "Select one...")
+          USPS::MailerId.all.each do |mid|
+            select.with_option(value: mid.id.to_s, label: mid.display_name, selected: mid.id == usps_payment_account.usps_mailer_id_id)
+          end
+        end %>
       </div>
 
       <div x-data="{account_type: '<%= usps_payment_account.account_type %>'}" style="margin-bottom: 12px;">
-        <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;">Account type</label>
-        <%= form.select :account_type, USPS::PaymentAccount.account_types.keys,
-          { selected: usps_payment_account.account_type },
-          { 'x-model' => 'account_type', style: "padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; font-size: 14px; background: var(--bgColor-default); color: var(--fgColor-default);" } %>
+        <%= render Primer::Alpha::Select.new(
+          name: "usps_payment_account[account_type]",
+          label: "Account type",
+          full_width: true,
+          "x-model": "account_type"
+        ) do |select|
+          USPS::PaymentAccount.account_types.keys.each do |type|
+            select.with_option(value: type, label: type, selected: type == usps_payment_account.account_type)
+          end
+        end %>
 
         <template x-if="account_type=='EPS'">
           <div style="margin-top: 12px;">
