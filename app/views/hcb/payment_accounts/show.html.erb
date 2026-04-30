@@ -1,30 +1,19 @@
 <% content_for :title, "#{@payment_account.organization_name} - HCB" %>
 
-<div class="container">
-  <header class="page-header mb-6">
-    <div class="flex items-center gap-4">
-      <%= link_to "← Back", hcb_payment_accounts_path, class: "text-gray-500 hover:text-gray-700" %>
-      <h1><%= @payment_account.organization_name %></h1>
-    </div>
-  </header>
+<div style="max-width: 800px; margin: 0 auto; padding: 24px;">
+  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px 0;"><%= @payment_account.organization_name %></h1>
 
-  <div class="max-w-2xl">
-    <article>
-      <header>
-        <h2>Organization Details</h2>
-      </header>
-      <div class="p-4">
-        <dl class="grid grid-cols-2 gap-4">
-          <div>
-            <dt class="text-sm text-gray-500">Organization ID</dt>
-            <dd class="font-mono text-sm"><%= @payment_account.organization_id %></dd>
-          </div>
-          <div>
-            <dt class="text-sm text-gray-500">Added</dt>
-            <dd><%= @payment_account.created_at.strftime("%B %d, %Y") %></dd>
-          </div>
-        </dl>
-      </div>
-    </article>
+  <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Organization Details</h2>
+  <%= render Primer::Beta::BorderBox.new(mb: 4) do |box|
+    box.with_row do %>
+      <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Organization ID</span><code><%= @payment_account.organization_id %></code></div>
+    <% end
+    box.with_row do %>
+      <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Added</span><span><%= @payment_account.created_at.strftime("%B %d, %Y") %></span></div>
+    <% end
+  end %>
+
+  <div style="margin-top: 32px;">
+    <%= link_to "← Back to HCB accounts", hcb_payment_accounts_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
   </div>
 </div>
