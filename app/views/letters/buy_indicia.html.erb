@@ -1,27 +1,27 @@
 <% content_for :title, "Buy Indicia - #{@letter.public_id}" %>
 
-<div style="max-width: 600px; margin: 0 auto; padding: 24px;">
-  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px 0;">Buy Indicia</h1>
+<div class="page-container--xs">
+  <h1 class="page-title" style="margin-bottom: 24px;">Buy Indicia</h1>
 
   <div style="margin-bottom: 24px;">
-    <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Letter Details</h2>
+    <h2 class="section-heading">Letter Details</h2>
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_row do %>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 14px;">
+        <div class="detail-grid">
           <div>
-            <div style="color: var(--fgColor-muted); font-size: 12px;">Recipient</div>
+            <div class="detail-label">Recipient</div>
             <div style="font-weight: 500;"><%= @letter.address.name_line %></div>
           </div>
           <div>
-            <div style="color: var(--fgColor-muted); font-size: 12px;">Destination</div>
+            <div class="detail-label">Destination</div>
             <div><%= @letter.address.city %>, <%= @letter.address.state %></div>
           </div>
           <div>
-            <div style="color: var(--fgColor-muted); font-size: 12px;">Dimensions</div>
+            <div class="detail-label">Dimensions</div>
             <div><%= @letter.height %>" x <%= @letter.width %>"</div>
           </div>
           <div>
-            <div style="color: var(--fgColor-muted); font-size: 12px;">Weight</div>
+            <div class="detail-label">Weight</div>
             <div><%= @letter.weight %> oz</div>
           </div>
         </div>
@@ -35,7 +35,7 @@
   </div>
 
   <div style="margin-bottom: 24px;">
-    <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Purchase Postage</h2>
+    <h2 class="section-heading">Purchase Postage</h2>
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_body do %>
         <%= form_with(url: buy_indicia_letter_path(@letter), method: :post) do |form| %>
@@ -69,11 +69,11 @@
             </div>
           <% else %>
             <%= render Primer::Beta::Flash.new(scheme: :default, mb: 3) do %>
-              <%= link_to "Connect your HCB account", new_hcb_oauth_connection_path, style: "color: var(--fgColor-accent);" %> to pay for postage.
+              <%= link_to "Connect your HCB account", new_hcb_oauth_connection_path %> to pay for postage.
             <% end %>
           <% end %>
 
-          <div style="display: flex; gap: 8px;">
+          <div class="page-actions">
             <%= render Primer::Beta::Button.new(tag: :a, href: letter_path(@letter), scheme: :secondary) { "Cancel" } %>
             <%= render Primer::Beta::Button.new(type: :submit, scheme: :primary, disabled: current_user.hcb_payment_accounts.empty?) do |btn|
               btn.with_leading_visual_icon(icon: :credit_card)

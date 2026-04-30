@@ -1,7 +1,7 @@
 <% content_for :title, "Problems" %>
 
-<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
-  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+<div class="page-container">
+  <div class="page-title-group" style="margin-bottom: 24px;">
     <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Problems</h1>
     <%= render Components::Shared::Jumpcode.new(path: problems_path) %>
   </div>
@@ -162,34 +162,3 @@
     </div>
   <% end %>
 </div>
-
-<style>
-  .problems-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-  }
-  .problems-col-sku {
-    min-width: 120px;
-    flex-shrink: 0;
-  }
-  .problems-col-name {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .problems-col-num {
-    min-width: 80px;
-    text-align: right;
-    flex-shrink: 0;
-  }
-  .problems-col-link {
-    min-width: 100px;
-    text-align: right;
-    flex-shrink: 0;
-    font-size: 13px;
-  }
-</style>

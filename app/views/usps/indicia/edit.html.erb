@@ -1,12 +1,15 @@
 <% content_for :title, "Edit Indicium" %>
 
-<div style="max-width: 600px; margin: 0 auto; padding: 24px;">
-  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
-    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Edit Indicium</h1>
-    <span style="color: var(--fgColor-muted);"><%= render Components::Shared::PublicId.new(value: @usps_indicium.public_id) %></span>
+<div class="page-container--xs">
+  <div class="page-title-group" style="margin-bottom: 24px;">
+    <h1 class="page-title">Edit Indicium</h1>
+    <span class="kv-label"><%= render Components::Shared::PublicId.new(value: @usps_indicium.public_id) %></span>
   </div>
   <%= render "form", usps_indicium: @usps_indicium %>
   <div style="margin-top: 32px;">
-    <%= link_to "← Back to indicium", usps_indicium_path(@usps_indicium), style: "color: var(--fgColor-muted); text-decoration: none;" %>
+    <%= render Primer::Beta::Button.new(tag: :a, href: usps_indicium_path(@usps_indicium), scheme: :invisible, size: :small) do |btn|
+      btn.with_leading_visual_icon(icon: :"arrow-left")
+      "Back to indicium"
+    end %>
   </div>
 </div>

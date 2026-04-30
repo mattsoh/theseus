@@ -1,14 +1,17 @@
 <% content_for :title, "Edit SKU #{@warehouse_sku.sku}" %>
 
-<div style="max-width: 800px; margin: 0 auto; padding: 24px;">
-  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
-    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Edit SKU</h1>
-    <code style="font-size: 16px; color: var(--fgColor-accent);"><%= @warehouse_sku.sku %></code>
+<div class="page-container--narrow">
+  <div class="page-title-group" style="margin-bottom: 24px;">
+    <h1 class="page-title">Edit SKU</h1>
+    <code class="mono" style="font-size: 16px;"><%= @warehouse_sku.sku %></code>
   </div>
 
   <%= render "form", warehouse_sku: @warehouse_sku %>
 
-  <div style="margin-top: 32px; display: flex; gap: 16px;">
-    <%= link_to "← Back to SKU", warehouse_sku_path(@warehouse_sku), style: "color: var(--fgColor-muted); text-decoration: none;" %>
+  <div style="margin-top: 32px;">
+    <%= render Primer::Beta::Button.new(tag: :a, href: warehouse_sku_path(@warehouse_sku), scheme: :invisible, size: :small) do |btn|
+      btn.with_leading_visual_icon(icon: :"arrow-left")
+      "Back to SKU"
+    end %>
   </div>
 </div>

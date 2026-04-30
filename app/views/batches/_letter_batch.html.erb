@@ -4,12 +4,11 @@
       <span style="font-weight: 600;">Letter Batch Preview</span>
     <% end %>
     <% box.with_body do %>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-        <%# Return Address %>
+      <div class="two-col-equal" style="margin-bottom: 16px;">
         <div>
-          <h3 style="font-size: 14px; font-weight: 600; margin: 0 0 8px 0;">From</h3>
+          <h3 class="section-heading">From</h3>
           <% if batch.letter_return_address.present? %>
-            <div style="padding: 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-muted); font-size: 14px;">
+            <div class="info-card address-block">
               <div style="font-weight: 500;"><%= batch.letter_return_address.name %></div>
               <div><%= batch.letter_return_address.line_1 %></div>
               <% if batch.letter_return_address.line_2.present? %>
@@ -19,32 +18,30 @@
               <div><%= batch.letter_return_address.country %></div>
             </div>
           <% else %>
-            <p style="color: var(--fgColor-muted); font-size: 14px;">No return address</p>
+            <p class="kv-label">No return address</p>
           <% end %>
         </div>
 
-        <%# Batch Info %>
         <div>
-          <h3 style="font-size: 14px; font-weight: 600; margin: 0 0 8px 0;">Batch Information</h3>
-          <div style="padding: 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-muted); font-size: 14px;">
-            <div><span style="color: var(--fgColor-muted);">Dimensions:</span> <%= batch.letter_width %> × <%= batch.letter_height %> in</div>
-            <div><span style="color: var(--fgColor-muted);">Weight:</span> <%= batch.letter_weight %> oz</div>
-            <div><span style="color: var(--fgColor-muted);">Mailer ID:</span> <%= batch.mailer_id&.display_name %></div>
-            <div><span style="color: var(--fgColor-muted);">Address Count:</span> <%= batch.addresses.count %></div>
+          <h3 class="section-heading">Batch Information</h3>
+          <div class="info-card">
+            <div><span class="kv-label">Dimensions:</span> <%= batch.letter_width %> × <%= batch.letter_height %> in</div>
+            <div><span class="kv-label">Weight:</span> <%= batch.letter_weight %> oz</div>
+            <div><span class="kv-label">Mailer ID:</span> <%= batch.mailer_id&.display_name %></div>
+            <div><span class="kv-label">Address Count:</span> <%= batch.addresses.count %></div>
           </div>
         </div>
       </div>
 
-      <%# Labels section %>
       <% if batch.pdf_label.attached? %>
-        <h3 style="font-size: 14px; font-weight: 600; margin: 0 0 8px 0;">Generated Labels</h3>
-        <div style="padding: 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-muted);">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
+        <h3 class="section-heading">Generated Labels</h3>
+        <div class="info-card">
+          <div class="kv-row">
             <div>
-              <div style="font-size: 14px; font-weight: 500;">Labels PDF</div>
-              <div style="font-size: 12px; color: var(--fgColor-muted);">Generated on <%= batch.pdf_label.created_at.strftime("%B %d, %Y at %I:%M %p") %></div>
+              <div style="font-weight: 500;">Labels PDF</div>
+              <div class="detail-label">Generated on <%= batch.pdf_label.created_at.strftime("%B %d, %Y at %I:%M %p") %></div>
             </div>
-            <div style="display: flex; gap: 8px;">
+            <div class="page-actions">
               <%= render Primer::Beta::Button.new(tag: :a, href: rails_blob_path(batch.pdf_label, disposition: "attachment"), scheme: :primary, size: :small) do |btn|
                 btn.with_leading_visual_icon(icon: :download)
                 "Download PDF"
@@ -69,8 +66,8 @@
           </div>
         </div>
       <% else %>
-        <div style="padding: 16px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-muted); text-align: center;">
-          <p style="color: var(--fgColor-muted); margin: 0;">No labels have been generated yet.</p>
+        <div class="info-card" style="text-align: center;">
+          <p class="kv-label" style="margin: 0;">No labels have been generated yet.</p>
         </div>
       <% end %>
     <% end %>

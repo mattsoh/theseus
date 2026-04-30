@@ -1,13 +1,13 @@
 <% content_for :title, "Order Templates" %>
 
-<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+<div class="page-container">
+  <div class="page-header">
     <div>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Order Templates</h1>
+      <div class="page-title-group">
+        <h1 class="page-title">Order Templates</h1>
         <%= render Components::Shared::Jumpcode.new(path: warehouse_templates_path) %>
       </div>
-      <p style="color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;">Reusable order configurations</p>
+      <p class="page-subtitle">Reusable order configurations</p>
     </div>
     <%= render Primer::Beta::Button.new(tag: :a, href: new_warehouse_template_path, scheme: :primary) do |btn|
       btn.with_leading_visual_icon(icon: :plus)
@@ -16,14 +16,14 @@
   </div>
 
   <% if current_user&.warehouse_templates&.any? %>
-    <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Your Templates</h2>
+    <h2 class="section-heading">Your Templates</h2>
     <%= render Primer::Beta::BorderBox.new(mb: 4) do |box|
       current_user.warehouse_templates.each do |template|
         box.with_row do %>
-          <a href="<%= warehouse_template_path(template) %>" style="display: flex; justify-content: space-between; align-items: center; width: 100%; text-decoration: none; color: inherit;">
+          <a href="<%= warehouse_template_path(template) %>" class="resource-card" style="text-decoration: none; color: inherit;">
             <div>
-              <span style="font-weight: 600;"><%= template.name %></span>
-              <span style="color: var(--fgColor-muted); font-size: 13px; margin-left: 8px;"><%= template.line_items.count %> items</span>
+              <span class="resource-card-title"><%= template.name %></span>
+              <span class="resource-card-meta" style="margin-left: 8px;"><%= template.line_items.count %> items</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <% if template.public %>
@@ -37,19 +37,17 @@
     end %>
   <% end %>
 
-  <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Public Templates</h2>
+  <h2 class="section-heading">Public Templates</h2>
   <% if Warehouse::Template.shared.any? %>
     <%= render Primer::Beta::BorderBox.new do |box|
       Warehouse::Template.shared.each do |template|
         box.with_row do %>
-          <a href="<%= warehouse_template_path(template) %>" style="display: flex; justify-content: space-between; align-items: center; width: 100%; text-decoration: none; color: inherit;">
+          <a href="<%= warehouse_template_path(template) %>" class="resource-card" style="text-decoration: none; color: inherit;">
             <div>
-              <span style="font-weight: 600;"><%= template.name %></span>
-              <span style="color: var(--fgColor-muted); font-size: 13px; margin-left: 8px;"><%= template.line_items.count %> items</span>
+              <span class="resource-card-title"><%= template.name %></span>
+              <span class="resource-card-meta" style="margin-left: 8px;"><%= template.line_items.count %> items</span>
             </div>
-            <div style="font-size: 13px; color: var(--fgColor-muted);">
-              by <%= template.user&.username || "unknown" %>
-            </div>
+            <span class="resource-card-meta">by <%= template.user&.username || "unknown" %></span>
           </a>
         <% end
       end

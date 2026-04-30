@@ -1,9 +1,12 @@
 <% content_for :title, "New Payment Account" %>
 
-<div style="max-width: 600px; margin: 0 auto; padding: 24px;">
-  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px 0;">New USPS Payment Account</h1>
+<div class="page-container--xs">
+  <h1 class="page-title" style="margin-bottom: 24px;">New USPS Payment Account</h1>
   <%= render "form", usps_payment_account: @usps_payment_account %>
   <div style="margin-top: 32px;">
-    <%= link_to "← Back to payment accounts", usps_payment_accounts_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+    <%= render Primer::Beta::Button.new(tag: :a, href: usps_payment_accounts_path, scheme: :invisible, size: :small) do |btn|
+      btn.with_leading_visual_icon(icon: :"arrow-left")
+      "Back to payment accounts"
+    end %>
   </div>
 </div>

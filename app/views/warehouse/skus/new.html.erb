@@ -1,11 +1,14 @@
 <% content_for :title, "New SKU" %>
 
-<div style="max-width: 800px; margin: 0 auto; padding: 24px;">
-  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px 0;">New SKU</h1>
+<div class="page-container--narrow">
+  <h1 class="page-title" style="margin-bottom: 24px;">New SKU</h1>
 
   <%= render "form", warehouse_sku: @warehouse_sku %>
 
   <div style="margin-top: 32px;">
-    <%= link_to "�� Back to SKUs", warehouse_skus_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+    <%= render Primer::Beta::Button.new(tag: :a, href: warehouse_skus_path, scheme: :invisible, size: :small) do |btn|
+      btn.with_leading_visual_icon(icon: :"arrow-left")
+      "Back to SKUs"
+    end %>
   </div>
 </div>

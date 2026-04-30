@@ -1,14 +1,14 @@
 <% content_for :title, @usps_payment_account.display_name %>
 
-<div style="max-width: 800px; margin: 0 auto; padding: 24px;">
-  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+<div class="page-container--narrow">
+  <div class="page-header">
     <div>
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
-        <h1 style="font-size: 24px; font-weight: 600; margin: 0;"><%= @usps_payment_account.display_name %></h1>
+      <div class="page-title-group">
+        <h1 class="page-title"><%= @usps_payment_account.display_name %></h1>
         <%= render(Primer::Beta::Label.new(scheme: :secondary, size: :large)) { @usps_payment_account.account_type } %>
       </div>
     </div>
-    <div style="display: flex; gap: 8px;">
+    <div class="page-actions">
       <%= render Primer::Beta::Button.new(tag: :a, href: edit_usps_payment_account_path(@usps_payment_account), scheme: :secondary, size: :medium) do |btn|
         btn.with_leading_visual_icon(icon: :pencil)
         "Edit"
@@ -24,37 +24,40 @@
 
   <%= render Primer::Beta::BorderBox.new(mb: 4) do |box|
     box.with_row do %>
-      <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Name</span><span><%= @usps_payment_account.name %></span></div>
+      <div class="kv-row"><span class="kv-label">Name</span><span><%= @usps_payment_account.name %></span></div>
     <% end
     box.with_row do %>
-      <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Account Type</span><span><%= @usps_payment_account.account_type %></span></div>
+      <div class="kv-row"><span class="kv-label">Account Type</span><span><%= @usps_payment_account.account_type %></span></div>
     <% end
     if @usps_payment_account.account_number.present?
       box.with_row do %>
-        <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Account Number</span><code><%= @usps_payment_account.account_number %></code></div>
+        <div class="kv-row"><span class="kv-label">Account Number</span><code><%= @usps_payment_account.account_number %></code></div>
       <% end
     end
     if @usps_payment_account.permit_number.present?
       box.with_row do %>
-        <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Permit Number</span><code><%= @usps_payment_account.permit_number %></code></div>
+        <div class="kv-row"><span class="kv-label">Permit Number</span><code><%= @usps_payment_account.permit_number %></code></div>
       <% end
     end
     if @usps_payment_account.permit_zip.present?
       box.with_row do %>
-        <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Permit ZIP</span><code><%= @usps_payment_account.permit_zip %></code></div>
+        <div class="kv-row"><span class="kv-label">Permit ZIP</span><code><%= @usps_payment_account.permit_zip %></code></div>
       <% end
     end
     box.with_row do %>
-      <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Manifest MID</span><code><%= @usps_payment_account.manifest_mid || "—" %></code></div>
+      <div class="kv-row"><span class="kv-label">Manifest MID</span><code><%= @usps_payment_account.manifest_mid || "—" %></code></div>
     <% end
     box.with_row do %>
-      <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Mailer ID</span><span><%= @usps_payment_account.usps_mailer_id&.display_name || "—" %></span></div>
+      <div class="kv-row"><span class="kv-label">Mailer ID</span><span><%= @usps_payment_account.usps_mailer_id&.display_name || "—" %></span></div>
     <% end
   end %>
 
   <%= render partial: "admin_inspector", locals: { record: @usps_payment_account } %>
 
   <div style="margin-top: 32px;">
-    <%= link_to "← Back to payment accounts", usps_payment_accounts_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+    <%= render Primer::Beta::Button.new(tag: :a, href: usps_payment_accounts_path, scheme: :invisible, size: :small) do |btn|
+      btn.with_leading_visual_icon(icon: :"arrow-left")
+      "Back to payment accounts"
+    end %>
   </div>
 </div>

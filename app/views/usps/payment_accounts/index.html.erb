@@ -1,10 +1,10 @@
 <% content_for :title, "USPS Payment Accounts" %>
 
-<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+<div class="page-container">
+  <div class="page-header">
     <div>
-      <h1 style="font-size: 24px; font-weight: 600; margin: 0;">USPS Payment Accounts</h1>
-      <p style="color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;"><%= @usps_payment_accounts.count %> accounts</p>
+      <h1 class="page-title">USPS Payment Accounts</h1>
+      <p class="page-subtitle"><%= @usps_payment_accounts.count %> accounts</p>
     </div>
     <%= render Primer::Beta::Button.new(tag: :a, href: new_usps_payment_account_path, scheme: :primary) do |btn|
       btn.with_leading_visual_icon(icon: :plus)
@@ -16,11 +16,9 @@
     <%= render Primer::Beta::BorderBox.new do |box|
       @usps_payment_accounts.each do |account|
         box.with_row do %>
-          <a href="<%= usps_payment_account_path(account) %>" style="display: flex; justify-content: space-between; align-items: center; width: 100%; text-decoration: none; color: inherit;">
-            <span style="font-weight: 600;"><%= account.display_name %></span>
-            <div style="display: flex; gap: 8px;">
-              <%= render(Primer::Beta::Label.new(scheme: :secondary, size: :small)) { account.account_type } %>
-            </div>
+          <a href="<%= usps_payment_account_path(account) %>" class="resource-card" style="text-decoration: none; color: inherit;">
+            <span class="resource-card-title"><%= account.display_name %></span>
+            <%= render(Primer::Beta::Label.new(scheme: :secondary, size: :small)) { account.account_type } %>
           </a>
         <% end
       end

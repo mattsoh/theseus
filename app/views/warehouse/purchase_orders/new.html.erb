@@ -1,11 +1,9 @@
 <% content_for :title, "New Purchase Order" %>
 
-<div style="max-width: 800px; margin: 0 auto; padding: 24px;">
+<div class="page-container--narrow">
   <div style="margin-bottom: 24px;">
-    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">New Purchase Order</h1>
-    <p style="color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;">
-      Create a draft purchase order to send to Zenventory
-    </p>
+    <h1 class="page-title">New Purchase Order</h1>
+    <p class="page-subtitle">Create a draft purchase order to send to Zenventory</p>
   </div>
 
   <%= render "form", purchase_order: @purchase_order %>

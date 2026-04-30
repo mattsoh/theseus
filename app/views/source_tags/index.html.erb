@@ -1,10 +1,10 @@
 <% content_for :title, "Source Tags" %>
 
-<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+<div class="page-container">
+  <div class="page-header">
     <div>
-      <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Source Tags</h1>
-      <p style="color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;"><%= @source_tags.count %> source tags</p>
+      <h1 class="page-title">Source Tags</h1>
+      <p class="page-subtitle"><%= @source_tags.count %> source tags</p>
     </div>
     <%= render Primer::Beta::Button.new(tag: :a, href: new_source_tag_path, scheme: :primary) do |btn|
       btn.with_leading_visual_icon(icon: :plus)
@@ -16,13 +16,13 @@
     <%= render Primer::Beta::BorderBox.new do |box|
       @source_tags.each do |source_tag|
         box.with_row do %>
-          <a href="<%= source_tag_path(source_tag) %>" style="display: flex; justify-content: space-between; align-items: center; width: 100%; text-decoration: none; color: inherit;">
+          <a href="<%= source_tag_path(source_tag) %>" class="resource-card" style="text-decoration: none; color: inherit;">
             <div>
-              <span style="font-weight: 600;"><%= source_tag.name %></span>
-              <code style="margin-left: 8px; font-size: 13px; color: var(--fgColor-muted);"><%= source_tag.slug %></code>
+              <span class="resource-card-title"><%= source_tag.name %></span>
+              <code class="resource-card-meta" style="margin-left: 8px;"><%= source_tag.slug %></code>
             </div>
             <% if source_tag.owner.present? %>
-              <span style="font-size: 13px; color: var(--fgColor-muted);"><%= source_tag.owner %></span>
+              <span class="resource-card-meta"><%= source_tag.owner %></span>
             <% end %>
           </a>
         <% end

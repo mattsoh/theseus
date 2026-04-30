@@ -1,9 +1,9 @@
 <% content_for :title, "Cancel order #{@warehouse_order.hc_id}" %>
 
-<div style="max-width: 600px; margin: 0 auto; padding: 24px;">
-  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
-    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Cancel order</h1>
-    <code style="font-size: 16px; color: var(--fgColor-accent);"><%= @warehouse_order.hc_id %></code>
+<div class="page-container--xs">
+  <div class="page-title-group" style="margin-bottom: 24px;">
+    <h1 class="page-title">Cancel order</h1>
+    <code class="mono" style="font-size: 16px;"><%= @warehouse_order.hc_id %></code>
   </div>
 
   <%= render Primer::Beta::Flash.new(scheme: :warning, mb: 3) do %>
@@ -24,7 +24,7 @@
       <% end %>
     <% end %>
 
-    <div style="display: flex; gap: 8px;">
+    <div class="page-actions">
       <%= render Primer::Beta::Button.new(tag: :a, href: warehouse_order_path(@warehouse_order), scheme: :secondary) do
         "Never mind"
       end %>
@@ -36,6 +36,9 @@
   <% end %>
 
   <div style="margin-top: 32px;">
-    <%= link_to "← Back to order", warehouse_order_path(@warehouse_order), style: "color: var(--fgColor-muted); text-decoration: none;" %>
+    <%= render Primer::Beta::Button.new(tag: :a, href: warehouse_order_path(@warehouse_order), scheme: :invisible, size: :small) do |btn|
+      btn.with_leading_visual_icon(icon: :"arrow-left")
+      "Back to order"
+    end %>
   </div>
 </div>

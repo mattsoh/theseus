@@ -1,7 +1,7 @@
 <% content_for :title, "Indicia" %>
 
-<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+<div class="page-container">
+  <div class="page-header">
     <div>
       <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Indicia</h1>
       <p style="color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;"><%= @usps_indicia.count %> purchased</p>
@@ -44,12 +44,3 @@
     end %>
   <% end %>
 </div>
-
-<style>
-  .indicia-row { display: flex; align-items: center; gap: 16px; width: 100%; }
-  .indicia-col-id { flex: 1; }
-  .indicia-col-sku { min-width: 100px; flex-shrink: 0; }
-  .indicia-col-num { min-width: 80px; text-align: right; flex-shrink: 0; }
-  .indicia-col-date { min-width: 100px; flex-shrink: 0; }
-  .indicia-col-cat { min-width: 80px; flex-shrink: 0; }
-</style>

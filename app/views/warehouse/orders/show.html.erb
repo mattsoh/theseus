@@ -1,8 +1,8 @@
 <% content_for :title, "Order #{@warehouse_order.hc_id}" %>
 
-<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+<div class="page-container">
   <div style="margin-bottom: 24px;">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
+    <div class="page-header" style="margin-bottom: 0;">
       <div>
         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
           <h1 style="font-size: 24px; font-weight: 600; margin: 0;">
@@ -239,16 +239,3 @@
   <%= render partial: "admin_inspector", locals: { record: @warehouse_order } %>
   <% inspector_toggle :line_items %>
 </div>
-
-<style>
-  .order-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px; }
-  .section-heading { font-size: 14px; font-weight: 600; margin: 0 0 12px 0; }
-  .kv-row { display: flex; justify-content: space-between; align-items: center; }
-  .kv-label { color: var(--fgColor-muted); }
-  .address-block { font-size: 14px; line-height: 1.6; }
-  .cost-bar { display: flex; gap: 24px; margin-bottom: 24px; padding: 12px 16px; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px; }
-  .li-row { display: flex; align-items: center; width: 100%; gap: 16px; }
-  .li-col-name { flex: 1; min-width: 0; }
-  .li-col-num { min-width: 60px; text-align: right; flex-shrink: 0; }
-  .li-col-cost { min-width: 90px; text-align: right; flex-shrink: 0; }
-</style>

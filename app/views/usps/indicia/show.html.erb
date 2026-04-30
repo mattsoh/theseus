@@ -1,7 +1,7 @@
 <% content_for :title, "Indicium #{@usps_indicium.public_id}" %>
 
-<div style="max-width: 800px; margin: 0 auto; padding: 24px;">
-  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+<div class="page-container--narrow">
+  <div class="page-header">
     <div>
       <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 4px 0;">Indicium</h1>
       <p style="color: var(--fgColor-muted); margin: 0; font-size: 14px;">
@@ -70,8 +70,3 @@
     end %>
   </div>
 </div>
-
-<style>
-  .kv-row { display: flex; justify-content: space-between; align-items: center; }
-  .kv-label { color: var(--fgColor-muted); }
-</style>

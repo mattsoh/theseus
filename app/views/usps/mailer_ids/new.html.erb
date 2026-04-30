@@ -1,9 +1,12 @@
 <% content_for :title, "New Mailer ID" %>
 
-<div style="max-width: 600px; margin: 0 auto; padding: 24px;">
-  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px 0;">New Mailer ID</h1>
+<div class="page-container--xs">
+  <h1 class="page-title" style="margin-bottom: 24px;">New Mailer ID</h1>
   <%= render "form", usps_mailer_id: @usps_mailer_id %>
   <div style="margin-top: 32px;">
-    <%= link_to "← Back to mailer IDs", usps_mailer_ids_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+    <%= render Primer::Beta::Button.new(tag: :a, href: usps_mailer_ids_path, scheme: :invisible, size: :small) do |btn|
+      btn.with_leading_visual_icon(icon: :"arrow-left")
+      "Back to mailer IDs"
+    end %>
   </div>
 </div>

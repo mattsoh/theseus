@@ -1,10 +1,10 @@
 <% content_for :title, "Mailer IDs" %>
 
-<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+<div class="page-container">
+  <div class="page-header">
     <div>
-      <h1 style="font-size: 24px; font-weight: 600; margin: 0;">CRID / Mailer ID Pairs</h1>
-      <p style="color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;"><%= @usps_mailer_ids.count %> registered</p>
+      <h1 class="page-title">CRID / Mailer ID Pairs</h1>
+      <p class="page-subtitle"><%= @usps_mailer_ids.count %> registered</p>
     </div>
     <%= render Primer::Beta::Button.new(tag: :a, href: new_usps_mailer_id_path, scheme: :primary) do |btn|
       btn.with_leading_visual_icon(icon: :plus)
@@ -16,11 +16,11 @@
     <%= render Primer::Beta::BorderBox.new do |box|
       @usps_mailer_ids.each do |mid|
         box.with_row do %>
-          <a href="<%= usps_mailer_id_path(mid) %>" style="display: flex; justify-content: space-between; align-items: center; width: 100%; text-decoration: none; color: inherit;">
-            <span style="font-weight: 600;"><%= mid.name %></span>
-            <div style="display: flex; gap: 16px; font-size: 13px;">
-              <span style="color: var(--fgColor-muted);">CRID: <code><%= mid.crid %></code></span>
-              <span style="color: var(--fgColor-muted);">MID: <code><%= mid.mid %></code></span>
+          <a href="<%= usps_mailer_id_path(mid) %>" class="resource-card" style="text-decoration: none; color: inherit;">
+            <span class="resource-card-title"><%= mid.name %></span>
+            <div class="resource-card-meta" style="display: flex; gap: 16px;">
+              <span>CRID: <code><%= mid.crid %></code></span>
+              <span>MID: <code><%= mid.mid %></code></span>
             </div>
           </a>
         <% end

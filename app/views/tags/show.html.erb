@@ -1,6 +1,6 @@
 <% content_for :title, "Tag: #{@tag}" %>
 
-<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+<div class="page-container">
   <div style="margin-bottom: 24px;">
     <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 8px 0;">
       <%= render(Primer::Beta::Label.new(scheme: :accent, size: :large)) { @tag } %>
@@ -98,11 +98,6 @@
     end %>
   </div>
 </div>
-
-<style>
-  .kv-row { display: flex; justify-content: space-between; align-items: center; }
-  .kv-label { color: var(--fgColor-muted); }
-</style>
 
 <script>
   function updateTimePeriod() {

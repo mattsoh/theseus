@@ -1,8 +1,8 @@
-<div id="<%= dom_id batch %>" style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start;">
+<div id="<%= dom_id batch %>" class="batch-layout">
   <div>
     <%= render Primer::Beta::BorderBox.new do |box| %>
       <% box.with_header do %>
-        <div style="display: flex; align-items: center; gap: 8px;">
+        <div class="kv-row">
           <span style="font-weight: 600;"><%= batch.type.split('::').first.titleize %> Batch #<%= batch.id %></span>
           <%= render Components::Shared::StatusBadge.new(status: batch.aasm.current_state, type: :batch) %>
         </div>
@@ -14,65 +14,53 @@
           </div>
         <% end %>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-          <%# Batch Information %>
+        <div class="two-col-equal">
           <div>
-            <h3 style="font-size: 14px; font-weight: 600; margin: 0 0 8px 0;">Batch Information</h3>
+            <h3 class="section-heading">Batch Information</h3>
             <%= render Primer::Beta::BorderBox.new do |info_box| %>
               <% info_box.with_row do %>
-                <span style="color: var(--fgColor-muted);">Created</span>
-                <span style="float: right;"><%= batch.created_at.strftime("%B %d, %Y at %I:%M %p") %></span>
+                <div class="kv-row"><span class="kv-label">Created</span><span><%= batch.created_at.strftime("%B %d, %Y at %I:%M %p") %></span></div>
               <% end %>
               <% if batch.csv.attached? %>
                 <% info_box.with_row do %>
-                  <span style="color: var(--fgColor-muted);">CSV File</span>
-                  <span style="float: right;"><%= batch.csv.filename %></span>
+                  <div class="kv-row"><span class="kv-label">CSV File</span><span><%= batch.csv.filename %></span></div>
                 <% end %>
               <% end %>
               <% info_box.with_row do %>
-                <span style="color: var(--fgColor-muted);">Address Count</span>
-                <span style="float: right;"><%= batch.addresses.count %></span>
+                <div class="kv-row"><span class="kv-label">Address Count</span><span><%= batch.addresses.count %></span></div>
               <% end %>
               <% if batch.is_a?(Letter::Batch) %>
                 <% info_box.with_row do %>
-                  <span style="color: var(--fgColor-muted);">Dimensions</span>
-                  <span style="float: right;"><%= batch.letter_width %>" × <%= batch.letter_height %>"</span>
+                  <div class="kv-row"><span class="kv-label">Dimensions</span><span><%= batch.letter_width %>" × <%= batch.letter_height %>"</span></div>
                 <% end %>
                 <% info_box.with_row do %>
-                  <span style="color: var(--fgColor-muted);">Weight</span>
-                  <span style="float: right;"><%= batch.letter_weight %> oz</span>
+                  <div class="kv-row"><span class="kv-label">Weight</span><span><%= batch.letter_weight %> oz</span></div>
                 <% end %>
               <% end %>
               <% if batch.is_a?(Warehouse::Batch) && batch.warehouse_template.present? %>
                 <% info_box.with_row do %>
-                  <span style="color: var(--fgColor-muted);">Template</span>
-                  <span style="float: right;"><%= batch.warehouse_template.name %></span>
+                  <div class="kv-row"><span class="kv-label">Template</span><span><%= batch.warehouse_template.name %></span></div>
                 <% end %>
               <% end %>
             <% end %>
           </div>
 
-          <%# Cost Information %>
           <div>
-            <h3 style="font-size: 14px; font-weight: 600; margin: 0 0 8px 0;">Cost Information</h3>
+            <h3 class="section-heading">Cost Information</h3>
             <%= render Primer::Beta::BorderBox.new do |cost_box| %>
               <% if batch.is_a?(Warehouse::Batch) %>
                 <% cost_box.with_row do %>
-                  <span style="color: var(--fgColor-muted);">Contents</span>
-                  <span style="float: right; font-family: var(--fontStack-monospace);"><%= number_to_currency(batch.contents_cost) %></span>
+                  <div class="kv-row"><span class="kv-label">Contents</span><span class="mono"><%= number_to_currency(batch.contents_cost) %></span></div>
                 <% end %>
                 <% cost_box.with_row do %>
-                  <span style="color: var(--fgColor-muted);">Labor</span>
-                  <span style="float: right; font-family: var(--fontStack-monospace);"><%= number_to_currency(batch.labor_cost) %></span>
+                  <div class="kv-row"><span class="kv-label">Labor</span><span class="mono"><%= number_to_currency(batch.labor_cost) %></span></div>
                 <% end %>
                 <% cost_box.with_row do %>
-                  <span style="color: var(--fgColor-muted);">Shipping</span>
-                  <span style="float: right; font-family: var(--fontStack-monospace);"><%= number_to_currency(batch.postage_cost) %></span>
+                  <div class="kv-row"><span class="kv-label">Shipping</span><span class="mono"><%= number_to_currency(batch.postage_cost) %></span></div>
                 <% end %>
               <% end %>
               <% cost_box.with_row do %>
-                <span style="font-weight: 600;">Total Cost</span>
-                <span style="float: right; font-weight: 600; font-family: var(--fontStack-monospace);"><%= number_to_currency(batch.total_cost) %></span>
+                <div class="kv-row"><span style="font-weight: 600;">Total Cost</span><span class="mono" style="font-weight: 600;"><%= number_to_currency(batch.total_cost) %></span></div>
               <% end %>
             <% end %>
           </div>
@@ -80,13 +68,15 @@
 
         <% if batch.is_a?(Letter::Batch) && batch.labels_pdf.attached? %>
           <div style="margin-top: 16px;">
-            <h3 style="font-size: 14px; font-weight: 600; margin: 0 0 8px 0;">Letter Labels</h3>
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-muted);">
-              <span style="font-size: 14px;">PDF labels are available for this batch.</span>
-              <%= render Primer::Beta::Button.new(tag: :a, href: rails_blob_path(batch.labels_pdf, disposition: "attachment"), target: "_blank", scheme: :primary, size: :small) do |btn|
-                btn.with_leading_visual_icon(icon: :download)
-                "Download PDF"
-              end %>
+            <h3 class="section-heading">Letter Labels</h3>
+            <div class="info-card">
+              <div class="kv-row">
+                <span>PDF labels are available for this batch.</span>
+                <%= render Primer::Beta::Button.new(tag: :a, href: rails_blob_path(batch.labels_pdf, disposition: "attachment"), target: "_blank", scheme: :primary, size: :small) do |btn|
+                  btn.with_leading_visual_icon(icon: :download)
+                  "Download PDF"
+                end %>
+              </div>
             </div>
           </div>
         <% end %>
@@ -94,8 +84,7 @@
     <% end %>
   </div>
 
-  <%# Sidebar: Actions %>
-  <div style="position: sticky; top: 24px;">
+  <div class="sticky-sidebar">
     <%= render Primer::Beta::BorderBox.new do |box| %>
       <% box.with_header do %>
         <span style="font-weight: 600;">Actions</span>
@@ -115,7 +104,7 @@
             "Process Batch"
           end %>
         <% when "processed" %>
-          <p style="color: var(--fgColor-muted); font-size: 14px; margin: 0;">This batch has been processed.</p>
+          <p class="kv-label" style="margin: 0;">This batch has been processed.</p>
         <% end %>
       <% end %>
     <% end %>

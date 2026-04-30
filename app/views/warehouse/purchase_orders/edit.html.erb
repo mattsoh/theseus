@@ -1,15 +1,13 @@
 <% content_for :title, "Edit Purchase Order #{@purchase_order.order_number.presence || "##{@purchase_order.id}"}" %>
 
-<div style="max-width: 800px; margin: 0 auto; padding: 24px;">
+<div class="page-container--narrow">
   <div style="margin-bottom: 24px;">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
-      <h1 style="font-size: 24px; font-weight: 600; margin: 0;">
-        Edit Purchase Order
-      </h1>
+    <div class="page-title-group">
+      <h1 class="page-title">Edit Purchase Order</h1>
       <% status_scheme = { "draft" => :secondary, "open" => :accent, "completed" => :success, "deleted" => :danger }[@purchase_order.status] || :secondary %>
       <%= render(Primer::Beta::Label.new(scheme: status_scheme, size: :large)) { @purchase_order.humanized_state } %>
     </div>
-    <p style="color: var(--fgColor-muted); margin: 0; font-size: 14px;">
+    <p class="page-subtitle">
       <%= @purchase_order.order_number.presence || "##{@purchase_order.id}" %> · <%= @purchase_order.supplier_name %>
     </p>
   </div>

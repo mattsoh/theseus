@@ -1,12 +1,12 @@
 <% content_for :title, "Add HCB Organization" %>
 
-<div style="max-width: 600px; margin: 0 auto; padding: 24px;">
-  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px 0;">Add Organization</h1>
+<div class="page-container--xs">
+  <h1 class="page-title" style="margin-bottom: 24px;">Add Organization</h1>
 
   <% if @organizations.any? %>
     <div style="margin-bottom: 24px;">
-      <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Select Organization</h2>
-      <p style="color: var(--fgColor-muted); font-size: 14px; margin: 0 0 16px 0;">Choose which HCB organization to use for paying postage.</p>
+      <h2 class="section-heading">Select Organization</h2>
+      <p class="page-subtitle" style="margin-bottom: 16px;">Choose which HCB organization to use for paying postage.</p>
 
       <%= form_with url: hcb_payment_accounts_path, method: :post do |f| %>
         <%= render Primer::Beta::BorderBox.new(mb: 4) do |box|
@@ -20,7 +20,7 @@
           end
         end %>
 
-        <div style="display: flex; gap: 8px;">
+        <div class="page-actions">
           <%= render Primer::Beta::Button.new(tag: :a, href: hcb_payment_accounts_path, scheme: :secondary) do
             "Cancel"
           end %>
@@ -41,6 +41,9 @@
   <% end %>
 
   <div style="margin-top: 32px;">
-    <%= link_to "← Back to HCB accounts", hcb_payment_accounts_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+    <%= render Primer::Beta::Button.new(tag: :a, href: hcb_payment_accounts_path, scheme: :invisible, size: :small) do |btn|
+      btn.with_leading_visual_icon(icon: :"arrow-left")
+      "Back to HCB accounts"
+    end %>
   </div>
 </div>

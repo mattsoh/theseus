@@ -1,7 +1,7 @@
 <% content_for :title, "#{@letter.user_facing_title || 'Letter'} #{@letter.public_id}" %>
 
-<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
-  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+<div class="page-container">
+  <div class="page-header">
     <div>
       <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
         <h1 style="font-size: 24px; font-weight: 600; margin: 0;">
@@ -324,13 +324,3 @@
     end %>
   </div>
 </div>
-
-<style>
-  .letter-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
-  .section-heading { font-size: 14px; font-weight: 600; margin: 0 0 12px 0; }
-  .kv-row { display: flex; justify-content: space-between; align-items: center; }
-  .kv-label { color: var(--fgColor-muted); }
-  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 14px; }
-  .detail-label { color: var(--fgColor-muted); font-size: 12px; }
-  .address-block { font-size: 14px; line-height: 1.6; }
-</style>

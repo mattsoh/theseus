@@ -1,24 +1,24 @@
 <%= render Primer::Beta::BorderBox.new do |box| %>
   <% box.with_header do %>
-    <div style="display: flex; justify-content: space-between; width: 100%;">
-      <span style="font-weight: 600; flex: 1;">Letter</span>
-      <span style="font-weight: 600; min-width: 120px;">From</span>
-      <span style="font-weight: 600; min-width: 100px;">Size</span>
-      <span style="font-weight: 600; min-width: 100px;">Created</span>
-      <span style="font-weight: 600; min-width: 80px; text-align: right;">Status</span>
+    <div class="batch-table-row">
+      <span class="batch-col-name" style="font-weight: 600;">Letter</span>
+      <span class="batch-col-md" style="font-weight: 600;">From</span>
+      <span class="batch-col-md" style="font-weight: 600;">Size</span>
+      <span class="batch-col-md" style="font-weight: 600;">Created</span>
+      <span class="batch-col-status" style="font-weight: 600;">Status</span>
     </div>
   <% end %>
   <% letters.each do |letter| %>
     <% box.with_row do %>
-      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-        <div style="flex: 1; min-width: 0;">
-          <%= link_to letter.public_id, letter, style: "color: var(--fgColor-accent); font-weight: 500;" %>
-          <span style="color: var(--fgColor-muted); font-size: 13px;"> to <%= letter.address.name_line %></span>
+      <div class="batch-table-row">
+        <div class="batch-col-name">
+          <%= link_to letter.public_id, letter, style: "font-weight: 500;" %>
+          <span class="kv-label" style="font-size: 13px;"> to <%= letter.address.name_line %></span>
         </div>
-        <span style="min-width: 120px; font-size: 13px; color: var(--fgColor-muted);"><%= letter.return_address.present? ? letter.return_address_name_line : '—' %></span>
-        <span style="min-width: 100px; font-size: 13px;"><%= letter.height %>" × <%= letter.width %>"</span>
-        <span style="min-width: 100px; font-size: 13px; color: var(--fgColor-muted);"><%= time_ago_in_words(letter.created_at) %> ago</span>
-        <span style="min-width: 80px; text-align: right;">
+        <span class="batch-col-md kv-label" style="font-size: 13px;"><%= letter.return_address.present? ? letter.return_address_name_line : '—' %></span>
+        <span class="batch-col-md" style="font-size: 13px;"><%= letter.height %>" × <%= letter.width %>"</span>
+        <span class="batch-col-md kv-label" style="font-size: 13px;"><%= time_ago_in_words(letter.created_at) %> ago</span>
+        <span class="batch-col-status">
           <%= render Components::Shared::StatusBadge.new(status: letter.aasm_state, type: :letter) %>
         </span>
       </div>
