@@ -1,35 +1,35 @@
-<div style="padding: 16px; border: 1px solid var(--borderColor-default); border-radius: 6px; margin-bottom: 16px;">
-  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+<div class="index-card" style="padding: 16px; margin-bottom: 16px;">
+  <div class="index-card-header" style="align-items: flex-start; margin-bottom: 12px;">
     <div style="display: flex; align-items: center; gap: 8px;">
-      <a href="<%= warehouse_order_path(order) %>" style="font-weight: 600; font-family: var(--fontStack-monospace); font-size: 13px; color: var(--fgColor-accent); text-decoration: none;"><%= order.hc_id %></a>
+      <a href="<%= warehouse_order_path(order) %>" class="mono" style="font-weight: 600; text-decoration: none;"><%= order.hc_id %></a>
       <% if order.user_facing_title.present? %>
-        <span style="color: var(--fgColor-default);">·</span>
-        <span style="font-size: 14px;"><%= order.user_facing_title %></span>
+        <span>·</span>
+        <span><%= order.user_facing_title %></span>
       <% end %>
     </div>
     <%= render 'warehouse/orders/status_badge', order: order %>
   </div>
 
   <% if order.tags.present? %>
-    <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+    <div class="tags-row" style="margin-bottom: 12px;">
       <% order.tags.compact_blank.each do |tag| %>
         <%= render(Primer::Beta::Label.new(scheme: :secondary, size: :small)) { tag } %>
       <% end %>
     </div>
   <% end %>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+  <div class="detail-grid">
     <div>
-      <div style="font-size: 12px; color: var(--fgColor-muted); margin-bottom: 4px;">Recipient</div>
-      <div style="font-size: 14px; font-weight: 500;"><%= order.address&.name_line || "—" %></div>
-      <div style="font-size: 13px; color: var(--fgColor-muted);"><%= order.recipient_email %></div>
+      <div class="detail-label" style="margin-bottom: 4px;">Recipient</div>
+      <div style="font-weight: 500;"><%= order.address&.name_line || "—" %></div>
+      <div class="resource-card-meta"><%= order.recipient_email %></div>
     </div>
     <div>
-      <div style="font-size: 12px; color: var(--fgColor-muted); margin-bottom: 4px;">Cost</div>
-      <div style="font-size: 14px;">
-        <span style="color: var(--fgColor-muted);">Labor:</span> <%= number_to_currency(order.labor_cost) %>
-        <span style="margin-left: 8px; color: var(--fgColor-muted);">Contents:</span> <%= number_to_currency(order.contents_actual_cost_to_hc) %>
-        <span style="margin-left: 8px; color: var(--fgColor-muted);">Postage:</span> <%= order.postage_cost.present? ? number_to_currency(order.postage_cost) : "—" %>
+      <div class="detail-label" style="margin-bottom: 4px;">Cost</div>
+      <div>
+        <span class="kv-label">Labor:</span> <%= number_to_currency(order.labor_cost) %>
+        <span class="kv-label" style="margin-left: 8px;">Contents:</span> <%= number_to_currency(order.contents_actual_cost_to_hc) %>
+        <span class="kv-label" style="margin-left: 8px;">Postage:</span> <%= order.postage_cost.present? ? number_to_currency(order.postage_cost) : "—" %>
       </div>
     </div>
   </div>

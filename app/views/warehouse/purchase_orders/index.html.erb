@@ -103,7 +103,10 @@
   <% end %>
 
   <div style="margin-top: 32px;">
-    <%= link_to "← Back to SKUs", warehouse_skus_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+    <%= render Primer::Beta::Button.new(tag: :a, href: warehouse_skus_path, scheme: :invisible, size: :small) do |btn|
+      btn.with_leading_visual_icon(icon: :"arrow-left")
+      "Back to SKUs"
+    end %>
   </div>
 </div>
 

@@ -1,6 +1,6 @@
-<div id="<%= dom_id letter %>" style="padding: 12px 16px; border: 1px solid var(--borderColor-default); border-radius: 6px; margin-bottom: 8px;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-    <a href="<%= letter_path(letter) %>" style="font-weight: 600; color: var(--fgColor-accent); text-decoration: none; font-size: 14px;">
+<div id="<%= dom_id letter %>" class="index-card">
+  <div class="index-card-header">
+    <a href="<%= letter_path(letter) %>" class="index-card-title">
       <% if letter.user_facing_title.present? %>
         <%= letter.user_facing_title %>
       <% else %>
@@ -11,14 +11,14 @@
     <%= render(Primer::Beta::Label.new(scheme: status_scheme, size: :small)) { letter.aasm_state.humanize } %>
   </div>
 
-  <div style="display: flex; gap: 16px; font-size: 13px; color: var(--fgColor-muted);">
+  <div class="index-card-meta">
     <span>From: <%= letter.return_address.present? ? letter.return_address_name_line : 'N/A' %></span>
     <span><%= time_ago_in_words(letter.created_at) %> ago</span>
     <span><%= letter.height %>" x <%= letter.width %>"</span>
   </div>
 
   <% if letter.tags.present? %>
-    <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px;">
+    <div class="tags-row" style="margin-top: 6px; margin-bottom: 0;">
       <% letter.tags.compact_blank.each do |tag| %>
         <%= render(Primer::Beta::Label.new(scheme: :secondary, size: :small)) { tag } %>
       <% end %>

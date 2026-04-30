@@ -337,6 +337,34 @@
   border-top: 1px solid var(--borderColor-muted);
 }
 
+// Index card (used for letter and order rows in index views)
+.index-card {
+  padding: 12px 16px;
+  border: 1px solid var(--borderColor-default);
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.index-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.index-card-title {
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.index-card-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--fgColor-muted);
+}
+
 // Resource index cards (used for USPS resources, source_tags, templates, etc.)
 .resource-card {
   display: flex;
