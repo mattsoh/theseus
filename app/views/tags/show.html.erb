@@ -12,48 +12,54 @@
       box.with_body do %>
         <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
           <span style="color: var(--fgColor-muted); font-size: 14px;">Showing:</span>
-          <select id="time_period" style="padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; font-size: 14px; background: var(--bgColor-default); color: var(--fgColor-default);">
-            <option value="all_time" <%= 'selected' if @time_period == 'all_time' %>>All-time</option>
-            <option value="ytd" <%= 'selected' if @time_period == 'ytd' %>>Year-to-date</option>
-            <option value="month" <%= 'selected' if @time_period == 'month' %>>Specific month</option>
-            <option value="last_week" <%= 'selected' if @time_period == 'last_week' %>>Last week</option>
-            <option value="last_month" <%= 'selected' if @time_period == 'last_month' %>>Last month</option>
-            <option value="last_year" <%= 'selected' if @time_period == 'last_year' %>>Last year</option>
-          </select>
+          <%= render Primer::Alpha::Select.new(name: "time_period", label: "Time period", visually_hide_label: true, id: "time_period") do |select|
+            select.with_option(value: "all_time", label: "All-time", selected: @time_period == "all_time")
+            select.with_option(value: "ytd", label: "Year-to-date", selected: @time_period == "ytd")
+            select.with_option(value: "month", label: "Specific month", selected: @time_period == "month")
+            select.with_option(value: "last_week", label: "Last week", selected: @time_period == "last_week")
+            select.with_option(value: "last_month", label: "Last month", selected: @time_period == "last_month")
+            select.with_option(value: "last_year", label: "Last year", selected: @time_period == "last_year")
+          end %>
 
           <span id="year_selector" style="display: <%= @time_period.in?(%w[ytd month]) ? 'inline' : 'none' %>">
-            <select id="year" style="padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; font-size: 14px; background: var(--bgColor-default); color: var(--fgColor-default);">
-              <% @years.each do |y| %>
-                <option value="<%= y %>" <%= 'selected' if y == @year %>><%= y %></option>
-              <% end %>
-            </select>
+            <%= render Primer::Alpha::Select.new(name: "year", label: "Year", visually_hide_label: true, id: "year") do |select|
+              @years.each do |y|
+                select.with_option(value: y.to_s, label: y.to_s, selected: y == @year)
+              end
+            end %>
           </span>
 
           <span id="month_selector" style="display: <%= @time_period == 'month' ? 'inline' : 'none' %>">
-            <select id="month" style="padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; font-size: 14px; background: var(--bgColor-default); color: var(--fgColor-default);">
-              <% @months.each do |name, num| %>
-                <option value="<%= num %>" <%= 'selected' if num == @month %>><%= name %></option>
-              <% end %>
-            </select>
+            <%= render Primer::Alpha::Select.new(name: "month", label: "Month", visually_hide_label: true, id: "month") do |select|
+              @months.each do |name, num|
+                select.with_option(value: num.to_s, label: name, selected: num == @month)
+              end
+            end %>
           </span>
 
-          <%= render Primer::Beta::Button.new(scheme: :secondary, size: :small, tag: :button, "onclick": "updateTimePeriod()") do
-            "Go"
-          end %>
+          <%= render Primer::Beta::Button.new(scheme: :secondary, size: :small, tag: :button, "onclick": "updateTimePeriod()") { "Go" } %>
         </div>
       <% end
     end %>
   </div>
 
   <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
-    <div style="padding: 12px 16px; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px; text-align: center; min-width: 100px;">
-      <div style="font-size: 24px; font-weight: 600; line-height: 1;"><%= @warehouse_order_count %></div>
-      <div style="font-size: 12px; color: var(--fgColor-muted); margin-top: 4px;">Warehouse Orders</div>
-    </div>
-    <div style="padding: 12px 16px; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px; text-align: center; min-width: 100px;">
-      <div style="font-size: 24px; font-weight: 600; line-height: 1;"><%= @letter_count %></div>
-      <div style="font-size: 12px; color: var(--fgColor-muted); margin-top: 4px;">Letters</div>
-    </div>
+    <%= render Primer::Beta::BorderBox.new do |box|
+      box.with_body do %>
+        <div style="text-align: center; min-width: 80px;">
+          <div style="font-size: 24px; font-weight: 600; line-height: 1;"><%= @warehouse_order_count %></div>
+          <div style="font-size: 12px; color: var(--fgColor-muted); margin-top: 4px;">Warehouse Orders</div>
+        </div>
+      <% end
+    end %>
+    <%= render Primer::Beta::BorderBox.new do |box|
+      box.with_body do %>
+        <div style="text-align: center; min-width: 80px;">
+          <div style="font-size: 24px; font-weight: 600; line-height: 1;"><%= @letter_count %></div>
+          <div style="font-size: 12px; color: var(--fgColor-muted); margin-top: 4px;">Letters</div>
+        </div>
+      <% end
+    end %>
   </div>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
@@ -61,10 +67,7 @@
       <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Letter Costs</h2>
       <%= render Primer::Beta::BorderBox.new do |box|
         box.with_row do %>
-          <div style="display: flex; justify-content: space-between;">
-            <span style="color: var(--fgColor-muted);">Postage</span>
-            <span style="font-weight: 600;"><%= number_to_currency(@letter_postage_cost) %></span>
-          </div>
+          <div class="kv-row"><span class="kv-label">Postage</span><span style="font-weight: 600;"><%= number_to_currency(@letter_postage_cost) %></span></div>
         <% end
       end %>
     </div>
@@ -73,25 +76,33 @@
       <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Warehouse Costs</h2>
       <%= render Primer::Beta::BorderBox.new do |box|
         box.with_row do %>
-          <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Postage</span><span><%= number_to_currency(@warehouse_order_postage_cost) %></span></div>
+          <div class="kv-row"><span class="kv-label">Postage</span><span><%= number_to_currency(@warehouse_order_postage_cost) %></span></div>
         <% end
         box.with_row do %>
-          <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Labor</span><span><%= number_to_currency(@warehouse_order_labor_cost) %></span></div>
+          <div class="kv-row"><span class="kv-label">Labor</span><span><%= number_to_currency(@warehouse_order_labor_cost) %></span></div>
         <% end
         box.with_row do %>
-          <div style="display: flex; justify-content: space-between;"><span style="color: var(--fgColor-muted);">Contents</span><span><%= number_to_currency(@warehouse_order_contents_cost) %></span></div>
+          <div class="kv-row"><span class="kv-label">Contents</span><span><%= number_to_currency(@warehouse_order_contents_cost) %></span></div>
         <% end
         box.with_footer do %>
-          <div style="display: flex; justify-content: space-between;"><span style="font-weight: 600;">Total</span><span style="font-weight: 600;"><%= number_to_currency(@warehouse_order_total_cost) %></span></div>
+          <div class="kv-row" style="font-weight: 600;"><span>Total</span><span><%= number_to_currency(@warehouse_order_total_cost) %></span></div>
         <% end
       end %>
     </div>
   </div>
 
   <div style="margin-top: 32px;">
-    <%= link_to "← Back to tags", tags_path, style: "color: var(--fgColor-muted); text-decoration: none;" %>
+    <%= render Primer::Beta::Button.new(tag: :a, href: tags_path, scheme: :invisible, size: :small) do |btn|
+      btn.with_leading_visual_icon(icon: :arrow_left)
+      "Back to tags"
+    end %>
   </div>
 </div>
+
+<style>
+  .kv-row { display: flex; justify-content: space-between; align-items: center; }
+  .kv-label { color: var(--fgColor-muted); }
+</style>
 
 <script>
   function updateTimePeriod() {

@@ -40,24 +40,32 @@
       box.with_body do %>
         <%= form_with(url: buy_indicia_letter_path(@letter), method: :post) do |form| %>
           <div style="margin-bottom: 12px;">
-            <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;">USPS Payment Account</label>
-            <%= form.collection_select :usps_payment_account_id,
-              USPS::PaymentAccount.all,
-              :id,
-              :name,
-              { prompt: "Select account...", selected: USPS::PaymentAccount.first&.id },
-              { required: true, style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; font-size: 14px; background: var(--bgColor-default); color: var(--fgColor-default);" } %>
+            <%= render Primer::Alpha::Select.new(
+              name: "usps_payment_account_id",
+              label: "USPS Payment Account",
+              full_width: true,
+              required: true
+            ) do |select|
+              select.with_option(value: "", label: "Select account...")
+              USPS::PaymentAccount.all.each do |account|
+                select.with_option(value: account.id.to_s, label: account.name, selected: account.id == USPS::PaymentAccount.first&.id)
+              end
+            end %>
           </div>
 
           <% if current_user.hcb_payment_accounts.any? %>
             <div style="margin-bottom: 16px;">
-              <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;">Pay with HCB Organization</label>
-              <%= form.collection_select :hcb_payment_account_id,
-                current_user.hcb_payment_accounts,
-                :id,
-                :organization_name,
-                { prompt: "Select organization..." },
-                { required: true, style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; font-size: 14px; background: var(--bgColor-default); color: var(--fgColor-default);" } %>
+              <%= render Primer::Alpha::Select.new(
+                name: "hcb_payment_account_id",
+                label: "Pay with HCB Organization",
+                full_width: true,
+                required: true
+              ) do |select|
+                select.with_option(value: "", label: "Select organization...")
+                current_user.hcb_payment_accounts.each do |account|
+                  select.with_option(value: account.id.to_s, label: account.organization_name)
+                end
+              end %>
             </div>
           <% else %>
             <%= render Primer::Beta::Flash.new(scheme: :default, mb: 3) do %>
@@ -66,9 +74,7 @@
           <% end %>
 
           <div style="display: flex; gap: 8px;">
-            <%= render Primer::Beta::Button.new(tag: :a, href: letter_path(@letter), scheme: :secondary) do
-              "Cancel"
-            end %>
+            <%= render Primer::Beta::Button.new(tag: :a, href: letter_path(@letter), scheme: :secondary) { "Cancel" } %>
             <%= render Primer::Beta::Button.new(type: :submit, scheme: :primary, disabled: current_user.hcb_payment_accounts.empty?) do |btn|
               btn.with_leading_visual_icon(icon: :credit_card)
               "Buy Indicia"
@@ -80,6 +86,9 @@
   </div>
 
   <div style="margin-top: 32px;">
-    <%= link_to "← Back to letter", letter_path(@letter), style: "color: var(--fgColor-muted); text-decoration: none;" %>
+    <%= render Primer::Beta::Button.new(tag: :a, href: letter_path(@letter), scheme: :invisible, size: :small) do |btn|
+      btn.with_leading_visual_icon(icon: :arrow_left)
+      "Back to letter"
+    end %>
   </div>
 </div>

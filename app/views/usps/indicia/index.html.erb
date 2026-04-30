@@ -15,27 +15,23 @@
   <% if @usps_indicia.any? %>
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_header do %>
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-          <span style="font-weight: 600;">ID</span>
-          <div style="display: flex; gap: 48px;">
-            <span style="font-weight: 600; min-width: 100px;">SKU</span>
-            <span style="font-weight: 600; min-width: 80px; text-align: right;">Postage</span>
-            <span style="font-weight: 600; min-width: 100px;">Date</span>
-            <span style="font-weight: 600; min-width: 80px;">Category</span>
-          </div>
+        <div class="indicia-row">
+          <span class="indicia-col-id" style="font-weight: 600;">ID</span>
+          <code class="indicia-col-sku" style="font-weight: 600;">SKU</code>
+          <span class="indicia-col-num" style="font-weight: 600;">Postage</span>
+          <span class="indicia-col-date" style="font-weight: 600;">Date</span>
+          <span class="indicia-col-cat" style="font-weight: 600;">Category</span>
         </div>
       <% end
 
       @usps_indicia.each do |indicium|
         box.with_row do %>
-          <a href="<%= usps_indicium_path(indicium) %>" style="display: flex; justify-content: space-between; align-items: center; width: 100%; text-decoration: none; color: inherit;">
-            <div><%= render Components::Shared::PublicId.new(value: indicium.public_id) %></div>
-            <div style="display: flex; gap: 48px; align-items: center;">
-              <code style="min-width: 100px; font-size: 12px;"><%= indicium.usps_sku %></code>
-              <span style="min-width: 80px; text-align: right; font-weight: 500;"><%= number_to_currency(indicium.postage) %></span>
-              <span style="min-width: 100px; color: var(--fgColor-muted);"><%= indicium.mailing_date %></span>
-              <span style="min-width: 80px; color: var(--fgColor-muted);"><%= indicium.processing_category %></span>
-            </div>
+          <a href="<%= usps_indicium_path(indicium) %>" class="indicia-row" style="text-decoration: none; color: inherit;">
+            <span class="indicia-col-id"><%= render Components::Shared::PublicId.new(value: indicium.public_id) %></span>
+            <code class="indicia-col-sku" style="font-size: 12px;"><%= indicium.usps_sku %></code>
+            <span class="indicia-col-num" style="font-weight: 500;"><%= number_to_currency(indicium.postage) %></span>
+            <span class="indicia-col-date" style="color: var(--fgColor-muted);"><%= indicium.mailing_date %></span>
+            <span class="indicia-col-cat" style="color: var(--fgColor-muted);"><%= indicium.processing_category %></span>
           </a>
         <% end
       end
@@ -48,3 +44,12 @@
     end %>
   <% end %>
 </div>
+
+<style>
+  .indicia-row { display: flex; align-items: center; gap: 16px; width: 100%; }
+  .indicia-col-id { flex: 1; }
+  .indicia-col-sku { min-width: 100px; flex-shrink: 0; }
+  .indicia-col-num { min-width: 80px; text-align: right; flex-shrink: 0; }
+  .indicia-col-date { min-width: 100px; flex-shrink: 0; }
+  .indicia-col-cat { min-width: 80px; flex-shrink: 0; }
+</style>
