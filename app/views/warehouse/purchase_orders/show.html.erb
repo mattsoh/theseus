@@ -78,7 +78,7 @@
 
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_row do %>
-        <div class="kv-row"><span class="kv-label">Created By</span><span><%= link_to @purchase_order.user&.email, @purchase_order.user %></span></div>
+        <div class="kv-row"><span class="kv-label">Created By</span><span><%= @purchase_order.user&.email %></span></div>
       <% end
       box.with_row do %>
         <div class="kv-row"><span class="kv-label">Created At</span><span><%= @purchase_order.created_at.strftime("%B %d, %Y at %I:%M %p") %></span></div>
