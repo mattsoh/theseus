@@ -28,7 +28,10 @@ class Views::Warehouse::Orders::Index < Views::Base
   def header_section
     div(style: "display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;") do
       div do
-        h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "Orders" }
+        div(style: "display: flex; align-items: center; gap: 8px;") do
+          h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "Orders" }
+          render Components::Shared::Jumpcode.new(path: warehouse_orders_path)
+        end
         p(style: "color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;") do
           plain "#{warehouse_orders.respond_to?(:total_count) ? warehouse_orders.total_count : warehouse_orders.count} orders"
         end

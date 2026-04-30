@@ -1,6 +1,10 @@
 <% content_for :title, "Mail Scanner" %>
 
 <div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Mail Scanner</h1>
+    <%= render Components::Shared::Jumpcode.new(path: scanner_letters_path) %>
+  </div>
   <div
     data-svelte-component="mail-scanner"
     data-csrf-token="<%= form_authenticity_token %>"

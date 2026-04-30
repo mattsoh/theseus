@@ -30,7 +30,10 @@ class Views::Letters::Index < Views::Base
   def header_section
     div(style: "display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;") do
       div do
-        h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "Letters" }
+        div(style: "display: flex; align-items: center; gap: 8px;") do
+          h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "Letters" }
+          render Components::Shared::Jumpcode.new(path: letters_path)
+        end
         p(style: "color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;") do
           plain "#{letters.respond_to?(:total_count) ? letters.total_count : letters.count} letters"
         end

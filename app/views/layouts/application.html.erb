@@ -37,5 +37,9 @@
       <%= yield %>
     </div>
     <%= render Components::Shared::AppFooter.new %>
+    <% if current_user %>
+      <script type="application/json" id="kbar-data"><%= raw Shortcodes.kbar_data_for(current_user) %></script>
+      <div data-svelte-component="command-palette"></div>
+    <% end %>
   </body>
 </html>

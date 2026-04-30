@@ -429,6 +429,8 @@ Rails.application.routes.draw do
   get "customs_receipts/index"
   get "customs_receipts/show"
   scope path: "back_office" do
+    get "kbar/search", to: "kbar#search"
+
     resources :public_ids, only: [:index] do
       collection do
         post :lookup

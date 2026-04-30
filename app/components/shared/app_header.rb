@@ -46,6 +46,17 @@ class Components::Shared::AppHeader < Components::Base
           href: scanner_letters_path
         ))
 
+        render(Primer::Beta::Button.new(
+          scheme: :invisible,
+          size: :small,
+          "aria-label": "Command palette",
+          id: "kbar-trigger",
+          onclick: safe("window.openKbar?.()")
+        )) do |btn|
+          btn.with_leading_visual_icon(icon: :search)
+          span(style: "font-size: 12px; color: var(--fgColor-muted); font-family: var(--fontStack-monospace);") { "⌘K" }
+        end
+
         render_id_lookup_dialog
 
         if current_user

@@ -3,7 +3,10 @@
 <div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
     <div>
-      <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Purchase Orders</h1>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Purchase Orders</h1>
+        <%= render Components::Shared::Jumpcode.new(path: warehouse_purchase_orders_path) %>
+      </div>
       <p style="color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;">
         <%= @purchase_orders.count %> orders
       </p>

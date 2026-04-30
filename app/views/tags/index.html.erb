@@ -3,7 +3,10 @@
 <div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
     <div>
-      <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Tags</h1>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Tags</h1>
+        <%= render Components::Shared::Jumpcode.new(path: tags_path) %>
+      </div>
       <p style="color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;">Cost tracking and reporting by tag</p>
     </div>
     <%= form_with url: refresh_tags_path, method: :post, style: "display: inline;" do %>

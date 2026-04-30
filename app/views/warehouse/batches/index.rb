@@ -11,7 +11,8 @@ class Views::Warehouse::Batches::Index < Views::Base
     div(style: "max-width: 1200px; margin: 0 auto; padding: 24px;") do
       render Components::Shared::PageHeader.new(
         title: "Warehouse Batches",
-        subtitle: "#{@batches.count} batches"
+        subtitle: "#{@batches.count} batches",
+        jumpcode_path: warehouse_batches_path
       ) do |header|
         header.with_actions do
           render Primer::Beta::Button.new(tag: :a, href: new_warehouse_batch_path, scheme: :primary) do |btn|

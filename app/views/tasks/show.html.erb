@@ -2,7 +2,10 @@
 
 <div style="max-width: 800px; margin: 0 auto; padding: 24px;">
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Your Tasks</h1>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Your Tasks</h1>
+      <%= render Components::Shared::Jumpcode.new(path: tasks_path) %>
+    </div>
     <%= button_to refresh_tasks_path, method: :post do %>
       <%= render Primer::Beta::Button.new(type: :button, scheme: :secondary, size: :small) do |btn|
         btn.with_leading_visual_icon(icon: :sync)

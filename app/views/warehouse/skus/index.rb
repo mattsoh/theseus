@@ -23,7 +23,10 @@ class Views::Warehouse::SKUs::Index < Views::Base
   def header_section
     div(style: "display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;") do
       div do
-        h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "SKUs" }
+        div(style: "display: flex; align-items: center; gap: 8px;") do
+          h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "SKUs" }
+          render Components::Shared::Jumpcode.new(path: warehouse_skus_path)
+        end
         p(style: "color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;") do
           plain "#{warehouse_skus.count} items"
           plain " (showing all)" if include_non_inventory

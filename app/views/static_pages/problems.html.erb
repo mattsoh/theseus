@@ -1,7 +1,10 @@
 <% content_for :title, "Problems" %>
 
 <div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
-  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px 0;">Problems</h1>
+  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Problems</h1>
+    <%= render Components::Shared::Jumpcode.new(path: problems_path) %>
+  </div>
 
   <% if @blocking.empty? && @no_po_cost.empty? && @backordered.empty? && @stuck_orders.empty? %>
     <%= render Primer::Beta::Blankslate.new(border: true) do |bs|
@@ -13,26 +16,31 @@
 
   <% if @blocking.any? %>
     <div style="margin-bottom: 32px;">
-      <h2 style="font-size: 16px; font-weight: 600; margin: 0 0 8px 0; color: var(--fgColor-danger);">Dispatch Blockers</h2>
-      <p style="color: var(--fgColor-muted); font-size: 14px; margin: 0 0 12px 0;">These enabled SKUs have no cost data at all — no PO cost, no override. Orders containing them will refuse to dispatch.</p>
+      <div style="margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <h2 style="font-size: 16px; font-weight: 600; margin: 0;">Dispatch Blockers</h2>
+          <%= render Primer::Beta::Label.new(scheme: :danger) { "blocking" } %>
+        </div>
+        <p style="color: var(--fgColor-muted); font-size: 13px; margin: 4px 0 0 0;">No cost data at all — orders with these SKUs will refuse to dispatch.</p>
+      </div>
       <%= render Primer::Beta::BorderBox.new do |box|
         box.with_header do %>
-          <div style="display: flex; justify-content: space-between; width: 100%;">
-            <span style="font-weight: 600; min-width: 120px;">SKU</span>
-            <span style="font-weight: 600; flex: 1;">Name</span>
-            <span style="font-weight: 600; min-width: 80px; text-align: right;">In Stock</span>
-            <span style="font-weight: 600; min-width: 100px; text-align: right;">Zenventory</span>
+          <div class="problems-row">
+            <span class="problems-col-sku" style="font-weight: 600;">SKU</span>
+            <span class="problems-col-name" style="font-weight: 600;">Name</span>
+            <span class="problems-col-num" style="font-weight: 600;">In Stock</span>
+            <span class="problems-col-link" style="font-weight: 600;">Zenventory</span>
           </div>
         <% end
         @blocking.each do |sku|
           box.with_row do %>
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-              <code style="min-width: 120px;"><%= link_to sku.sku, warehouse_sku_path(sku), style: "color: var(--fgColor-accent);" %></code>
-              <span style="flex: 1;"><%= sku.name %></span>
-              <span style="min-width: 80px; text-align: right;"><%= sku.in_stock || "—" %></span>
-              <span style="min-width: 100px; text-align: right;">
+            <div class="problems-row">
+              <code class="problems-col-sku"><%= link_to sku.sku, warehouse_sku_path(sku) %></code>
+              <span class="problems-col-name"><%= sku.name %></span>
+              <span class="problems-col-num"><%= sku.in_stock || "—" %></span>
+              <span class="problems-col-link">
                 <% if sku.zenventory_url %>
-                  <%= link_to "view", sku.zenventory_url, target: "_blank", style: "color: var(--fgColor-accent); font-size: 13px;" %>
+                  <%= link_to "view ↗", sku.zenventory_url, target: "_blank" %>
                 <% end %>
               </span>
             </div>
@@ -44,30 +52,35 @@
 
   <% if @no_po_cost.any? %>
     <div style="margin-bottom: 32px;">
-      <h2 style="font-size: 16px; font-weight: 600; margin: 0 0 8px 0; color: var(--fgColor-attention);">Missing PO Cost Data</h2>
-      <p style="color: var(--fgColor-muted); font-size: 14px; margin: 0 0 12px 0;">These enabled SKUs have no <code>average_po_cost</code> from Zenventory but are covered by a fallback. The PO data should be fixed.</p>
+      <div style="margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <h2 style="font-size: 16px; font-weight: 600; margin: 0;">Missing PO Cost Data</h2>
+          <%= render Primer::Beta::Label.new(scheme: :attention) { "degraded" } %>
+        </div>
+        <p style="color: var(--fgColor-muted); font-size: 13px; margin: 4px 0 0 0;">No <code>average_po_cost</code> from Zenventory — covered by fallback but should be fixed.</p>
+      </div>
       <%= render Primer::Beta::BorderBox.new do |box|
         box.with_header do %>
-          <div style="display: flex; justify-content: space-between; width: 100%;">
-            <span style="font-weight: 600; min-width: 120px;">SKU</span>
-            <span style="font-weight: 600; flex: 1;">Name</span>
-            <span style="font-weight: 600; min-width: 80px; text-align: right;">Cost</span>
-            <span style="font-weight: 600; min-width: 80px; text-align: right;">Source</span>
-            <span style="font-weight: 600; min-width: 100px; text-align: right;">Zenventory</span>
+          <div class="problems-row">
+            <span class="problems-col-sku" style="font-weight: 600;">SKU</span>
+            <span class="problems-col-name" style="font-weight: 600;">Name</span>
+            <span class="problems-col-num" style="font-weight: 600;">Cost</span>
+            <span class="problems-col-num" style="font-weight: 600;">Source</span>
+            <span class="problems-col-link" style="font-weight: 600;">Zenventory</span>
           </div>
         <% end
         @no_po_cost.each do |sku|
           box.with_row do %>
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-              <code style="min-width: 120px;"><%= link_to sku.sku, warehouse_sku_path(sku), style: "color: var(--fgColor-accent);" %></code>
-              <span style="flex: 1;"><%= sku.name %></span>
-              <span style="min-width: 80px; text-align: right;"><%= number_to_currency(sku.declared_unit_cost) %></span>
-              <span style="min-width: 80px; text-align: right; color: var(--fgColor-muted);">
+            <div class="problems-row">
+              <code class="problems-col-sku"><%= link_to sku.sku, warehouse_sku_path(sku) %></code>
+              <span class="problems-col-name"><%= sku.name %></span>
+              <span class="problems-col-num"><%= number_to_currency(sku.declared_unit_cost) %></span>
+              <span class="problems-col-num" style="color: var(--fgColor-muted);">
                 <%= sku.declared_unit_cost_override&.positive? ? "override" : "???" %>
               </span>
-              <span style="min-width: 100px; text-align: right;">
+              <span class="problems-col-link">
                 <% if sku.zenventory_url %>
-                  <%= link_to "view", sku.zenventory_url, target: "_blank", style: "color: var(--fgColor-accent); font-size: 13px;" %>
+                  <%= link_to "view ↗", sku.zenventory_url, target: "_blank" %>
                 <% end %>
               </span>
             </div>
@@ -79,26 +92,31 @@
 
   <% if @backordered.any? %>
     <div style="margin-bottom: 32px;">
-      <h2 style="font-size: 16px; font-weight: 600; margin: 0 0 8px 0; color: var(--fgColor-attention);">Backordered Without Enough Inbound</h2>
-      <p style="color: var(--fgColor-muted); font-size: 14px; margin: 0 0 12px 0;">These SKUs are oversold and don't have enough inbound stock to cover the deficit.</p>
+      <div style="margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <h2 style="font-size: 16px; font-weight: 600; margin: 0;">Backordered Without Enough Inbound</h2>
+          <%= render Primer::Beta::Label.new(scheme: :attention) { "warning" } %>
+        </div>
+        <p style="color: var(--fgColor-muted); font-size: 13px; margin: 4px 0 0 0;">Oversold and not enough inbound stock to cover the deficit.</p>
+      </div>
       <%= render Primer::Beta::BorderBox.new do |box|
         box.with_header do %>
-          <div style="display: flex; justify-content: space-between; width: 100%;">
-            <span style="font-weight: 600; min-width: 120px;">SKU</span>
-            <span style="font-weight: 600; flex: 1;">Name</span>
-            <span style="font-weight: 600; min-width: 80px; text-align: right;">In Stock</span>
-            <span style="font-weight: 600; min-width: 80px; text-align: right;">Inbound</span>
-            <span style="font-weight: 600; min-width: 80px; text-align: right;">Shortfall</span>
+          <div class="problems-row">
+            <span class="problems-col-sku" style="font-weight: 600;">SKU</span>
+            <span class="problems-col-name" style="font-weight: 600;">Name</span>
+            <span class="problems-col-num" style="font-weight: 600;">In Stock</span>
+            <span class="problems-col-num" style="font-weight: 600;">Inbound</span>
+            <span class="problems-col-num" style="font-weight: 600;">Shortfall</span>
           </div>
         <% end
         @backordered.each do |sku|
           box.with_row do %>
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-              <code style="min-width: 120px;"><%= link_to sku.sku, warehouse_sku_path(sku), style: "color: var(--fgColor-accent);" %></code>
-              <span style="flex: 1;"><%= sku.name %></span>
-              <span style="min-width: 80px; text-align: right; color: var(--fgColor-danger); font-weight: 600;"><%= sku.in_stock %></span>
-              <span style="min-width: 80px; text-align: right;"><%= sku.inbound || 0 %></span>
-              <span style="min-width: 80px; text-align: right; color: var(--fgColor-danger); font-weight: 600;"><%= sku.in_stock.abs - (sku.inbound || 0) %></span>
+            <div class="problems-row">
+              <code class="problems-col-sku"><%= link_to sku.sku, warehouse_sku_path(sku) %></code>
+              <span class="problems-col-name"><%= sku.name %></span>
+              <span class="problems-col-num" style="color: var(--fgColor-danger); font-weight: 600;"><%= sku.in_stock %></span>
+              <span class="problems-col-num"><%= sku.inbound || 0 %></span>
+              <span class="problems-col-num" style="color: var(--fgColor-danger); font-weight: 600;"><%= sku.in_stock.abs - (sku.inbound || 0) %></span>
             </div>
           <% end
         end
@@ -108,28 +126,33 @@
 
   <% if @stuck_orders.any? %>
     <div style="margin-bottom: 32px;">
-      <h2 style="font-size: 16px; font-weight: 600; margin: 0 0 8px 0; color: var(--fgColor-danger);">Stuck Orders</h2>
-      <p style="color: var(--fgColor-muted); font-size: 14px; margin: 0 0 12px 0;">Dispatched over 2 weeks ago but never marked as mailed. Possible Zenventory sync issue or stuck at warehouse.</p>
+      <div style="margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <h2 style="font-size: 16px; font-weight: 600; margin: 0;">Stuck Orders</h2>
+          <%= render Primer::Beta::Label.new(scheme: :danger) { "blocking" } %>
+        </div>
+        <p style="color: var(--fgColor-muted); font-size: 13px; margin: 4px 0 0 0;">Dispatched 2+ weeks ago, never marked mailed. Possible Zenventory sync issue.</p>
+      </div>
       <%= render Primer::Beta::BorderBox.new do |box|
         box.with_header do %>
-          <div style="display: flex; justify-content: space-between; width: 100%;">
-            <span style="font-weight: 600; min-width: 120px;">Order</span>
-            <span style="font-weight: 600; flex: 1;">Recipient</span>
-            <span style="font-weight: 600; min-width: 100px;">Dispatched</span>
-            <span style="font-weight: 600; min-width: 80px; text-align: right;">Age</span>
-            <span style="font-weight: 600; min-width: 100px; text-align: right;">Zenventory</span>
+          <div class="problems-row">
+            <span class="problems-col-sku" style="font-weight: 600;">Order</span>
+            <span class="problems-col-name" style="font-weight: 600;">Recipient</span>
+            <span class="problems-col-num" style="font-weight: 600;">Dispatched</span>
+            <span class="problems-col-num" style="font-weight: 600;">Age</span>
+            <span class="problems-col-link" style="font-weight: 600;">Zenventory</span>
           </div>
         <% end
         @stuck_orders.each do |order|
           box.with_row do %>
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-              <code style="min-width: 120px;"><%= link_to order.hc_id, warehouse_order_path(order), style: "color: var(--fgColor-accent);" %></code>
-              <span style="flex: 1;"><%= order.recipient_email %></span>
-              <span style="min-width: 100px;"><%= order.dispatched_at.strftime("%b %d, %Y") %></span>
-              <span style="min-width: 80px; text-align: right; color: var(--fgColor-danger);"><%= distance_of_time_in_words_to_now(order.dispatched_at) %></span>
-              <span style="min-width: 100px; text-align: right;">
+            <div class="problems-row">
+              <code class="problems-col-sku"><%= link_to order.hc_id, warehouse_order_path(order) %></code>
+              <span class="problems-col-name"><%= order.recipient_email %></span>
+              <span class="problems-col-num"><%= order.dispatched_at.strftime("%b %d") %></span>
+              <span class="problems-col-num" style="color: var(--fgColor-danger);"><%= distance_of_time_in_words_to_now(order.dispatched_at) %></span>
+              <span class="problems-col-link">
                 <% if order.zenventory_url %>
-                  <%= link_to "view", order.zenventory_url, target: "_blank", style: "color: var(--fgColor-accent); font-size: 13px;" %>
+                  <%= link_to "view ↗", order.zenventory_url, target: "_blank" %>
                 <% end %>
               </span>
             </div>
@@ -139,3 +162,34 @@
     </div>
   <% end %>
 </div>
+
+<style>
+  .problems-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+  .problems-col-sku {
+    min-width: 120px;
+    flex-shrink: 0;
+  }
+  .problems-col-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .problems-col-num {
+    min-width: 80px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .problems-col-link {
+    min-width: 100px;
+    text-align: right;
+    flex-shrink: 0;
+    font-size: 13px;
+  }
+</style>
