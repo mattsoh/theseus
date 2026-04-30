@@ -88,13 +88,13 @@ class Views::Letter::Batches::Edit < Views::Base
   def sender_fields(f)
     addresses = ReturnAddress.shared.or(ReturnAddress.owned_by(current_user))
 
-    div(class: "FormControl mb-3") do
-      label(class: "FormControl-label", for: "letter_batch_letter_mailer_id_id") { "USPS Mailer ID" }
-      div(class: "mt-1") do
+    div(style: "margin-bottom: 16px;") do
+      label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;", for: "letter_batch_letter_mailer_id_id") { "USPS Mailer ID" }
+      div(style: "margin-top: 4px;") do
         select(
           name: "letter_batch[letter_mailer_id_id]",
           id: "letter_batch_letter_mailer_id_id",
-          class: "form-control width-full"
+          style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
         ) do
           USPS::MailerId.all.each do |m|
             option(value: m.id, selected: m.id == @batch.letter_mailer_id_id) { m.display_name }
@@ -103,13 +103,13 @@ class Views::Letter::Batches::Edit < Views::Base
       end
     end
 
-    div(class: "FormControl mb-3") do
-      label(class: "FormControl-label", for: "letter_batch_letter_return_address_id") { "Return Address" }
-      div(class: "mt-1") do
+    div(style: "margin-bottom: 16px;") do
+      label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;", for: "letter_batch_letter_return_address_id") { "Return Address" }
+      div(style: "margin-top: 4px;") do
         select(
           name: "letter_batch[letter_return_address_id]",
           id: "letter_batch_letter_return_address_id",
-          class: "form-control width-full"
+          style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
         ) do
           addresses.each do |addr|
             option(value: addr.id, selected: addr.id == @batch.letter_return_address_id) { addr.display_name }

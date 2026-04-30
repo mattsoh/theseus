@@ -17,16 +17,16 @@ class Components::Warehouse::LineItemsEditor < Components::Base
 
   def view_template
     div(class: "line-items-editor", "x-data": alpine_data_json, "x-cloak": true) do
-      div(class: "Box", "x-ref": "list") do
+      div(style: "border: 1px solid var(--borderColor-default); border-radius: 6px; overflow: hidden;", "x-ref": "list") do
         div("x-show": "visibleItems().length > 0") do
-          table(class: "width-full") do
-            thead(class: "Box-header") do
-              tr(class: "color-fg-muted f6") do
-                th(class: "text-left text-normal py-2") { "Item" }
-                th(class: "text-left text-normal py-2", style: "width: 120px;") { "Stock" }
-                th(class: "text-left text-normal py-2", style: "width: 100px;") { "Quantity" }
-                th(class: "text-left text-normal py-2", style: "width: 120px;") { "Unit Cost" } if @show_unit_cost
-                th(class: "text-normal py-2", style: "width: 50px;")
+          table(style: "width: 100%; border-collapse: collapse;") do
+            thead(style: "background: var(--bgColor-muted); border-bottom: 1px solid var(--borderColor-default);") do
+              tr(style: "color: var(--fgColor-muted); font-size: 12px;") do
+                th(style: "text-align: left; font-weight: 400; padding: 8px 16px;") { "Item" }
+                th(style: "text-align: left; font-weight: 400; padding: 8px 16px; width: 120px;") { "Stock" }
+                th(style: "text-align: left; font-weight: 400; padding: 8px 16px; width: 100px;") { "Quantity" }
+                th(style: "text-align: left; font-weight: 400; padding: 8px 16px; width: 120px;") { "Unit Cost" } if @show_unit_cost
+                th(style: "font-weight: 400; padding: 8px 16px; width: 50px;")
               end
             end
             tbody do
@@ -40,7 +40,7 @@ class Components::Warehouse::LineItemsEditor < Components::Base
         render_empty_state
       end
 
-      div(class: "mt-3") { add_item_panel }
+      div(style: "margin-top: 12px;") { add_item_panel }
 
       hidden_fields
       sku_filter_script
@@ -56,48 +56,47 @@ class Components::Warehouse::LineItemsEditor < Components::Base
   # Line item row
 
   def render_line_item_row
-    tr(class: "Box-row", "x-show": "!item._destroy", "x-transition.opacity": true) do
-      td(class: "py-2") do
-        div(class: "text-bold", "x-text": "item.sku_name")
-        code(class: "color-fg-muted f6", "x-text": "item.sku_code")
+    tr(style: "border-bottom: 1px solid var(--borderColor-default);", "x-show": "!item._destroy", "x-transition.opacity": true) do
+      td(style: "padding: 8px 16px;") do
+        div(style: "font-weight: 600;", "x-text": "item.sku_name")
+        code(style: "color: var(--fgColor-muted); font-size: 12px;", "x-text": "item.sku_code")
       end
-      td(class: "py-2") do
+      td(style: "padding: 8px 16px;") do
         template_tag("x-if": "item.sku_stock != null") do
           span(
-            class: "Label Label--medium",
-            ":class": "stockClass(item.sku_stock)",
+            style: "display: inline-block; padding: 2px 8px; font-size: 12px; font-weight: 500; border-radius: 2em; border: 1px solid var(--borderColor-default);",
+            ":style": "stockStyle(item.sku_stock)",
             "x-text": "item.sku_stock + ' in stock'"
           )
         end
       end
-      td(class: "py-2") do
+      td(style: "padding: 8px 16px;") do
         input(
           type: "number",
           "x-model.number": "item.quantity",
           min: 1,
-          class: "form-control",
-          style: "width: 80px; text-align: center;"
+          style: "width: 80px; text-align: center; padding: 5px 8px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
         )
       end
       if @show_unit_cost
-        td(class: "py-2") do
-          div(class: "input-group", style: "width: 110px;") do
-            span(class: "input-group-text") { "$" }
+        td(style: "padding: 8px 16px;") do
+          div(style: "display: flex; align-items: stretch; width: 110px;") do
+            span(style: "display: flex; align-items: center; padding: 0 8px; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-right: 0; border-radius: 6px 0 0 6px; color: var(--fgColor-muted); font-size: 14px;") { "$" }
             input(
               type: "number",
               "x-model": "item.unit_cost",
               min: 0,
               step: "0.01",
               placeholder: "0.00",
-              class: "form-control"
+              style: "padding: 5px 8px; border: 1px solid var(--borderColor-default); border-radius: 0 6px 6px 0; background: var(--bgColor-default); color: var(--fgColor-default); width: 100%;"
             )
           end
         end
       end
-      td(class: "py-2 text-right") do
+      td(style: "padding: 8px 16px; text-align: right;") do
         button(
           type: "button",
-          class: "btn btn-danger btn-sm",
+          style: "padding: 3px 8px; font-size: 12px; border: 1px solid var(--borderColor-danger-emphasis); border-radius: 6px; background: transparent; color: var(--fgColor-danger); cursor: pointer;",
           "aria-label": "Remove item",
           "@click": "removeItem(item._index)"
         ) do
@@ -108,13 +107,13 @@ class Components::Warehouse::LineItemsEditor < Components::Base
   end
 
   def render_empty_state
-    div(class: "Box-row p-4", "x-show": "visibleItems().length === 0") do
-      div(class: "blankslate") do
-        div(class: "blankslate-icon color-fg-muted") do
+    div(style: "padding: 32px 16px; border-bottom: 1px solid var(--borderColor-default);", "x-show": "visibleItems().length === 0") do
+      div(style: "text-align: center;") do
+        div(style: "color: var(--fgColor-muted); margin-bottom: 8px;") do
           render Primer::Beta::Octicon.new(icon: :package, size: :medium)
         end
-        h3(class: "blankslate-heading") { "No items added" }
-        p(class: "color-fg-muted mb-0") { "Click the button below to add SKUs." }
+        h3(style: "font-size: 16px; font-weight: 600; margin: 0 0 4px;") { "No items added" }
+        p(style: "color: var(--fgColor-muted); margin: 0;") { "Click the button below to add SKUs." }
       end
     end
   end
@@ -301,11 +300,11 @@ class Components::Warehouse::LineItemsEditor < Components::Base
           }
         },
         visibleItems() { return this.items.filter(i => !i._destroy); },
-        stockClass(stock) {
-          if (stock == null) return 'Label--secondary';
-          if (stock <= 0) return 'Label--danger';
-          if (stock < 10) return 'Label--attention';
-          return 'Label--success';
+        stockStyle(stock) {
+          if (stock == null) return 'background: var(--bgColor-muted); color: var(--fgColor-muted);';
+          if (stock <= 0) return 'background: var(--bgColor-danger-muted); color: var(--fgColor-danger); border-color: var(--borderColor-danger-emphasis);';
+          if (stock < 10) return 'background: var(--bgColor-attention-muted); color: var(--fgColor-attention); border-color: var(--borderColor-attention-emphasis);';
+          return 'background: var(--bgColor-success-muted); color: var(--fgColor-success); border-color: var(--borderColor-success-emphasis);';
         }
       }
     JS

@@ -32,13 +32,13 @@ class Views::Warehouse::Batches::Edit < Views::Base
           end
           box.with_body do
             if @allowed_templates.any?
-              div(class: "FormControl mb-3") do
-                label(class: "FormControl-label", for: "batch_warehouse_template_id") { "Template" }
-                div(class: "mt-1") do
+              div(style: "margin-bottom: 16px;") do
+                label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;", for: "batch_warehouse_template_id") { "Template" }
+                div(style: "margin-top: 4px;") do
                   select(
                     name: "batch[warehouse_template_id]",
                     id: "batch_warehouse_template_id",
-                    class: "form-control width-full"
+                    style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
                   ) do
                     @allowed_templates.each do |template|
                       option(value: template.id, selected: template.id == @batch.warehouse_template_id) { template.name }

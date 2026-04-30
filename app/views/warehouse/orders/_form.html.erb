@@ -82,7 +82,7 @@
 
   <%= render 'shared/primer_tag_picker', form: form, taggable: warehouse_order %>
 
-  <div class="d-flex gap-2">
+  <div style="display: flex; gap: 8px;">
     <%= render Primer::Beta::Button.new(tag: :a, href: warehouse_orders_path, scheme: :secondary) do
       "Cancel"
     end %>

@@ -36,20 +36,20 @@ class Views::Letters::Edit < Views::Base
       end
       box.with_body do
         dl do
-          dt(class: "color-fg-muted f6") { "ID" }
-          dd(class: "mb-3") do
+          dt(style: "color: var(--fgColor-muted); font-size: 12px;") { "ID" }
+          dd(style: "margin-bottom: 16px;") do
             code { @letter.public_id }
           end
 
-          dt(class: "color-fg-muted f6") { "Status" }
-          dd(class: "mb-3") do
+          dt(style: "color: var(--fgColor-muted); font-size: 12px;") { "Status" }
+          dd(style: "margin-bottom: 16px;") do
             render Components::Shared::StatusBadge.new(status: @letter.aasm_state, type: :letter)
           end
 
-          dt(class: "color-fg-muted f6") { "Created" }
-          dd(class: "mb-3") { @letter.created_at.strftime("%b %-d, %Y") }
+          dt(style: "color: var(--fgColor-muted); font-size: 12px;") { "Created" }
+          dd(style: "margin-bottom: 16px;") { @letter.created_at.strftime("%b %-d, %Y") }
 
-          dt(class: "color-fg-muted f6") { "Origin" }
+          dt(style: "color: var(--fgColor-muted); font-size: 12px;") { "Origin" }
           dd { @letter.origin_label }
         end
       end

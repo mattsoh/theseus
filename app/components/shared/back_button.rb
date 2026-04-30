@@ -7,12 +7,9 @@ class Components::Shared::BackButton < Components::Base
   end
 
   def view_template
-    a(
-      href: @href,
-      class: "btn btn-secondary"
-    ) do
-      render Primer::Beta::Octicon.new(icon: :"arrow-left", mr: 1)
-      plain @label
+    render Primer::Beta::Button.new(tag: :a, href: @href, scheme: :secondary) do |btn|
+      btn.with_leading_visual_icon(icon: :"arrow-left")
+      @label
     end
   end
 end

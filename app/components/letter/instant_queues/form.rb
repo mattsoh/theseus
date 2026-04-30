@@ -110,7 +110,7 @@ class Components::Letter::InstantQueues::Form < Components::Base
         )
       else
         div(style: "margin-bottom: 16px;") do
-          label(class: "FormControl-label") { "Pay with HCB Organization" }
+          label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;") { "Pay with HCB Organization" }
           p(style: "font-size: 14px; color: var(--fgColor-muted); margin-top: 4px;") do
             a(href: new_hcb_oauth_connection_path) { "Connect your HCB account" }
             plain " to use indicia."
@@ -177,30 +177,31 @@ class Components::Letter::InstantQueues::Form < Components::Base
   end
 
   def tag_picker(f)
-    div(class: "FormControl mb-3") do
-      label(class: "FormControl-label") { "Tags" }
+    div(style: "margin-bottom: 16px;") do
+      label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;") { "Tags" }
       select(
         name: "letter_instant_queue[tags][]",
         multiple: true,
-        class: "selectize-tags width-full"
+        class: "selectize-tags",
+        style: "width: 100%;"
       ) do
         available_tags.each do |tag|
           option(value: tag, selected: queue.tags&.include?(tag)) { tag }
         end
       end
-      p(class: "FormControl-caption") { "Select from common tags or create your own" }
+      p(style: "color: var(--fgColor-muted); font-size: 12px; margin-top: 4px;") { "Select from common tags or create your own" }
     end
   end
 
   def select_field(name:, label:, options:, selected: nil, link: nil)
     div(style: "margin-bottom: 16px;") do
       div(style: "display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px;") do
-        label(class: "FormControl-label") { label }
+        label(style: "display: block; font-size: 14px; font-weight: 600;") { label }
         if link
           a(href: link[:href], style: "font-size: 12px;") { link[:text] }
         end
       end
-      select(name: name, class: "FormControl-select width-full", style: "padding: 8px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px;") do
+      select(name: name, style: "width: 100%; padding: 8px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);") do
         options.each do |display, value|
           option(value: value, selected: value.to_s == selected.to_s) { display }
         end

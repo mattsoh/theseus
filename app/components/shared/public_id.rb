@@ -8,7 +8,8 @@ class Components::Shared::PublicId < Components::Base
 
   def view_template
     span(
-      class: "pointer tooltipped tooltipped--#{@tooltip_direction} font-mono text-sm",
+      class: "pointer tooltipped tooltipped--#{@tooltip_direction}",
+      style: "font-family: var(--fontStack-monospace); font-size: 14px;",
       aria_label: "click to copy...",
       data_copy_to_clipboard: @value
     ) do

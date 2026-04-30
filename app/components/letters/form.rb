@@ -99,7 +99,7 @@ class Components::Letters::Form < Components::Base
       tag_picker(f)
 
       # Actions
-      div(class: "d-flex gap-2") do
+      div(style: "display: flex; gap: 8px;") do
         render Primer::Beta::Button.new(tag: :a, href: letters_path, scheme: :secondary) do
           "Cancel"
         end
@@ -133,25 +133,27 @@ class Components::Letters::Form < Components::Base
   end
 
   def mailing_date_field(f)
-    div(class: "FormControl mt-3") do
-      label(class: "FormControl-label", for: "letter_mailing_date") { "Mailing date" }
-      div(class: "mt-1") do
+    div(style: "margin-top: 12px;") do
+      label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;", for: "letter_mailing_date") { "Mailing date" }
+      div(style: "margin-top: 4px;") do
         input(
           type: "date",
           name: "letter[mailing_date]",
           id: "letter_mailing_date",
           value: (letter.mailing_date || letter.default_mailing_date)&.iso8601,
           min: letter.new_record? ? Date.current.iso8601 : nil,
-          class: "form-control width-full"
+          style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
         )
       end
-      div(class: "d-flex gap-1 mt-1") do
+      div(style: "display: flex; gap: 4px; margin-top: 4px;") do
         button(
-          type: "button", class: "btn btn-sm",
+          type: "button",
+          style: "padding: 3px 8px; font-size: 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default); cursor: pointer;",
           data_mailing_date: Date.tomorrow.iso8601
         ) { "Tomorrow" }
         button(
-          type: "button", class: "btn btn-sm",
+          type: "button",
+          style: "padding: 3px 8px; font-size: 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default); cursor: pointer;",
           data_mailing_date: Date.current.next_occurring(:monday).iso8601
         ) { "Next Monday" }
       end
@@ -216,10 +218,10 @@ class Components::Letters::Form < Components::Base
         end
 
         # Country
-        div(class: "FormControl", style: "max-width: 280px;") do
-          label(class: "FormControl-label") do
+        div(style: "max-width: 280px;") do
+          label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;") do
             plain "Country "
-            span(class: "color-fg-danger") { "*" }
+            span(style: "color: var(--fgColor-danger);") { "*" }
           end
           div(style: "margin-top: 6px;") do
             render(Primer::Alpha::SelectPanel.new(
@@ -231,12 +233,12 @@ class Components::Letters::Form < Components::Base
               form_arguments: { builder: a, name: :country }
             )) do |panel|
               panel.with_show_button(scheme: :secondary) do
-                span(class: "d-flex flex-items-center gap-2") do
+                span(style: "display: flex; align-items: center; gap: 8px;") do
                   if current_entry
                     span(style: "font-size: 1.2em; line-height: 1;") { current_entry[:flag] }
                     span { current_entry[:name] }
                   else
-                    span(class: "color-fg-muted") { "Select" }
+                    span(style: "color: var(--fgColor-muted);") { "Select" }
                   end
                 end
               end
@@ -297,13 +299,13 @@ class Components::Letters::Form < Components::Base
     addresses = ReturnAddress.shared.or(ReturnAddress.owned_by(current_user))
 
     # Return address
-    div(class: "FormControl mb-3") do
-      label(class: "FormControl-label", for: "letter_return_address_id") { "Return address" }
-      div(class: "mt-1") do
+    div(style: "margin-bottom: 16px;") do
+      label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;", for: "letter_return_address_id") { "Return address" }
+      div(style: "margin-top: 4px;") do
         select(
           name: "letter[return_address_id]",
           id: "letter_return_address_id",
-          class: "form-control width-full"
+          style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
         ) do
           option(value: "") { "Select a return address..." }
           addresses.each do |addr|
@@ -314,7 +316,7 @@ class Components::Letters::Form < Components::Base
           end
         end
       end
-      p(class: "note color-fg-muted mt-1") do
+      p(style: "color: var(--fgColor-muted); font-size: 12px; margin-top: 4px;") do
         a(href: return_addresses_path(from_letter: true)) { "Manage return addresses" }
       end
     end
@@ -329,11 +331,11 @@ class Components::Letters::Form < Components::Base
     )
 
     # Postage type (hidden by default, shown by JS for US addresses)
-    div(id: "postage-options", style: "display: none;", class: "mb-3") do
-      div(class: "FormControl") do
-        label(class: "FormControl-label") { "Postage type" }
-        div(class: "d-flex gap-3 mt-1") do
-          label(class: "d-flex flex-items-center gap-1") do
+    div(id: "postage-options", style: "display: none; margin-bottom: 16px;") do
+      div do
+        label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;") { "Postage type" }
+        div(style: "display: flex; gap: 16px; margin-top: 4px;") do
+          label(style: "display: flex; align-items: center; gap: 4px; cursor: pointer;") do
             input(
               type: "radio", name: "letter[postage_type]",
               value: "stamps",
@@ -341,7 +343,7 @@ class Components::Letters::Form < Components::Base
             )
             plain " Stamps"
           end
-          label(class: "d-flex flex-items-center gap-1") do
+          label(style: "display: flex; align-items: center; gap: 4px; cursor: pointer;") do
             input(
               type: "radio", name: "letter[postage_type]",
               value: "indicia",
@@ -350,18 +352,18 @@ class Components::Letters::Form < Components::Base
             plain " Indicia (Metered)"
           end
         end
-        p(class: "note color-fg-muted mt-1") { "Indicia is slightly cheaper for standard letters" }
+        p(style: "color: var(--fgColor-muted); font-size: 12px; margin-top: 4px;") { "Indicia is slightly cheaper for standard letters" }
       end
     end
 
     # Mailer ID
-    div(class: "FormControl mb-3") do
-      label(class: "FormControl-label", for: "letter_usps_mailer_id_id") { "USPS Mailer ID" }
-      div(class: "mt-1") do
+    div(style: "margin-bottom: 16px;") do
+      label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;", for: "letter_usps_mailer_id_id") { "USPS Mailer ID" }
+      div(style: "margin-top: 4px;") do
         select(
           name: "letter[usps_mailer_id_id]",
           id: "letter_usps_mailer_id_id",
-          class: "form-control width-full"
+          style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
         ) do
           option(value: "") { "Select a mailer ID..." }
           USPS::MailerId.all.each do |m|
@@ -435,18 +437,19 @@ class Components::Letters::Form < Components::Base
   end
 
   def tag_picker(f)
-    div(class: "FormControl mb-3") do
-      label(class: "FormControl-label") { "Tags" }
+    div(style: "margin-bottom: 16px;") do
+      label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;") { "Tags" }
       select(
         name: "letter[tags][]",
         multiple: true,
-        class: "selectize-tags width-full"
+        class: "selectize-tags",
+        style: "width: 100%;"
       ) do
         available_tags.each do |tag|
           option(value: tag, selected: letter.tags&.include?(tag)) { tag }
         end
       end
-      p(class: "FormControl-caption") { "Select from common tags or create your own" }
+      p(style: "color: var(--fgColor-muted); font-size: 12px; margin-top: 4px;") { "Select from common tags or create your own" }
     end
   end
 end

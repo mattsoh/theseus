@@ -32,13 +32,13 @@ class Views::Warehouse::Batches::New < Views::Base
             header.with_title(tag: :h2) { "Batch Details" }
           end
           box.with_body do
-            div(class: "FormControl mb-3") do
-              label(class: "FormControl-label", for: "batch_warehouse_template_id") { "Template" }
-              div(class: "mt-1") do
+            div(style: "margin-bottom: 16px;") do
+              label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;", for: "batch_warehouse_template_id") { "Template" }
+              div(style: "margin-top: 4px;") do
                 select(
                   name: "batch[warehouse_template_id]",
                   id: "batch_warehouse_template_id",
-                  class: "form-control width-full",
+                  style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);",
                   required: true
                 ) do
                   @allowed_templates.each do |template|

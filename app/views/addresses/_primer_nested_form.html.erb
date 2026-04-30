@@ -87,9 +87,9 @@
     </div>
 
     <%# Row 5: Country %>
-    <div class="FormControl" style="max-width: 280px;">
-      <label class="FormControl-label">
-        Country <span class="color-fg-danger">*</span>
+    <div style="max-width: 280px;">
+      <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;">
+        Country <span style="color: var(--fgColor-danger);">*</span>
       </label>
       <div style="margin-top: 6px;">
         <%= render Primer::Alpha::SelectPanel.new(
@@ -101,12 +101,12 @@
           form_arguments: { builder: a, name: :country }
         ) do |panel| %>
           <% panel.with_show_button(scheme: :secondary) do %>
-            <span class="d-flex flex-items-center gap-2">
+            <span style="display: flex; align-items: center; gap: 8px;">
               <% if current_entry %>
                 <span style="font-size: 1.2em; line-height: 1;"><%= current_entry[:flag] %></span>
                 <span><%= current_entry[:name] %></span>
               <% else %>
-                <span class="color-fg-muted">Select</span>
+                <span style="color: var(--fgColor-muted);">Select</span>
               <% end %>
             </span>
           <% end %>
