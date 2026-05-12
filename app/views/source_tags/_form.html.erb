@@ -2,7 +2,7 @@
   <% if source_tag.errors.any? %>
     <%= render Primer::Beta::Flash.new(scheme: :danger, mb: 3) do %>
       <strong><%= pluralize(source_tag.errors.count, "error") %>:</strong>
-      <ul style="margin: 8px 0 0 16px; padding: 0;">
+      <ul class="error-list">
         <% source_tag.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -37,7 +37,7 @@
     <% end %>
   <% end %>
 
-  <div style="display: flex; gap: 8px;">
+  <div class="page-actions">
     <%= render Primer::Beta::Button.new(tag: :a, href: source_tags_path, scheme: :secondary) do
       "Cancel"
     end %>

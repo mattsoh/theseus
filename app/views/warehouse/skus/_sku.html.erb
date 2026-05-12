@@ -1,8 +1,8 @@
-<div style="padding: 16px; border: 1px solid var(--borderColor-default); border-radius: 6px; margin-bottom: 12px;">
-  <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+<div class="sku-card">
+  <div class="sku-card-layout">
     <div>
-      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-        <a href="<%= warehouse_sku_path(sku) %>" style="font-weight: 600; font-family: var(--fontStack-monospace); color: var(--fgColor-accent); text-decoration: none;"><%= sku.sku %></a>
+      <div class="page-title-group">
+        <a href="<%= warehouse_sku_path(sku) %>" class="mono fw-semibold"><%= sku.sku %></a>
         <% if sku.in_stock.to_i > 0 %>
           <%= render(Primer::Beta::Label.new(scheme: :success, size: :small)) { "In stock" } %>
         <% elsif sku.in_stock.to_i < 0 %>
@@ -21,25 +21,25 @@
           <%= render(Primer::Beta::Label.new(scheme: :secondary, size: :small)) { "Disabled" } %>
         <% end %>
       </div>
-      <div style="font-size: 14px; color: var(--fgColor-default);"><%= sku.name %></div>
+      <div><%= sku.name %></div>
       <% if sku.description.present? %>
-        <div style="font-size: 13px; color: var(--fgColor-muted); margin-top: 2px;"><%= truncate(sku.description, length: 80) %></div>
+        <div class="resource-card-meta"><%= truncate(sku.description, length: 80) %></div>
       <% end %>
     </div>
-    <div style="display: flex; gap: 24px; text-align: right;">
+    <div class="sku-card-stats">
       <div>
-        <div style="font-weight: 600;"><%= sku.in_stock || "—" %></div>
-        <div style="font-size: 12px; color: var(--fgColor-muted);">in stock</div>
+        <div class="fw-semibold"><%= sku.in_stock || "—" %></div>
+        <div class="resource-card-meta">in stock</div>
       </div>
       <div>
-        <div style="font-weight: 600;">
+        <div class="fw-semibold">
           <% if sku.declared_unit_cost.zero? %>
-            <span style="color: var(--fgColor-danger);" title="No cost data — will block dispatch"><%= render Primer::Beta::Octicon.new(icon: :alert, size: :small) %> $0.00</span>
+            <span class="text-danger" title="No cost data — will block dispatch"><%= render Primer::Beta::Octicon.new(icon: :alert, size: :small) %> $0.00</span>
           <% else %>
             <%= number_to_currency(sku.declared_unit_cost) %>
           <% end %>
         </div>
-        <div style="font-size: 12px; color: var(--fgColor-muted);">unit cost</div>
+        <div class="resource-card-meta">unit cost</div>
       </div>
     </div>
   </div>

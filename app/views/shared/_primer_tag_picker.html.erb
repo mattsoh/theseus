@@ -5,8 +5,8 @@
 <% selected_tags = taggable.try(:tags) || [] %>
 <% all_tags = available_tags(selected_tags) %>
 
-<div style="margin-bottom: 16px;">
-  <%= form.label :tags, "Tags", style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;" %>
+<div class="form-field-lg">
+  <%= form.label :tags, "Tags", class: "date-field-label" %>
   <%= form.select :tags,
                   all_tags,
                   { selected: selected_tags, include_blank: false },
@@ -22,5 +22,5 @@
                       }
                     }
                   } %>
-  <p style="color: var(--fgColor-muted); font-size: 12px; margin-top: 4px;">Select from common tags or create your own</p>
+  <p class="form-hint">Select from common tags or create your own</p>
 </div>

@@ -1,45 +1,39 @@
 <%= render Primer::Beta::BorderBox.new do |box|
   box.with_header do %>
-    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-      <span style="font-weight: 600;">SKU</span>
-      <div style="display: flex; gap: 48px;">
-        <span style="font-weight: 600; min-width: 60px; text-align: right;">Qty</span>
-        <span style="font-weight: 600; min-width: 90px; text-align: right;">Cost to HC</span>
-        <span style="font-weight: 600; min-width: 90px; text-align: right;">Declared</span>
-      </div>
+    <div class="li-row">
+      <span class="li-col-name col-header">SKU</span>
+      <span class="li-col-num col-header">Qty</span>
+      <span class="li-col-cost col-header">Cost to HC</span>
+      <span class="li-col-cost col-header">Declared</span>
     </div>
   <% end
 
   order.line_items.each do |li|
     box.with_row do %>
-      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-        <div>
-          <%= link_to li.sku.name, warehouse_sku_path(li.sku), style: "color: var(--fgColor-accent); font-weight: 500;" %>
-          <span style="color: var(--fgColor-muted); font-size: 13px; margin-left: 8px; font-family: var(--fontStack-monospace);"><%= li.sku.sku %></span>
+      <div class="li-row">
+        <div class="li-col-name">
+          <%= link_to li.sku.name, warehouse_sku_path(li.sku), class: "fw-medium" %>
+          <span class="mono kv-label"><%= li.sku.sku %></span>
         </div>
-        <div style="display: flex; gap: 48px;">
-          <span style="min-width: 60px; text-align: right; font-weight: 500;"><%= li.quantity %></span>
-          <span style="min-width: 90px; text-align: right; color: var(--fgColor-muted);"><%= number_to_currency(li.sku.actual_cost_to_hc) %></span>
-          <span style="min-width: 90px; text-align: right; color: var(--fgColor-muted);">
-            <% if li.sku.declared_unit_cost.zero? %>
-              <span style="color: var(--fgColor-danger); font-weight: 600;" title="This SKU has no cost data! It will block dispatch."><%= render Primer::Beta::Octicon.new(icon: :alert, size: :small) %> $0.00</span>
-            <% else %>
-              <%= number_to_currency(li.sku.declared_unit_cost) %>
-            <% end %>
-          </span>
-        </div>
+        <span class="li-col-num fw-medium"><%= li.quantity %></span>
+        <span class="li-col-cost kv-label"><%= number_to_currency(li.sku.actual_cost_to_hc) %></span>
+        <span class="li-col-cost kv-label">
+          <% if li.sku.declared_unit_cost.zero? %>
+            <span class="text-danger fw-semibold" title="This SKU has no cost data! It will block dispatch."><%= render Primer::Beta::Octicon.new(icon: :alert, size: :small) %> $0.00</span>
+          <% else %>
+            <%= number_to_currency(li.sku.declared_unit_cost) %>
+          <% end %>
+        </span>
       </div>
     <% end
   end
 
   box.with_footer do %>
-    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-      <span style="font-weight: 600;">Total</span>
-      <div style="display: flex; gap: 48px;">
-        <span style="min-width: 60px;"></span>
-        <span style="min-width: 90px; text-align: right; font-weight: 600;"><%= number_to_currency(order.contents_actual_cost_to_hc) %></span>
-        <span style="min-width: 90px; text-align: right; font-weight: 600;"><%= number_to_currency(order.contents_declared_unit_cost) %></span>
-      </div>
+    <div class="li-row fw-semibold">
+      <span class="li-col-name">Total</span>
+      <span class="li-col-num"></span>
+      <span class="li-col-cost"><%= number_to_currency(order.contents_actual_cost_to_hc) %></span>
+      <span class="li-col-cost"><%= number_to_currency(order.contents_declared_unit_cost) %></span>
     </div>
   <% end
 end %>

@@ -1,7 +1,7 @@
-<div id="<%= dom_id mailer_id %>" style="padding: 12px 16px; border: 1px solid var(--borderColor-default); border-radius: 6px; margin-bottom: 8px;">
-  <div style="display: flex; justify-content: space-between; align-items: center;">
-    <a href="<%= usps_mailer_id_path(mailer_id) %>" style="font-weight: 600; color: var(--fgColor-accent); text-decoration: none;"><%= mailer_id.name %></a>
-    <div style="display: flex; gap: 16px; font-size: 13px; color: var(--fgColor-muted);">
+<div id="<%= dom_id mailer_id %>" class="mailer-id-card">
+  <div class="mailer-id-row">
+    <a href="<%= usps_mailer_id_path(mailer_id) %>" class="accent-link"><%= mailer_id.name %></a>
+    <div class="mailer-id-codes text-sm">
       <span>CRID: <code><%= mailer_id.crid %></code></span>
       <span>MID: <code><%= mailer_id.mid %></code></span>
     </div>

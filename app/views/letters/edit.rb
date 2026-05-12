@@ -6,21 +6,21 @@ class Views::Letters::Edit < Views::Base
   end
 
   def view_template
-    div(style: "max-width: 1200px; margin: 0 auto; padding: 24px;") do
-      div(style: "display: flex; align-items: center; gap: 12px; margin-bottom: 24px;") do
+    div(class: "page-container") do
+      div(class: "page-title-group content-section") do
         render Primer::Beta::Button.new(tag: :a, href: letter_path(@letter), scheme: :invisible, size: :small) do |btn|
           btn.with_leading_visual_icon(icon: :"arrow-left")
           "Back"
         end
-        h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "Editing letter" }
+        h1(class: "page-title") { "Editing letter" }
       end
 
-      div(style: "display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start;") do
+      div(class: "batch-layout") do
         div do
           render Components::Letters::Form.new(letter: @letter)
         end
 
-        div(style: "position: sticky; top: 24px;") do
+        div(class: "sticky-sidebar") do
           letter_info_card
         end
       end
@@ -35,21 +35,21 @@ class Views::Letters::Edit < Views::Base
         header.with_title(tag: :h3) { "Letter Info" }
       end
       box.with_body do
-        dl do
-          dt(style: "color: var(--fgColor-muted); font-size: 12px;") { "ID" }
-          dd(style: "margin-bottom: 16px;") do
+        dl(class: "edit-info-dl") do
+          dt { "ID" }
+          dd do
             code { @letter.public_id }
           end
 
-          dt(style: "color: var(--fgColor-muted); font-size: 12px;") { "Status" }
-          dd(style: "margin-bottom: 16px;") do
+          dt { "Status" }
+          dd do
             render Components::Shared::StatusBadge.new(status: @letter.aasm_state, type: :letter)
           end
 
-          dt(style: "color: var(--fgColor-muted); font-size: 12px;") { "Created" }
-          dd(style: "margin-bottom: 16px;") { @letter.created_at.strftime("%b %-d, %Y") }
+          dt { "Created" }
+          dd { @letter.created_at.strftime("%b %-d, %Y") }
 
-          dt(style: "color: var(--fgColor-muted); font-size: 12px;") { "Origin" }
+          dt { "Origin" }
           dd { @letter.origin_label }
         end
       end

@@ -15,7 +15,7 @@ class Views::Letter::Queues::ShowBase < Views::Base
   end
 
   def view_template
-    div(style: "max-width: 1200px; margin: 0 auto; padding: 24px;") do
+    div(class: "page-container") do
       header_section
       stats_row
       make_batch_section
@@ -33,15 +33,15 @@ class Views::Letter::Queues::ShowBase < Views::Base
   # --- Header ---
 
   def header_section
-    div(style: "display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;") do
+    div(class: "page-header") do
       div do
-        h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { queue.name }
-        p(style: "color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;") do
-          plain "#{type_label} \u00B7 #{queue.slug}"
+        h1(class: "page-title") { queue.name }
+        p(class: "page-subtitle") do
+          plain "#{type_label} · #{queue.slug}"
         end
       end
 
-      div(style: "display: flex; gap: 8px; align-items: center;") do
+      div(class: "page-actions") do
         render Primer::Beta::Button.new(tag: :a, href: letter_queues_path, scheme: :secondary, size: :small) do |btn|
           btn.with_leading_visual_icon(icon: :"arrow-left")
           "Back to queues"
@@ -51,7 +51,7 @@ class Views::Letter::Queues::ShowBase < Views::Base
           "Edit"
         end
         admin_tool do
-          form_with(url: queue_show_path, method: :delete, style: "display: inline;") do
+          form_with(url: queue_show_path, method: :delete, class: "form-inline") do
             render Primer::Beta::Button.new(type: :submit, scheme: :danger, size: :small) do |btn|
               btn.with_leading_visual_icon(icon: :trash)
               "Delete"
@@ -68,7 +68,7 @@ class Views::Letter::Queues::ShowBase < Views::Base
     active_states = LETTER_STATES.select { |s| letter_counts.fetch(s, 0) > 0 }
     return if active_states.empty?
 
-    div(style: "display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;") do
+    div(class: "filter-bar content-section") do
       active_states.each do |state|
         render(Primer::Beta::Label.new(scheme: state_scheme(state), size: :large)) do
           "#{letter_counts[state]} #{state}"
@@ -106,10 +106,10 @@ class Views::Letter::Queues::ShowBase < Views::Base
   end
 
   def letters_filter_bar
-    div(style: "display: flex; gap: 12px; margin-bottom: 16px; align-items: center; flex-wrap: wrap;") do
+    div(class: "filter-bar mb-3") do
       # Search
-      div(style: "flex: 1; min-width: 200px; max-width: 400px;") do
-        form(action: queue_show_path, method: "get", style: "display: contents;") do
+      div(class: "flex-1") do
+        form(action: queue_show_path, method: "get", class: "form-inline") do
           input(type: "hidden", name: "status", value: status) if status.present?
           render Primer::Alpha::TextField.new(
             name: "search",
@@ -124,7 +124,7 @@ class Views::Letter::Queues::ShowBase < Views::Base
       end
 
       # Status toggles
-      div(style: "display: flex; gap: 4px;") do
+      div(class: "page-actions") do
         LETTER_STATES.each do |state|
           count = letter_counts.fetch(state, 0)
           next if count == 0
@@ -175,7 +175,7 @@ class Views::Letter::Queues::ShowBase < Views::Base
           box.with_row do
             div do
               strong { "Owner" }
-              div(style: "margin-top: 4px;") do
+              div(class: "detail-value") do
                 render_user_mention(queue.user)
               end
             end
@@ -186,7 +186,7 @@ class Views::Letter::Queues::ShowBase < Views::Base
           box.with_row do
             div do
               strong { "Tags" }
-              div(style: "margin-top: 4px; display: flex; gap: 4px; flex-wrap: wrap;") do
+              div(class: "detail-value tags-inline") do
                 queue.tags.each do |tag|
                   render(Primer::Beta::Label.new(size: :medium)) { tag }
                 end
@@ -198,11 +198,11 @@ class Views::Letter::Queues::ShowBase < Views::Base
         box.with_row do
           div do
             strong { "Return Address" }
-            div(style: "margin-top: 4px;") do
+            div(class: "detail-value") do
               if queue.letter_return_address.present?
                 render_address(queue)
               else
-                span(style: "color: var(--fgColor-muted);") { "No return address" }
+                span(class: "kv-label") { "No return address" }
               end
             end
           end
@@ -211,7 +211,7 @@ class Views::Letter::Queues::ShowBase < Views::Base
         box.with_row do
           div do
             strong { "Mailer ID" }
-            div(style: "margin-top: 4px;") do
+            div(class: "detail-value") do
               plain(queue.letter_mailer_id&.display_name || "No mailer ID")
             end
           end
@@ -220,8 +220,8 @@ class Views::Letter::Queues::ShowBase < Views::Base
         box.with_row do
           div do
             strong { "Letter Specs" }
-            div(style: "margin-top: 4px;") do
-              span { "#{queue.letter_width}\" \u00D7 #{queue.letter_height}\" \u00B7 #{queue.letter_weight} oz" }
+            div(class: "detail-value") do
+              span { "#{queue.letter_width}\" × #{queue.letter_height}\" · #{queue.letter_weight} oz" }
             end
           end
         end
@@ -237,17 +237,14 @@ class Views::Letter::Queues::ShowBase < Views::Base
   # --- Helpers ---
 
   def letter_row(letter)
-    div(style: "display: flex; align-items: center; gap: 12px; width: 100%;") do
-      a(
-        href: letter_path(letter),
-        style: "font-family: monospace; color: var(--fgColor-accent); text-decoration: none;"
-      ) { letter.public_id }
-      span(style: "flex: 1;") do
+    div(class: "queue-letter-row") do
+      a(href: letter_path(letter), class: "queue-letter-id") { letter.public_id }
+      span(class: "flex-1") do
         name = [letter.address&.first_name, letter.address&.last_name].compact_blank.join(" ")
-        plain name.presence || "\u2014"
+        plain name.presence || "—"
       end
       render Components::Shared::StatusBadge.new(status: letter.aasm_state, type: :letter)
-      span(style: "color: var(--fgColor-muted); font-size: 13px; white-space: nowrap;") do
+      span(class: "index-card-meta") do
         letter.created_at.strftime("%b %d, %Y")
       end
     end
@@ -267,13 +264,13 @@ class Views::Letter::Queues::ShowBase < Views::Base
   end
 
   def collapsible_section(title, count = nil, open: false)
-    details(style: "margin-top: 24px;", **( open ? { open: true } : {})) do
-      summary(style: "cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px 6px 0 0; font-weight: 600;") do
+    details(class: "collapsible-section-mt", **( open ? { open: true } : {})) do
+      summary(class: "collapsible-summary collapsible-summary--flex") do
         label_text = count ? "#{title} (#{count})" : title
-        h2(style: "margin: 0; font-size: 16px;") { label_text }
-        span(style: "color: var(--fgColor-muted);") { "\u25BC" }
+        h2(class: "section-heading-lg m-0") { label_text }
+        span(class: "kv-label") { "▼" }
       end
-      div(style: "border: 1px solid var(--borderColor-default); border-top: none; border-radius: 0 0 6px 6px; padding: 16px;") do
+      div(class: "collapsible-body collapsible-body--padded") do
         yield
       end
     end
@@ -300,13 +297,13 @@ class Views::Letter::Queues::ShowBase < Views::Base
 
   def admin_inspector(record)
     admin_tool do
-      details(style: "margin-top: 24px;") do
+      details(class: "collapsible-section-mt") do
         summary { "Inspect \"#{record.class.name.underscore}\" record" }
-        div(style: "border-left: 1px solid var(--borderColor-default); margin-left: 8px;") do
-          details(style: "margin-left: 16px;") do
+        div(class: "inspector-border") do
+          details(class: "inspector-inner") do
             summary { "View JSON" }
-            div(style: "overflow-x: auto;") do
-              pre(style: "width: max-content;") { JSON.pretty_generate(record.as_json) }
+            div(class: "inspector-scroll") do
+              pre(class: "inspector-pre") { JSON.pretty_generate(record.as_json) }
             end
           end
         end

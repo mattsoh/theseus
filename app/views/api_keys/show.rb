@@ -8,25 +8,25 @@ class Views::APIKeys::Show < Views::Base
   end
 
   def view_template
-    div(style: "max-width: 800px; margin: 0 auto; padding: 24px;") do
-      div(style: "display: flex; align-items: center; gap: 12px; margin-bottom: 24px;") do
+    div(class: "page-container--narrow") do
+      div(class: "page-header") do
         div do
-          div(style: "display: flex; align-items: center; gap: 8px; margin-bottom: 4px;") do
-            h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { api_key.pretty_name }
+          div(class: "page-title-group") do
+            h1(class: "page-title") { api_key.pretty_name }
             render Primer::Beta::Label.new(scheme: api_key.active? ? :success : :secondary) do
               api_key.active? ? "Active" : "Revoked"
             end
           end
-          p(style: "font-size: 13px; color: var(--fgColor-muted); margin: 0;") { "Created #{api_key.created_at.strftime('%B %d, %Y')}" }
+          p(class: "page-subtitle") { "Created #{api_key.created_at.strftime('%B %d, %Y')}" }
         end
       end
 
       render Primer::Beta::BorderBox.new(mb: 3) do |box|
         box.with_header { "Secret Key" }
         box.with_body do
-          div(style: "display: flex; align-items: center; gap: 12px;") do
+          div(class: "kv-row") do
             code(
-              style: "flex: 1; font-family: var(--fontStack-monospace); font-size: 13px; padding: 10px 12px; background: var(--bgColor-inset); border: 1px solid var(--borderColor-default); border-radius: 4px; word-break: break-all;",
+              class: "api-key-token",
               data_copy_to_clipboard: api_key.token
             ) { api_key.token }
 
@@ -36,7 +36,7 @@ class Views::APIKeys::Show < Views::Base
               data_copy_to_clipboard: api_key.token
             )
           end
-          p(style: "font-size: 12px; color: var(--fgColor-muted); margin: 8px 0 0 0; font-style: italic;") { "Keep this secret. Don't share it with anyone." }
+          p(class: "api-key-secret-hint") { "Keep this secret. Don't share it with anyone." }
         end
       end
 
@@ -44,16 +44,16 @@ class Views::APIKeys::Show < Views::Base
         box.with_header { "Permissions" }
         box.with_row do
           pii_color = api_key.pii ? "var(--fgColor-success)" : "var(--fgColor-muted)"
-          div(style: "display: flex; align-items: center; gap: 8px;#{"background: var(--bgColor-success-muted); margin: -8px -16px; padding: 8px 16px;" if api_key.pii}") do
-            span(style: "color: #{pii_color}; font-weight: 600;") { api_key.pii ? "✓" : "✗" }
-            span(style: "font-weight: 500;") { "PII Access" }
+          div(class: "api-key-perm-row#{api_key.pii ? ' api-key-perm-row--active-success' : ''}") do
+            span(class: "fw-semibold", style: "color: #{pii_color};") { api_key.pii ? "✓" : "✗" }
+            span(class: "fw-medium") { "PII Access" }
           end
         end
         box.with_row do
           imp_color = api_key.may_impersonate? ? "var(--fgColor-danger)" : "var(--fgColor-muted)"
-          div(style: "display: flex; align-items: center; gap: 8px;#{"background: var(--bgColor-danger-muted); margin: -8px -16px; padding: 8px 16px;" if api_key.may_impersonate?}") do
-            span(style: "color: #{imp_color}; font-weight: 600;") { api_key.may_impersonate? ? "✓" : "✗" }
-            span(style: "font-weight: 500;") { "Can Impersonate" }
+          div(class: "api-key-perm-row#{api_key.may_impersonate? ? ' api-key-perm-row--active-danger' : ''}") do
+            span(class: "fw-semibold", style: "color: #{imp_color};") { api_key.may_impersonate? ? "✓" : "✗" }
+            span(class: "fw-medium") { "Can Impersonate" }
           end
         end
       end
@@ -64,7 +64,7 @@ class Views::APIKeys::Show < Views::Base
         end
       end
 
-      div(style: "display: flex; gap: 12px;") do
+      div(class: "page-actions") do
         render Components::Shared::BackButton.new(href: api_keys_path)
         if api_key.active?
           render_revoke_dialog

@@ -2,7 +2,7 @@
   <% if usps_indicium.errors.any? %>
     <%= render Primer::Beta::Flash.new(scheme: :danger, mb: 3) do %>
       <strong><%= pluralize(usps_indicium.errors.count, "error") %>:</strong>
-      <ul style="margin: 8px 0 0 16px; padding: 0;">
+      <ul class="error-list">
         <% usps_indicium.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -15,7 +15,7 @@
       <% header.with_title(tag: :h2) do %>Postage<% end %>
     <% end %>
     <% box.with_body do %>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+      <div class="form-grid content-section">
         <div>
           <%= render Primer::Alpha::TextField.new(
             name: "usps_indicium[postage]",
@@ -26,11 +26,11 @@
           ) %>
         </div>
         <div>
-          <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;">Mailing Date</label>
-          <%= form.date_field :mailing_date, style: "padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; font-size: 14px; background: var(--bgColor-default); color: var(--fgColor-default);" %>
+          <label class="date-field-label">Mailing Date</label>
+          <%= form.date_field :mailing_date, class: "date-field" %>
         </div>
       </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+      <div class="form-grid">
         <div>
           <%= render Primer::Alpha::TextField.new(
             name: "usps_indicium[usps_sku]",
@@ -56,7 +56,7 @@
       <% header.with_title(tag: :h2) do %>Dimensions<% end %>
     <% end %>
     <% box.with_body do %>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+      <div class="form-grid content-section">
         <div>
           <%= render Primer::Alpha::TextField.new(
             name: "usps_indicium[postage_weight]",
@@ -74,7 +74,7 @@
           ) %>
         </div>
       </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+      <div class="form-grid content-section">
         <div>
           <%= render Primer::Alpha::TextField.new(
             name: "usps_indicium[postage_height]",
@@ -115,7 +115,7 @@
     <% end %>
   <% end %>
 
-  <div style="display: flex; gap: 8px;">
+  <div class="page-actions">
     <%= render Primer::Beta::Button.new(tag: :a, href: usps_indicia_path, scheme: :secondary) do
       "Cancel"
     end %>

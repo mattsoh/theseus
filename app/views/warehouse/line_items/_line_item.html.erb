@@ -1,4 +1,4 @@
-<div style="display: flex; align-items: center; gap: 8px;">
-  <%= link_to line_item.sku.name, line_item.sku, style: "color: var(--fgColor-accent); font-weight: 500;" %>
+<div class="li-detail">
+  <%= link_to line_item.sku.name, line_item.sku, class: "fw-medium" %>
   <%= render partial: "admin_inspector", locals: {record: line_item} if params[:inspect_line_items] %>
 </div>

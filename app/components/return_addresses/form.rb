@@ -10,11 +10,11 @@ class Components::ReturnAddresses::Form < Components::Base
 
   def view_template
     if return_address.errors.any?
-      div(style: "background: var(--bgColor-danger-muted); border: 1px solid var(--borderColor-danger-muted); border-radius: 6px; padding: 12px 16px; margin-bottom: 16px;") do
-        p(style: "font-size: 14px; font-weight: 600; color: var(--fgColor-danger); margin: 0 0 8px 0;") do
+      div(class: "error-box") do
+        p(class: "error-box-title") do
           plain "#{return_address.errors.count} error(s) prohibited this return address from being saved:"
         end
-        ul(style: "margin: 0; padding-left: 20px; color: var(--fgColor-danger); font-size: 13px;") do
+        ul(class: "error-box-list") do
           return_address.errors.full_messages.each do |message|
             li { message }
           end
@@ -23,8 +23,8 @@ class Components::ReturnAddresses::Form < Components::Base
     end
 
     form_with model: return_address, local: true do |f|
-      div(style: "display: flex; flex-direction: column; gap: 16px;") do
-        div(style: "display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;") do
+      div(class: "form-stack") do
+        div(class: "form-grid-auto") do
           render Primer::Alpha::TextField.new(
             name: "return_address[name]",
             label: "Name",
@@ -52,7 +52,7 @@ class Components::ReturnAddresses::Form < Components::Base
           full_width: true
         )
 
-        div(style: "display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px;") do
+        div(class: "form-grid-auto--sm") do
           render Primer::Alpha::TextField.new(
             name: "return_address[city]",
             label: "City",
@@ -79,13 +79,13 @@ class Components::ReturnAddresses::Form < Components::Base
         end
 
         div do
-          label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--fgColor-default);") do
+          label(class: "date-field-label") do
             plain "Country"
-            span(style: "color: var(--fgColor-danger); margin-left: 2px;") { "*" }
+            span(class: "text-danger") { "*" }
           end
           select(
             name: "return_address[country]",
-            style: "width: 100%; padding: 8px 12px; font-size: 14px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
+            class: "form-select--lg"
           ) do
             option(value: "") { "Select a country..." }
             ReturnAddress.countries_for_select.each do |code, name|
@@ -98,7 +98,7 @@ class Components::ReturnAddresses::Form < Components::Base
           end
         end
 
-        div(style: "padding: 12px; background: var(--bgColor-muted); border-radius: 6px; border: 1px solid var(--borderColor-default);") do
+        div(class: "checkbox-card") do
           render Primer::Alpha::CheckBox.new(
             name: "return_address[shared]",
             label: "Make this address shared",
@@ -110,7 +110,7 @@ class Components::ReturnAddresses::Form < Components::Base
         input(type: "hidden", name: "return_address[user_id]", value: current_user&.id)
         input(type: "hidden", name: "from_letter", value: "true") if from_letter
 
-        div(style: "padding-top: 8px;") do
+        div(class: "pt-2") do
           render Primer::Beta::Button.new(type: :submit, scheme: :primary) do |btn|
             btn.with_leading_visual_icon(icon: :check)
             return_address.persisted? ? "Update Return Address" : "Create Return Address"

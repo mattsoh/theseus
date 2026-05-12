@@ -7,8 +7,8 @@ class Views::APIKeys::New < Views::Base
   end
 
   def view_template
-    div(style: "max-width: 600px; margin: 0 auto; padding: 24px;") do
-      h1(style: "font-size: 24px; font-weight: 600; margin: 0 0 24px 0;") { "New API Key" }
+    div(class: "page-container--xs") do
+      h1(class: "page-title content-section") { "New API Key" }
 
       render Primer::Beta::BorderBox.new(mb: 4) do |box|
         box.with_header { "Details" }
@@ -23,8 +23,8 @@ class Views::APIKeys::New < Views::Base
               mb: 3
             )
 
-            fieldset(style: "border: none; padding: 0; margin: 0 0 16px 0;") do
-              legend(style: "font-size: 14px; color: var(--fgColor-muted); margin-bottom: 8px;") { "Permissions" }
+            fieldset(class: "fieldset-reset") do
+              legend(class: "fieldset-legend") { "Permissions" }
 
               render Primer::Alpha::CheckBox.new(
                 name: "api_key[pii]",

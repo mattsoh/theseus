@@ -2,7 +2,7 @@
   <% if usps_mailer_id.errors.any? %>
     <%= render Primer::Beta::Flash.new(scheme: :danger, mb: 3) do %>
       <strong><%= pluralize(usps_mailer_id.errors.count, "error") %>:</strong>
-      <ul style="margin: 8px 0 0 16px; padding: 0;">
+      <ul class="error-box-list">
         <% usps_mailer_id.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -37,7 +37,7 @@
     <% end %>
   <% end %>
 
-  <div style="display: flex; gap: 8px;">
+  <div class="page-actions">
     <%= render Primer::Beta::Button.new(tag: :a, href: usps_mailer_ids_path, scheme: :secondary) do
       "Cancel"
     end %>

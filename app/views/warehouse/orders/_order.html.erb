@@ -1,7 +1,7 @@
-<div class="index-card" style="padding: 16px; margin-bottom: 16px;">
-  <div class="index-card-header" style="align-items: flex-start; margin-bottom: 12px;">
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <a href="<%= warehouse_order_path(order) %>" class="mono" style="font-weight: 600; text-decoration: none;"><%= order.hc_id %></a>
+<div class="index-card">
+  <div class="index-card-header">
+    <div class="page-title-group">
+      <a href="<%= warehouse_order_path(order) %>" class="mono index-card-title"><%= order.hc_id %></a>
       <% if order.user_facing_title.present? %>
         <span>·</span>
         <span><%= order.user_facing_title %></span>
@@ -11,7 +11,7 @@
   </div>
 
   <% if order.tags.present? %>
-    <div class="tags-row" style="margin-bottom: 12px;">
+    <div class="tags-row">
       <% order.tags.compact_blank.each do |tag| %>
         <%= render(Primer::Beta::Label.new(scheme: :secondary, size: :small)) { tag } %>
       <% end %>
@@ -20,16 +20,16 @@
 
   <div class="detail-grid">
     <div>
-      <div class="detail-label" style="margin-bottom: 4px;">Recipient</div>
-      <div style="font-weight: 500;"><%= order.address&.name_line || "—" %></div>
+      <div class="detail-label">Recipient</div>
+      <div class="fw-medium"><%= order.address&.name_line || "—" %></div>
       <div class="resource-card-meta"><%= order.recipient_email %></div>
     </div>
     <div>
-      <div class="detail-label" style="margin-bottom: 4px;">Cost</div>
+      <div class="detail-label">Cost</div>
       <div>
         <span class="kv-label">Labor:</span> <%= number_to_currency(order.labor_cost) %>
-        <span class="kv-label" style="margin-left: 8px;">Contents:</span> <%= number_to_currency(order.contents_actual_cost_to_hc) %>
-        <span class="kv-label" style="margin-left: 8px;">Postage:</span> <%= order.postage_cost.present? ? number_to_currency(order.postage_cost) : "—" %>
+        <span class="kv-label">Contents:</span> <%= number_to_currency(order.contents_actual_cost_to_hc) %>
+        <span class="kv-label">Postage:</span> <%= order.postage_cost.present? ? number_to_currency(order.postage_cost) : "—" %>
       </div>
     </div>
   </div>

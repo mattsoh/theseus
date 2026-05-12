@@ -25,9 +25,9 @@
   <% current_country = a.object&.country %>
   <% current_entry = countries_with_flags.find { |c| c[:code] == current_country } %>
 
-  <div id="<%= form_id %>" style="display: grid; gap: 20px; max-width: 540px;">
+  <div id="<%= form_id %>" class="address-form">
     <%# Row 1: Name %>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+    <div class="two-col-equal">
       <%= render Primer::Alpha::TextField.new(
         name: a.field_name(:first_name),
         label: "First name",
@@ -62,7 +62,7 @@
     ) %>
 
     <%# Row 4: City / State / Postal %>
-    <div style="display: grid; grid-template-columns: 1fr 80px 100px; gap: 16px;">
+    <div class="address-form-city-row">
       <%= render Primer::Alpha::TextField.new(
         name: a.field_name(:city),
         label: "City",
@@ -87,11 +87,11 @@
     </div>
 
     <%# Row 5: Country %>
-    <div style="max-width: 280px;">
-      <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;">
-        Country <span style="color: var(--fgColor-danger);">*</span>
+    <div class="address-form-country">
+      <label class="date-field-label">
+        Country <span class="text-danger">*</span>
       </label>
-      <div style="margin-top: 6px;">
+      <div>
         <%= render Primer::Alpha::SelectPanel.new(
           title: "Select country",
           size: :medium,
@@ -101,12 +101,12 @@
           form_arguments: { builder: a, name: :country }
         ) do |panel| %>
           <% panel.with_show_button(scheme: :secondary) do %>
-            <span style="display: flex; align-items: center; gap: 8px;">
+            <span class="country-btn-content">
               <% if current_entry %>
-                <span style="font-size: 1.2em; line-height: 1;"><%= current_entry[:flag] %></span>
+                <span class="country-flag"><%= current_entry[:flag] %></span>
                 <span><%= current_entry[:name] %></span>
               <% else %>
-                <span style="color: var(--fgColor-muted);">Select</span>
+                <span class="kv-label">Select</span>
               <% end %>
             </span>
           <% end %>

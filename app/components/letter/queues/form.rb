@@ -18,7 +18,7 @@ class Components::Letter::Queues::Form < Components::Base
     form_with(model: queue, url: form_url, scope: :letter_queue) do |f|
       section_heading("The important part")
 
-      div(style: "display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;") do
+      div(class: "form-grid mb-3") do
         render Primer::Alpha::TextField.new(
           name: "letter_queue[name]", label: "Name",
           value: queue.name, required: true, full_width: true
@@ -35,7 +35,7 @@ class Components::Letter::Queues::Form < Components::Base
       section_heading("Letter defaults")
 
       # Template
-      div(style: "margin-bottom: 16px;") do
+      div(class: "form-field-lg") do
         render Components::Shared::TemplatePicker.new(
           form: f, name: :template,
           selected: queue.template, show_all: true
@@ -45,7 +45,7 @@ class Components::Letter::Queues::Form < Components::Base
       # Letter dimensions (Svelte component)
       scope = "letter_queue"
       div(
-        style: "margin-bottom: 16px;",
+        class: "form-field-lg",
         data_svelte_component: "letter-attributes-picker",
         data_form_scope: scope,
         data_is_batch: "true",
@@ -73,7 +73,7 @@ class Components::Letter::Queues::Form < Components::Base
         link: { text: "(manage)", href: return_addresses_path }
       )
 
-      div(style: "margin-bottom: 16px;") do
+      div(class: "form-field-lg") do
         render Primer::Alpha::TextField.new(
           name: "letter_queue[letter_return_address_name]",
           label: "Custom return address name",
@@ -84,7 +84,7 @@ class Components::Letter::Queues::Form < Components::Base
 
       # Admin slug
       admin_tool do
-        div(style: "margin-bottom: 16px;") do
+        div(class: "form-field-lg") do
           render Primer::Alpha::TextField.new(
             name: "letter_queue[slug]", label: "Slug",
             value: queue.slug, full_width: true
@@ -93,7 +93,7 @@ class Components::Letter::Queues::Form < Components::Base
       end
 
       # Submit
-      div(style: "margin-top: 24px;") do
+      div(class: "mt-4") do
         render Primer::Beta::Button.new(type: :submit, scheme: :primary) do |btn|
           btn.with_leading_visual_icon(icon: :check)
           queue.new_record? ? "Create Queue" : "Update Queue"
@@ -113,9 +113,9 @@ class Components::Letter::Queues::Form < Components::Base
   def error_messages
     return unless queue.errors.any?
 
-    div(style: "padding: 12px 16px; margin-bottom: 16px; border: 1px solid var(--borderColor-danger-muted); background: var(--bgColor-danger-muted); border-radius: 6px; color: var(--fgColor-danger);") do
+    div(class: "error-box") do
       strong { "#{queue.errors.count} #{"error".pluralize(queue.errors.count)} prohibited this queue from being saved:" }
-      ul(style: "margin: 8px 0 0; padding-left: 20px;") do
+      ul(class: "error-box-list") do
         queue.errors.each do |error|
           li { error.full_message }
         end
@@ -124,35 +124,34 @@ class Components::Letter::Queues::Form < Components::Base
   end
 
   def section_heading(text)
-    h3(style: "font-size: 16px; font-weight: 600; margin: 24px 0 12px;") { text }
+    h3(class: "form-section-heading") { text }
   end
 
   def tag_picker(f)
-    div(style: "margin-bottom: 16px;") do
-      label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;") { "Tags" }
+    div(class: "form-field-lg") do
+      label(class: "date-field-label") { "Tags" }
       select(
         name: "letter_queue[tags][]",
         multiple: true,
-        class: "selectize-tags",
-        style: "width: 100%;"
+        class: "selectize-tags w-full"
       ) do
         available_tags.each do |tag|
           option(value: tag, selected: queue.tags&.include?(tag)) { tag }
         end
       end
-      p(style: "color: var(--fgColor-muted); font-size: 12px; margin-top: 4px;") { "Select from common tags or create your own" }
+      p(class: "form-hint") { "Select from common tags or create your own" }
     end
   end
 
   def select_field(name:, label:, options:, selected: nil, link: nil)
-    div(style: "margin-bottom: 16px;") do
-      div(style: "display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px;") do
-        label(style: "display: block; font-size: 14px; font-weight: 600;") { label }
+    div(class: "form-field-lg") do
+      div(class: "form-label-group") do
+        label(class: "date-field-label") { label }
         if link
-          a(href: link[:href], style: "font-size: 12px;") { link[:text] }
+          a(href: link[:href], class: "text-sm") { link[:text] }
         end
       end
-      select(name: name, style: "width: 100%; padding: 8px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);") do
+      select(name: name, class: "form-select--lg") do
         options.each do |display, value|
           option(value: value, selected: value.to_s == selected.to_s) { display }
         end

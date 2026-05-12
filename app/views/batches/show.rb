@@ -6,7 +6,7 @@ class Views::Batches::Show < Views::Base
   end
 
   def view_template
-    div(style: "max-width: 1200px; margin: 0 auto; padding: 24px;") do
+    div(class: "page-container") do
       render Components::Shared::PageHeader.new(
         title: "#{@batch.type.split('::').first.titleize} Batch ##{@batch.id}",
         subtitle: "#{pluralize(@batch.addresses.count, @batch.type.split('::').first.downcase)}"
@@ -64,21 +64,21 @@ class Views::Batches::Show < Views::Base
   attr_reader :batch
 
   def collapsible_section(title, count)
-    details(style: "margin-top: 24px;") do
-      summary(style: "cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px 6px 0 0; font-weight: 600;") do
-        h2(style: "margin: 0; font-size: 16px;") { "#{title} (#{count})" }
-        span(style: "color: var(--fgColor-muted);") { "▼" }
+    details(class: "collapsible-section-mt") do
+      summary(class: "collapsible-summary collapsible-summary--flex") do
+        h2(class: "section-heading-lg m-0") { "#{title} (#{count})" }
+        span(class: "kv-label") { "▼" }
       end
-      div(style: "border: 1px solid var(--borderColor-default); border-top: none; border-radius: 0 0 6px 6px; padding: 16px;") do
+      div(class: "collapsible-body collapsible-body--padded") do
         yield
       end
     end
   end
 
   def danger_zone
-    div(style: "margin-top: 24px; padding: 16px; border: 1px solid var(--borderColor-danger-muted); background: var(--bgColor-danger-muted); border-radius: 6px;") do
-      h3(style: "margin-top: 0; color: var(--fgColor-danger);") { "Danger Zone" }
-      p(style: "color: var(--fgColor-muted); font-size: 14px;") { "This action cannot be undone." }
+    div(class: "danger-zone") do
+      h3 { "Danger Zone" }
+      p(class: "danger-zone-desc") { "This action cannot be undone." }
       render Primer::Beta::Button.new(
         tag: :button,
         scheme: :danger,
@@ -88,7 +88,7 @@ class Views::Batches::Show < Views::Base
         btn.with_leading_visual_icon(icon: :trash)
         "Delete this batch"
       end
-      form(id: "delete-batch-form", method: :post, action: batch_path(@batch), style: "display: none;") do
+      form(id: "delete-batch-form", method: :post, action: batch_path(@batch), class: "form-inline") do
         input(type: :hidden, name: :_method, value: :delete)
         input(type: :hidden, name: :authenticity_token, value: form_authenticity_token)
       end

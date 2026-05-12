@@ -1,8 +1,8 @@
 <% content_for :title, "Mail Scanner" %>
 
-<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
-  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
-    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Mail Scanner</h1>
+<div class="page-container">
+  <div class="section-title-group mb-3">
+    <h1 class="page-title">Mail Scanner</h1>
     <%= render Components::Shared::Jumpcode.new(path: scanner_letters_path) %>
   </div>
   <div

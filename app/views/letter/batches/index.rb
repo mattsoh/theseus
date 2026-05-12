@@ -8,7 +8,7 @@ class Views::Letter::Batches::Index < Views::Base
   end
 
   def view_template
-    div(style: "max-width: 1200px; margin: 0 auto; padding: 24px;") do
+    div(class: "page-container") do
       render Components::Shared::PageHeader.new(
         title: "Letter Batches",
         subtitle: "#{@batches.count} batches",
@@ -43,11 +43,11 @@ class Views::Letter::Batches::Index < Views::Base
   end
 
   def batch_row(batch)
-    div(style: "display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;") do
-      div(style: "flex: 1; min-width: 0;") do
-        div(style: "display: flex; align-items: center; gap: 12px; margin-bottom: 8px;") do
-          h3(style: "font-size: 16px; font-weight: 600; margin: 0;") do
-            a(href: letter_batch_path(batch), style: "color: inherit; text-decoration: none;") do
+    div(class: "batch-index-row") do
+      div(class: "batch-index-row-main") do
+        div(class: "batch-index-row-title") do
+          h3(class: "section-heading-lg m-0") do
+            a(href: letter_batch_path(batch), class: "link-reset") do
               "Letter Batch ##{batch.id}"
             end
           end
@@ -55,12 +55,12 @@ class Views::Letter::Batches::Index < Views::Base
         end
 
         if batch.tags.any?
-          div(style: "margin-bottom: 8px;") do
+          div(class: "mb-2") do
             render Components::Shared::Tags.new(tags: batch.tags)
           end
         end
 
-        div(style: "display: flex; gap: 16px; font-size: 13px; color: var(--fgColor-muted);") do
+        div(class: "index-card-meta") do
           span do
             strong { "Addresses: " }
             plain batch.addresses.count.to_s
@@ -76,7 +76,7 @@ class Views::Letter::Batches::Index < Views::Base
         end
       end
 
-      div(style: "display: flex; flex-shrink: 0;") do
+      div(class: "flex-shrink-0") do
         render Primer::Beta::Button.new(tag: :a, href: letter_batch_path(batch), scheme: :secondary, size: :small) do |btn|
           btn.with_trailing_visual_icon(icon: :"arrow-right")
           "View"

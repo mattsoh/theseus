@@ -24,7 +24,7 @@ class Views::Letter::Queues::Show < Views::Letter::Queues::ShowBase
   def render_make_batch_dialog
     queued_count = letter_counts.fetch("queued", 0)
 
-    div(style: "margin-bottom: 24px;") do
+    div(class: "content-section") do
       render Primer::Alpha::Dialog.new(
         title: "Make Batch",
         subtitle: "Create a batch from queued letters",
@@ -71,16 +71,16 @@ class Views::Letter::Queues::Show < Views::Letter::Queues::ShowBase
   end
 
   def batch_row(batch)
-    div(style: "display: flex; align-items: center; gap: 12px; width: 100%;") do
-      a(href: letter_batch_path(batch), style: "font-weight: 600; text-decoration: none; color: var(--fgColor-accent);") do
+    div(class: "queue-batch-row") do
+      a(href: letter_batch_path(batch), class: "accent-link") do
         "Batch ##{batch.id}"
       end
-      span(style: "color: var(--fgColor-muted); font-size: 13px;") do
+      span(class: "text-sm kv-label") do
         "#{batch.letters.size} #{"letter".pluralize(batch.letters.size)}"
       end
       render Components::Shared::StatusBadge.new(status: batch.aasm_state, type: :batch)
-      span(style: "flex: 1;")
-      span(style: "color: var(--fgColor-muted); font-size: 13px; white-space: nowrap;") do
+      span(class: "flex-1")
+      span(class: "text-sm kv-label") do
         batch.created_at.strftime("%b %d, %Y")
       end
     end

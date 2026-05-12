@@ -9,11 +9,11 @@ class Components::Batches::Form < Components::Base
 
   def view_template
     if batch.errors.any?
-      div(style: "background: var(--bgColor-danger-muted); border: 1px solid var(--borderColor-danger-muted); border-radius: 6px; padding: 12px 16px; margin-bottom: 16px;") do
-        p(style: "font-size: 14px; font-weight: 600; color: var(--fgColor-danger); margin: 0 0 8px 0;") do
+      div(class: "error-box") do
+        p(class: "error-box-title") do
           plain "#{batch.errors.count} error(s) prohibited this batch from being saved:"
         end
-        ul(style: "margin: 0; padding-left: 20px; color: var(--fgColor-danger); font-size: 13px;") do
+        ul(class: "error-box-list") do
           batch.errors.full_messages.each do |message|
             li { message }
           end
@@ -22,14 +22,14 @@ class Components::Batches::Form < Components::Base
     end
 
     form_with model: batch, local: true do |f|
-      div(style: "display: flex; flex-direction: column; gap: 16px;") do
+      div(class: "form-stack") do
         # File input
         div do
-          label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--fgColor-default);") do
+          label(class: "date-field-label") do
             plain "CSV File"
-            span(style: "color: var(--fgColor-danger); margin-left: 2px;") { "*" }
+            span(class: "text-danger") { "*" }
           end
-          p(style: "font-size: 13px; color: var(--fgColor-muted); margin: 0 0 6px 0;") do
+          p(class: "section-desc mb-0") do
             plain "Upload a CSV file with addresses to process"
           end
           input(
@@ -37,11 +37,11 @@ class Components::Batches::Form < Components::Base
             name: "batch[csv]",
             accept: "text/csv",
             required: true,
-            style: "display: block; width: 100%; padding: 8px; font-size: 14px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default);"
+            class: "file-input"
           )
         end
 
-        div(style: "padding-top: 8px;") do
+        div(class: "pt-2") do
           render Primer::Beta::Button.new(type: :submit, scheme: :primary) do |btn|
             btn.with_leading_visual_icon(icon: :upload)
             "Upload CSV"

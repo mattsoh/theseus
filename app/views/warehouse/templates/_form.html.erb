@@ -2,7 +2,7 @@
   <% if warehouse_template.errors.any? %>
     <%= render Primer::Beta::Flash.new(scheme: :danger, full: true, mb: 3) do %>
       <strong><%= pluralize(warehouse_template.errors.count, "error") %> prohibited this template from being saved:</strong>
-      <ul style="margin: 8px 0 0 16px; padding: 0;">
+      <ul class="error-list">
         <% warehouse_template.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -46,7 +46,7 @@
     <% end %>
   <% end %>
 
-  <div style="display: flex; gap: 8px;">
+  <div class="page-actions">
     <%= render Primer::Beta::Button.new(tag: :a, href: warehouse_templates_path, scheme: :secondary) do
       "Cancel"
     end %>

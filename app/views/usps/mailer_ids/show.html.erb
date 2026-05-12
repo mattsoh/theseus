@@ -8,7 +8,7 @@
         btn.with_leading_visual_icon(icon: :pencil)
         "Edit"
       end %>
-      <%= form_with url: usps_mailer_id_path(@usps_mailer_id), method: :delete, data: { turbo_confirm: "Delete this mailer ID?" }, style: "display: inline;" do %>
+      <%= form_with url: usps_mailer_id_path(@usps_mailer_id), method: :delete, data: { turbo_confirm: "Delete this mailer ID?" }, class: "form-inline" do %>
         <%= render Primer::Beta::Button.new(type: :submit, scheme: :danger, size: :medium) do |btn|
           btn.with_leading_visual_icon(icon: :trash)
           "Delete"
@@ -31,7 +31,7 @@
 
   <%= render partial: "admin_inspector", locals: { record: @usps_mailer_id } %>
 
-  <div style="margin-top: 32px;">
+  <div class="back-link">
     <%= render Primer::Beta::Button.new(tag: :a, href: usps_mailer_ids_path, scheme: :invisible, size: :small) do |btn|
       btn.with_leading_visual_icon(icon: :"arrow-left")
       "Back to mailer IDs"

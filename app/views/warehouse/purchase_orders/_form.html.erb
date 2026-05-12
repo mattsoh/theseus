@@ -2,7 +2,7 @@
   <% if purchase_order.errors.any? %>
     <%= render Primer::Beta::Flash.new(scheme: :danger, full: true, mb: 3) do %>
       <strong><%= pluralize(purchase_order.errors.count, "error") %> prevented saving:</strong>
-      <ul style="margin: 8px 0 0 16px; padding: 0;">
+      <ul class="error-list">
         <% purchase_order.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -15,7 +15,7 @@
       <% header.with_title(tag: :h2) do %>Supplier Information<% end %>
     <% end %>
     <% box.with_body do %>
-      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 12px;">
+      <div class="form-grid-wide">
         <div>
           <%= render Primer::Alpha::TextField.new(
             name: "warehouse_purchase_order[supplier_name]",
@@ -36,9 +36,9 @@
           ) %>
         </div>
       </div>
-      <div style="margin-bottom: 12px;">
-        <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;">Required by date</label>
-        <%= form.date_field :required_by_date, style: "padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; font-size: 14px; background: var(--bgColor-default); color: var(--fgColor-default);" %>
+      <div class="section-header">
+        <label class="date-field-label">Required by date</label>
+        <%= form.date_field :required_by_date, class: "date-field" %>
       </div>
       <%= render Primer::Alpha::TextArea.new(
         name: "warehouse_purchase_order[notes]",
@@ -65,7 +65,7 @@
     <% end %>
   <% end %>
 
-  <div style="display: flex; gap: 8px; align-items: center;">
+  <div class="page-actions">
     <%= render Primer::Beta::Button.new(tag: :a, href: warehouse_purchase_orders_path, scheme: :secondary) do
       "Cancel"
     end %>

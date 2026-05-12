@@ -1,13 +1,13 @@
-<div style="padding: 16px; border: 1px solid var(--borderColor-default); border-radius: 6px; margin-bottom: 12px;">
-  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+<div class="sku-card">
+  <div class="sku-card-layout">
     <div>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <a href="<%= warehouse_template_path(template) %>" style="font-weight: 600; color: var(--fgColor-accent); text-decoration: none;"><%= template.name %></a>
+      <div class="section-title-group">
+        <a href="<%= warehouse_template_path(template) %>" class="index-card-title"><%= template.name %></a>
         <% if template.public %>
           <%= render(Primer::Beta::Label.new(scheme: :accent, size: :small)) { "Shared" } %>
         <% end %>
       </div>
-      <div style="font-size: 13px; color: var(--fgColor-muted); margin-top: 2px;">
+      <div class="resource-card-meta">
         by <%= template.user&.username || "unknown" %> · <%= template.line_items.count %> items
       </div>
     </div>

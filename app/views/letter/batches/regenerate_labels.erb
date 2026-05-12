@@ -1,18 +1,18 @@
-<div style="max-width: 800px; margin: 0 auto; padding: 24px;">
-  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px;">Regenerate Labels</h1>
+<div class="page-container--narrow">
+  <h1 class="page-title content-section">Regenerate Labels</h1>
   <%= form_with(model: @batch, url: regenerate_labels_letter_batch_path(@batch), method: :post) do |f| %>
-    <div style="margin-bottom: 16px;">
-      <%= f.label :template_cycle, "Templates to use:", style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;" %>
+    <div class="form-field-lg">
+      <%= f.label :template_cycle, "Templates to use:", class: "date-field-label" %>
       <%= f.hidden_field :template_cycle, id: "selected_template", value: params[:template] %>
       <%= render "shared/template_picker", multiple: true %>
     </div>
-    <div style="margin-bottom: 16px;">
-      <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+    <div class="form-field-lg">
+      <label class="form-check-label">
         <%= f.check_box :include_qr_code, checked: true %>
-        <span style="font-size: 14px; font-weight: 600;">Include QR Code</span>
+        <span class="fw-semibold">Include QR Code</span>
       </label>
     </div>
-    <div style="display: flex; gap: 8px; align-items: center;">
+    <div class="page-actions">
       <%= render Primer::Beta::Button.new(type: :submit, scheme: :primary) do |btn|
         btn.with_leading_visual_icon(icon: :sync)
         "Regenerate Labels"

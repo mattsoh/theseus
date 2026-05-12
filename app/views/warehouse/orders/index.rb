@@ -12,7 +12,7 @@ class Views::Warehouse::Orders::Index < Views::Base
   end
 
   def view_template
-    div(style: "max-width: 1200px; margin: 0 auto; padding: 24px;") do
+    div(class: "page-container") do
       header_section
       stats_section
       filters_section
@@ -26,13 +26,13 @@ class Views::Warehouse::Orders::Index < Views::Base
   attr_reader :warehouse_orders, :all_orders, :origin, :search, :state, :user_id, :users
 
   def header_section
-    div(style: "display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;") do
+    div(class: "page-header") do
       div do
-        div(style: "display: flex; align-items: center; gap: 8px;") do
-          h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "Orders" }
+        div(class: "section-title-group") do
+          h1(class: "page-title") { "Orders" }
           render Components::Shared::Jumpcode.new(path: warehouse_orders_path)
         end
-        p(style: "color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;") do
+        p(class: "page-subtitle") do
           plain "#{warehouse_orders.respond_to?(:total_count) ? warehouse_orders.total_count : warehouse_orders.count} orders"
         end
       end
@@ -52,7 +52,7 @@ class Views::Warehouse::Orders::Index < Views::Base
       canceled: all_orders.where(aasm_state: :canceled).count
     }
 
-    div(style: "display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;") do
+    div(class: "stat-pill-row") do
       stat_pill("Draft", counts[:draft], :secondary, "draft")
       stat_pill("At Warehouse", counts[:dispatched], :accent, "dispatched")
       stat_pill("Shipped", counts[:mailed], :success, "mailed")
@@ -76,6 +76,7 @@ class Views::Warehouse::Orders::Index < Views::Base
     }
     s = schemes[scheme]
 
+    # Conditional styles: active state changes bg/border/color based on runtime state
     a(
       href: href,
       style: "display: flex; align-items: center; gap: 8px; padding: 8px 14px; " \
@@ -84,15 +85,15 @@ class Views::Warehouse::Orders::Index < Views::Base
              "border-radius: 6px; text-decoration: none; " \
              "color: #{is_active ? 'var(--fgColor-onEmphasis)' : 'inherit'}; font-size: 14px;"
     ) do
-      span(style: "font-weight: 600;") { count.to_s }
-      span(style: is_active ? "" : "color: var(--fgColor-muted);") { label }
+      span(class: "fw-semibold") { count.to_s }
+      span(class: is_active ? "" : "kv-label") { label }
     end
   end
 
   def filters_section
-    div(style: "display: flex; gap: 12px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;") do
-      div(style: "flex: 1; min-width: 200px; max-width: 400px;") do
-        form_tag(warehouse_orders_path, method: :get, style: "display: contents;") do
+    div(class: "filter-bar-wrap") do
+      div(class: "filter-search") do
+        form_tag(warehouse_orders_path, method: :get) do
           hidden_field_tag(:origin, origin) if origin.present?
           hidden_field_tag(:state, state) if state.present?
           hidden_field_tag(:user_id, user_id) if user_id.present?
@@ -141,7 +142,7 @@ class Views::Warehouse::Orders::Index < Views::Base
       { key: "api", label: "API", icon: :code },
     ]
 
-    div(style: "display: flex; gap: 4px;") do
+    div(class: "origin-filter") do
       origins.each do |o|
         is_active = origin == o[:key]
         render Primer::Beta::Button.new(
@@ -161,12 +162,12 @@ class Views::Warehouse::Orders::Index < Views::Base
     if warehouse_orders.any?
       render Primer::Beta::BorderBox.new do |box|
         box.with_header do
-          div(style: "display: flex; justify-content: space-between; align-items: center; width: 100%;") do
-            span(style: "font-weight: 600;") { "Order" }
-            div(style: "display: flex; gap: 48px;") do
-              span(style: "font-weight: 600; min-width: 140px;") { "Recipient" }
-              span(style: "font-weight: 600; min-width: 100px; text-align: right;") { "Items" }
-              span(style: "font-weight: 600; min-width: 80px; text-align: right;") { "Status" }
+          div(class: "order-header-row") do
+            span(class: "fw-semibold") { "Order" }
+            div(class: "order-header-side") do
+              span(class: "order-header-col order-header-col--recipient") { "Recipient" }
+              span(class: "order-header-col order-header-col--items") { "Items" }
+              span(class: "order-header-col order-header-col--status") { "Status" }
             end
           end
         end
@@ -192,25 +193,17 @@ class Views::Warehouse::Orders::Index < Views::Base
   end
 
   def render_order_row(order)
-    a(
-      href: warehouse_order_path(order),
-      style: "display: flex; justify-content: space-between; align-items: center; width: 100%; " \
-             "text-decoration: none; color: inherit; gap: 16px;"
-    ) do
-      div(style: "flex: 1; min-width: 0;") do
-        div(style: "display: flex; align-items: center; gap: 8px; margin-bottom: 2px;") do
-          span(style: "font-weight: 600; font-family: var(--fontStack-monospace); font-size: 13px; color: var(--fgColor-accent);") do
-            order.hc_id
-          end
+    a(href: warehouse_order_path(order), class: "order-link") do
+      div(class: "order-info") do
+        div(class: "order-id-row") do
+          span(class: "order-hc-id") { order.hc_id }
           if order.user_facing_title.present?
-            span(style: "color: var(--fgColor-default);") { "·" }
-            span(style: "font-size: 14px; color: var(--fgColor-default); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px;") do
-              order.user_facing_title
-            end
+            span(class: "dot-sep") { "·" }
+            span(class: "order-title") { order.user_facing_title }
           end
           render_tags(order.tags.first(2)) if order.tags.present?
         end
-        div(style: "font-size: 12px; color: var(--fgColor-muted); margin-top: 2px;") do
+        div(class: "order-meta") do
           plain order.created_at.strftime("%b %d, %Y")
           plain " · #{order.origin_label}"
           if order.source_tag&.name.present?
@@ -219,20 +212,18 @@ class Views::Warehouse::Orders::Index < Views::Base
         end
       end
 
-      div(style: "display: flex; gap: 48px; align-items: center; flex-shrink: 0;") do
-        div(style: "min-width: 140px;") do
-          div(style: "font-size: 14px; font-weight: 500;") { order.address&.name_line || "—" }
-          div(style: "font-size: 12px; color: var(--fgColor-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;") do
-            order.recipient_email
-          end
+      div(class: "order-side") do
+        div(class: "order-recipient") do
+          div(class: "order-recipient-name") { order.address&.name_line || "—" }
+          div(class: "order-recipient-email") { order.recipient_email }
         end
 
-        div(style: "min-width: 100px; text-align: right;", title: order.line_items.map { |li| "#{li.quantity}× #{li.sku.name}" }.join(", ")) do
-          span(style: "font-weight: 600;") { order.line_items.sum(&:quantity).to_s }
-          span(style: "color: var(--fgColor-muted); margin-left: 4px;") { "items" }
+        div(class: "order-items-col", title: order.line_items.map { |li| "#{li.quantity}× #{li.sku.name}" }.join(", ")) do
+          span(class: "fw-semibold") { order.line_items.sum(&:quantity).to_s }
+          span(class: "resource-card-meta resource-card-meta--inline") { "items" }
         end
 
-        div(style: "min-width: 80px; text-align: right;") do
+        div(class: "order-status-col") do
           status_label(order)
         end
       end
@@ -266,8 +257,8 @@ class Views::Warehouse::Orders::Index < Views::Base
     )
   end
 
-  def form_tag(url, method:, style:, &block)
-    form(action: url, method: method == :get ? "get" : "post", style: style, &block)
+  def form_tag(url, method:, &block)
+    form(action: url, method: method == :get ? "get" : "post", class: "form-contents", &block)
   end
 
   def hidden_field_tag(name, value)

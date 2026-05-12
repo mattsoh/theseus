@@ -16,10 +16,10 @@
     <%= render Primer::Beta::BorderBox.new do |box|
       @source_tags.each do |source_tag|
         box.with_row do %>
-          <a href="<%= source_tag_path(source_tag) %>" class="resource-card" style="text-decoration: none; color: inherit;">
+          <a href="<%= source_tag_path(source_tag) %>" class="resource-card link-reset">
             <div>
               <span class="resource-card-title"><%= source_tag.name %></span>
-              <code class="resource-card-meta" style="margin-left: 8px;"><%= source_tag.slug %></code>
+              <code class="resource-card-meta resource-card-meta--inline"><%= source_tag.slug %></code>
             </div>
             <% if source_tag.owner.present? %>
               <span class="resource-card-meta"><%= source_tag.owner %></span>

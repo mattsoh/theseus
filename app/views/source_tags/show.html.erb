@@ -29,7 +29,7 @@
   end %>
 
   <div class="footer-actions">
-    <%= form_with url: source_tag_path(@source_tag), method: :delete, data: { turbo_confirm: "Are you sure you want to delete this source tag?" }, style: "display: inline;" do %>
+    <%= form_with url: source_tag_path(@source_tag), method: :delete, data: { turbo_confirm: "Are you sure you want to delete this source tag?" }, class: "form-inline" do %>
       <%= render Primer::Beta::Button.new(type: :submit, scheme: :danger, size: :small) do |btn|
         btn.with_leading_visual_icon(icon: :trash)
         "Delete"
@@ -37,7 +37,7 @@
     <% end %>
   </div>
 
-  <div style="margin-top: 32px;">
+  <div class="back-link">
     <%= render Primer::Beta::Button.new(tag: :a, href: source_tags_path, scheme: :invisible, size: :small) do |btn|
       btn.with_leading_visual_icon(icon: :"arrow-left")
       "Back to source tags"

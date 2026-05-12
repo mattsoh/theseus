@@ -19,7 +19,7 @@
           <%= render Primer::Beta::BorderBox.new do |box|
             @payment_accounts.each do |account|
               box.with_row do %>
-                <a href="<%= hcb_payment_account_path(account) %>" class="resource-card" style="text-decoration: none; color: inherit;">
+                <a href="<%= hcb_payment_account_path(account) %>" class="resource-card link-reset">
                   <div class="resource-card-info">
                     <span class="resource-card-title"><%= account.organization_name %></span>
                     <span class="resource-card-meta">Added <%= time_ago_in_words(account.created_at) %> ago</span>
@@ -43,11 +43,11 @@
         <h2 class="section-heading">Account Status</h2>
         <%= render Primer::Beta::BorderBox.new do |box|
           box.with_body do %>
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <div class="status-row">
               <%= render Primer::Beta::Octicon.new(icon: :check_circle, color: :success) %>
-              <span style="font-weight: 600; color: var(--fgColor-success);">HCB Connected</span>
+              <span class="fw-semibold text-success">HCB Connected</span>
             </div>
-            <p class="kv-label" style="margin: 0;">
+            <p class="kv-label m-0">
               Your account is linked to HCB. You can pay for postage using any of your organizations' funds.
             </p>
           <% end
@@ -55,7 +55,7 @@
       </div>
     </div>
   <% else %>
-    <div style="max-width: 500px; margin: 48px auto;">
+    <div class="page-container--center">
       <%= render Primer::Beta::Blankslate.new(border: true) do |bs|
         bs.with_visual_icon(icon: :link)
         bs.with_heading(tag: :h2) { "Connect to HCB" }

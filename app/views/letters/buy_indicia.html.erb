@@ -1,16 +1,16 @@
 <% content_for :title, "Buy Indicia - #{@letter.public_id}" %>
 
 <div class="page-container--xs">
-  <h1 class="page-title" style="margin-bottom: 24px;">Buy Indicia</h1>
+  <h1 class="page-title content-section">Buy Indicia</h1>
 
-  <div style="margin-bottom: 24px;">
+  <div class="content-section">
     <h2 class="section-heading">Letter Details</h2>
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_row do %>
         <div class="detail-grid">
           <div>
             <div class="detail-label">Recipient</div>
-            <div style="font-weight: 500;"><%= @letter.address.name_line %></div>
+            <div class="fw-medium"><%= @letter.address.name_line %></div>
           </div>
           <div>
             <div class="detail-label">Destination</div>
@@ -34,12 +34,12 @@
     <% end %>
   </div>
 
-  <div style="margin-bottom: 24px;">
+  <div class="content-section">
     <h2 class="section-heading">Purchase Postage</h2>
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_body do %>
         <%= form_with(url: buy_indicia_letter_path(@letter), method: :post) do |form| %>
-          <div style="margin-bottom: 12px;">
+          <div class="form-field">
             <%= render Primer::Alpha::Select.new(
               name: "usps_payment_account_id",
               label: "USPS Payment Account",
@@ -54,7 +54,7 @@
           </div>
 
           <% if current_user.hcb_payment_accounts.any? %>
-            <div style="margin-bottom: 16px;">
+            <div class="form-field-lg">
               <%= render Primer::Alpha::Select.new(
                 name: "hcb_payment_account_id",
                 label: "Pay with HCB Organization",
@@ -85,7 +85,7 @@
     end %>
   </div>
 
-  <div style="margin-top: 32px;">
+  <div class="back-link">
     <%= render Primer::Beta::Button.new(tag: :a, href: letter_path(@letter), scheme: :invisible, size: :small) do |btn|
       btn.with_leading_visual_icon(icon: :"arrow-left")
       "Back to letter"

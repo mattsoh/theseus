@@ -1,8 +1,8 @@
 <% content_for :title, "Problems" %>
 
 <div class="page-container">
-  <div class="page-title-group" style="margin-bottom: 24px;">
-    <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Problems</h1>
+  <div class="page-title-group content-section">
+    <h1 class="page-title">Problems</h1>
     <%= render Components::Shared::Jumpcode.new(path: problems_path) %>
   </div>
 
@@ -15,21 +15,21 @@
   <% end %>
 
   <% if @blocking.any? %>
-    <div style="margin-bottom: 32px;">
-      <div style="margin-bottom: 12px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <h2 style="font-size: 16px; font-weight: 600; margin: 0;">Dispatch Blockers</h2>
+    <div class="content-section-lg">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h2 class="section-heading-lg">Dispatch Blockers</h2>
           <%= render Primer::Beta::Label.new(scheme: :danger) { "blocking" } %>
         </div>
-        <p style="color: var(--fgColor-muted); font-size: 13px; margin: 4px 0 0 0;">No cost data at all — orders with these SKUs will refuse to dispatch.</p>
+        <p class="section-desc">No cost data at all — orders with these SKUs will refuse to dispatch.</p>
       </div>
       <%= render Primer::Beta::BorderBox.new do |box|
         box.with_header do %>
           <div class="problems-row">
-            <span class="problems-col-sku" style="font-weight: 600;">SKU</span>
-            <span class="problems-col-name" style="font-weight: 600;">Name</span>
-            <span class="problems-col-num" style="font-weight: 600;">In Stock</span>
-            <span class="problems-col-link" style="font-weight: 600;">Zenventory</span>
+            <span class="problems-col-sku col-header">SKU</span>
+            <span class="problems-col-name col-header">Name</span>
+            <span class="problems-col-num col-header">In Stock</span>
+            <span class="problems-col-link col-header">Zenventory</span>
           </div>
         <% end
         @blocking.each do |sku|
@@ -51,22 +51,22 @@
   <% end %>
 
   <% if @no_po_cost.any? %>
-    <div style="margin-bottom: 32px;">
-      <div style="margin-bottom: 12px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <h2 style="font-size: 16px; font-weight: 600; margin: 0;">Missing PO Cost Data</h2>
+    <div class="content-section-lg">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h2 class="section-heading-lg">Missing PO Cost Data</h2>
           <%= render Primer::Beta::Label.new(scheme: :attention) { "degraded" } %>
         </div>
-        <p style="color: var(--fgColor-muted); font-size: 13px; margin: 4px 0 0 0;">No <code>average_po_cost</code> from Zenventory — covered by fallback but should be fixed.</p>
+        <p class="section-desc">No <code>average_po_cost</code> from Zenventory — covered by fallback but should be fixed.</p>
       </div>
       <%= render Primer::Beta::BorderBox.new do |box|
         box.with_header do %>
           <div class="problems-row">
-            <span class="problems-col-sku" style="font-weight: 600;">SKU</span>
-            <span class="problems-col-name" style="font-weight: 600;">Name</span>
-            <span class="problems-col-num" style="font-weight: 600;">Cost</span>
-            <span class="problems-col-num" style="font-weight: 600;">Source</span>
-            <span class="problems-col-link" style="font-weight: 600;">Zenventory</span>
+            <span class="problems-col-sku col-header">SKU</span>
+            <span class="problems-col-name col-header">Name</span>
+            <span class="problems-col-num col-header">Cost</span>
+            <span class="problems-col-num col-header">Source</span>
+            <span class="problems-col-link col-header">Zenventory</span>
           </div>
         <% end
         @no_po_cost.each do |sku|
@@ -75,7 +75,7 @@
               <code class="problems-col-sku"><%= link_to sku.sku, warehouse_sku_path(sku) %></code>
               <span class="problems-col-name"><%= sku.name %></span>
               <span class="problems-col-num"><%= number_to_currency(sku.declared_unit_cost) %></span>
-              <span class="problems-col-num" style="color: var(--fgColor-muted);">
+              <span class="problems-col-num kv-label">
                 <%= sku.declared_unit_cost_override&.positive? ? "override" : "???" %>
               </span>
               <span class="problems-col-link">
@@ -91,22 +91,22 @@
   <% end %>
 
   <% if @backordered.any? %>
-    <div style="margin-bottom: 32px;">
-      <div style="margin-bottom: 12px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <h2 style="font-size: 16px; font-weight: 600; margin: 0;">Backordered Without Enough Inbound</h2>
+    <div class="content-section-lg">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h2 class="section-heading-lg">Backordered Without Enough Inbound</h2>
           <%= render Primer::Beta::Label.new(scheme: :attention) { "warning" } %>
         </div>
-        <p style="color: var(--fgColor-muted); font-size: 13px; margin: 4px 0 0 0;">Oversold and not enough inbound stock to cover the deficit.</p>
+        <p class="section-desc">Oversold and not enough inbound stock to cover the deficit.</p>
       </div>
       <%= render Primer::Beta::BorderBox.new do |box|
         box.with_header do %>
           <div class="problems-row">
-            <span class="problems-col-sku" style="font-weight: 600;">SKU</span>
-            <span class="problems-col-name" style="font-weight: 600;">Name</span>
-            <span class="problems-col-num" style="font-weight: 600;">In Stock</span>
-            <span class="problems-col-num" style="font-weight: 600;">Inbound</span>
-            <span class="problems-col-num" style="font-weight: 600;">Shortfall</span>
+            <span class="problems-col-sku col-header">SKU</span>
+            <span class="problems-col-name col-header">Name</span>
+            <span class="problems-col-num col-header">In Stock</span>
+            <span class="problems-col-num col-header">Inbound</span>
+            <span class="problems-col-num col-header">Shortfall</span>
           </div>
         <% end
         @backordered.each do |sku|
@@ -114,9 +114,9 @@
             <div class="problems-row">
               <code class="problems-col-sku"><%= link_to sku.sku, warehouse_sku_path(sku) %></code>
               <span class="problems-col-name"><%= sku.name %></span>
-              <span class="problems-col-num" style="color: var(--fgColor-danger); font-weight: 600;"><%= sku.in_stock %></span>
+              <span class="problems-col-num text-danger fw-semibold"><%= sku.in_stock %></span>
               <span class="problems-col-num"><%= sku.inbound || 0 %></span>
-              <span class="problems-col-num" style="color: var(--fgColor-danger); font-weight: 600;"><%= sku.in_stock.abs - (sku.inbound || 0) %></span>
+              <span class="problems-col-num text-danger fw-semibold"><%= sku.in_stock.abs - (sku.inbound || 0) %></span>
             </div>
           <% end
         end
@@ -125,22 +125,22 @@
   <% end %>
 
   <% if @stuck_orders.any? %>
-    <div style="margin-bottom: 32px;">
-      <div style="margin-bottom: 12px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <h2 style="font-size: 16px; font-weight: 600; margin: 0;">Stuck Orders</h2>
+    <div class="content-section-lg">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h2 class="section-heading-lg">Stuck Orders</h2>
           <%= render Primer::Beta::Label.new(scheme: :danger) { "blocking" } %>
         </div>
-        <p style="color: var(--fgColor-muted); font-size: 13px; margin: 4px 0 0 0;">Dispatched 2+ weeks ago, never marked mailed. Possible Zenventory sync issue.</p>
+        <p class="section-desc">Dispatched 2+ weeks ago, never marked mailed. Possible Zenventory sync issue.</p>
       </div>
       <%= render Primer::Beta::BorderBox.new do |box|
         box.with_header do %>
           <div class="problems-row">
-            <span class="problems-col-sku" style="font-weight: 600;">Order</span>
-            <span class="problems-col-name" style="font-weight: 600;">Recipient</span>
-            <span class="problems-col-num" style="font-weight: 600;">Dispatched</span>
-            <span class="problems-col-num" style="font-weight: 600;">Age</span>
-            <span class="problems-col-link" style="font-weight: 600;">Zenventory</span>
+            <span class="problems-col-sku col-header">Order</span>
+            <span class="problems-col-name col-header">Recipient</span>
+            <span class="problems-col-num col-header">Dispatched</span>
+            <span class="problems-col-num col-header">Age</span>
+            <span class="problems-col-link col-header">Zenventory</span>
           </div>
         <% end
         @stuck_orders.each do |order|
@@ -149,7 +149,7 @@
               <code class="problems-col-sku"><%= link_to order.hc_id, warehouse_order_path(order) %></code>
               <span class="problems-col-name"><%= order.recipient_email %></span>
               <span class="problems-col-num"><%= order.dispatched_at.strftime("%b %d") %></span>
-              <span class="problems-col-num" style="color: var(--fgColor-danger);"><%= distance_of_time_in_words_to_now(order.dispatched_at) %></span>
+              <span class="problems-col-num text-danger"><%= distance_of_time_in_words_to_now(order.dispatched_at) %></span>
               <span class="problems-col-link">
                 <% if order.zenventory_url %>
                   <%= link_to "view ↗", order.zenventory_url, target: "_blank" %>

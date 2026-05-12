@@ -2,7 +2,7 @@
   <% if warehouse_order.errors.any? %>
     <%= render Primer::Beta::Flash.new(scheme: :danger, mb: 3) do %>
       <strong>Hey, slight issue:</strong>
-      <ul style="margin: 8px 0 0 16px; padding: 0;">
+      <ul class="error-list">
         <% warehouse_order.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -82,7 +82,7 @@
 
   <%= render 'shared/primer_tag_picker', form: form, taggable: warehouse_order %>
 
-  <div style="display: flex; gap: 8px;">
+  <div class="page-actions">
     <%= render Primer::Beta::Button.new(tag: :a, href: warehouse_orders_path, scheme: :secondary) do
       "Cancel"
     end %>

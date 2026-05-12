@@ -14,13 +14,13 @@ class Views::Warehouse::Batches::Edit < Views::Base
   def view_template
     vite_javascript_tag("taggable")
 
-    div(style: "max-width: 1200px; margin: 0 auto; padding: 24px;") do
-      div(style: "display: flex; align-items: center; gap: 12px; margin-bottom: 24px;") do
+    div(class: "page-container") do
+      div(class: "page-title-group mb-3") do
         render Primer::Beta::Button.new(tag: :a, href: warehouse_batch_path(@batch), scheme: :invisible, size: :small) do |btn|
           btn.with_leading_visual_icon(icon: :"arrow-left")
           "Back"
         end
-        h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "Edit Warehouse Batch ##{@batch.id}" }
+        h1(class: "page-title") { "Edit Warehouse Batch ##{@batch.id}" }
       end
 
       error_messages
@@ -32,13 +32,13 @@ class Views::Warehouse::Batches::Edit < Views::Base
           end
           box.with_body do
             if @allowed_templates.any?
-              div(style: "margin-bottom: 16px;") do
-                label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;", for: "batch_warehouse_template_id") { "Template" }
-                div(style: "margin-top: 4px;") do
+              div(class: "form-field-lg") do
+                label(class: "date-field-label", for: "batch_warehouse_template_id") { "Template" }
+                div(class: "mt-1") do
                   select(
                     name: "batch[warehouse_template_id]",
                     id: "batch_warehouse_template_id",
-                    style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
+                    class: "select-field"
                   ) do
                     @allowed_templates.each do |template|
                       option(value: template.id, selected: template.id == @batch.warehouse_template_id) { template.name }
@@ -61,7 +61,7 @@ class Views::Warehouse::Batches::Edit < Views::Base
         # Tags
         tag_picker(f)
 
-        div(style: "display: flex; gap: 8px;") do
+        div(class: "page-actions") do
           render Primer::Beta::Button.new(tag: :a, href: warehouse_batch_path(@batch), scheme: :secondary) do
             "Cancel"
           end
@@ -81,7 +81,7 @@ class Views::Warehouse::Batches::Edit < Views::Base
 
     render Primer::Beta::Flash.new(scheme: :danger, mb: 3) do
       strong { "Hey, slight issue:" }
-      ul(style: "margin: 8px 0 0 16px; padding: 0;") do
+      ul(class: "error-list") do
         @batch.errors.each do |error|
           li { error.full_message }
         end
@@ -90,19 +90,18 @@ class Views::Warehouse::Batches::Edit < Views::Base
   end
 
   def tag_picker(f)
-    div(style: "margin-bottom: 16px;") do
-      label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;") { "Tags" }
+    div(class: "form-field-lg") do
+      label(class: "date-field-label") { "Tags" }
       select(
         name: "batch[tags][]",
         multiple: true,
-        class: "selectize-tags",
-        style: "width: 100%;"
+        class: "selectize-tags"
       ) do
         available_tags.each do |tag|
           option(value: tag, selected: @batch.tags&.include?(tag)) { tag }
         end
       end
-      p(style: "color: var(--fgColor-muted); font-size: 12px; margin-top: 4px;") { "Select from common tags or create your own" }
+      p(class: "form-hint") { "Select from common tags or create your own" }
     end
   end
 end

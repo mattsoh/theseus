@@ -1,20 +1,20 @@
 <% content_for :title, "Add HCB Organization" %>
 
 <div class="page-container--xs">
-  <h1 class="page-title" style="margin-bottom: 24px;">Add Organization</h1>
+  <h1 class="page-title content-section">Add Organization</h1>
 
   <% if @organizations.any? %>
-    <div style="margin-bottom: 24px;">
+    <div class="content-section">
       <h2 class="section-heading">Select Organization</h2>
-      <p class="page-subtitle" style="margin-bottom: 16px;">Choose which HCB organization to use for paying postage.</p>
+      <p class="page-subtitle mb-3">Choose which HCB organization to use for paying postage.</p>
 
       <%= form_with url: hcb_payment_accounts_path, method: :post do |f| %>
         <%= render Primer::Beta::BorderBox.new(mb: 4) do |box|
           @organizations.each do |org|
             box.with_row do %>
-              <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; width: 100%;">
-                <%= f.radio_button :organization_id, org.id, style: "accent-color: var(--fgColor-accent);" %>
-                <span style="font-weight: 500;"><%= org.name %></span>
+              <label class="radio-label-row">
+                <%= f.radio_button :organization_id, org.id, class: "accent-radio" %>
+                <span class="fw-medium"><%= org.name %></span>
               </label>
             <% end
           end
@@ -40,7 +40,7 @@
     end %>
   <% end %>
 
-  <div style="margin-top: 32px;">
+  <div class="back-link">
     <%= render Primer::Beta::Button.new(tag: :a, href: hcb_payment_accounts_path, scheme: :invisible, size: :small) do |btn|
       btn.with_leading_visual_icon(icon: :"arrow-left")
       "Back to HCB accounts"

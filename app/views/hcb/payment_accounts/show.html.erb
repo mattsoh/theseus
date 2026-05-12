@@ -1,7 +1,7 @@
 <% content_for :title, "#{@payment_account.organization_name} - HCB" %>
 
 <div class="page-container--narrow">
-  <h1 class="page-title" style="margin-bottom: 24px;"><%= @payment_account.organization_name %></h1>
+  <h1 class="page-title content-section"><%= @payment_account.organization_name %></h1>
 
   <h2 class="section-heading">Organization Details</h2>
   <%= render Primer::Beta::BorderBox.new(mb: 4) do |box|
@@ -13,7 +13,7 @@
     <% end
   end %>
 
-  <div style="margin-top: 32px;">
+  <div class="back-link">
     <%= render Primer::Beta::Button.new(tag: :a, href: hcb_payment_accounts_path, scheme: :invisible, size: :small) do |btn|
       btn.with_leading_visual_icon(icon: :"arrow-left")
       "Back to HCB accounts"

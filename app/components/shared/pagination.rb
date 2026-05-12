@@ -13,25 +13,25 @@ class Components::Shared::Pagination < Components::Base
     current = collection.current_page
     total = collection.total_pages
 
-    nav(style: "margin-top: 24px; display: flex; justify-content: center; align-items: center; gap: 4px;") do
+    nav(class: "pagination") do
       if current > 1
-        a(href: page_path(1), style: link_style) { "« First" }
-        a(href: page_path(current - 1), style: link_style) { "‹ Prev" }
+        a(href: page_path(1), class: "pagination-link") { "« First" }
+        a(href: page_path(current - 1), class: "pagination-link") { "‹ Prev" }
       end
 
       window(current, total).each do |page_num|
         if page_num == :gap
-          span(style: "padding: 6px 4px; color: var(--fgColor-muted);") { "…" }
+          span(class: "pagination-gap") { "…" }
         elsif page_num == current
-          span(style: current_style) { page_num.to_s }
+          span(class: "pagination-current") { page_num.to_s }
         else
-          a(href: page_path(page_num), style: link_style) { page_num.to_s }
+          a(href: page_path(page_num), class: "pagination-link") { page_num.to_s }
         end
       end
 
       if current < total
-        a(href: page_path(current + 1), style: link_style) { "Next ›" }
-        a(href: page_path(total), style: link_style) { "Last »" }
+        a(href: page_path(current + 1), class: "pagination-link") { "Next ›" }
+        a(href: page_path(total), class: "pagination-link") { "Last »" }
       end
     end
   end
@@ -55,13 +55,5 @@ class Components::Shared::Pagination < Components::Base
       result << p
     end
     result
-  end
-
-  def link_style
-    "padding: 6px 10px; border-radius: 6px; text-decoration: none; color: var(--fgColor-accent); font-size: 14px;"
-  end
-
-  def current_style
-    "padding: 6px 10px; border-radius: 6px; background: var(--bgColor-accent-emphasis); color: var(--fgColor-onEmphasis); font-weight: 600; font-size: 14px;"
   end
 end

@@ -9,7 +9,7 @@
       </div>
       <p class="page-subtitle">Cost tracking and reporting by tag</p>
     </div>
-    <%= form_with url: refresh_tags_path, method: :post, style: "display: inline;" do %>
+    <%= form_with url: refresh_tags_path, method: :post, class: "form-inline" do %>
       <%= render Primer::Beta::Button.new(type: :submit, scheme: :secondary, size: :medium) do |btn|
         btn.with_leading_visual_icon(icon: :sync)
         "Refresh"
@@ -21,7 +21,7 @@
     This page is cached for performance. Hit refresh if you need fresh data.
   <% end %>
 
-  <div style="margin-bottom: 24px;">
+  <div class="content-section">
     <h2 class="section-heading">Common Tags</h2>
     <div class="tags-row">
       <% @common_tags.each do |tag| %>

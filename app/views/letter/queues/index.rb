@@ -11,7 +11,7 @@ class Views::Letter::Queues::Index < Views::Base
   end
 
   def view_template
-    div(style: "max-width: 1200px; margin: 0 auto; padding: 24px;") do
+    div(class: "page-container") do
       header_section
       filters_section
       queue_grid_section
@@ -23,20 +23,20 @@ class Views::Letter::Queues::Index < Views::Base
   attr_reader :letter_queues, :all_queues, :letter_counts, :user_id, :queue_type, :users
 
   def header_section
-    div(style: "display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;") do
+    div(class: "page-header") do
       div do
-        div(style: "display: flex; align-items: center; gap: 8px;") do
-          h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "Queues" }
+        div(class: "page-title-group") do
+          h1(class: "page-title") { "Queues" }
           render Components::Shared::Jumpcode.new(path: letter_queues_path)
         end
-        p(style: "color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;") do
+        p(class: "page-subtitle mt-1") do
           plain "#{letter_queues.count} #{"queue".pluralize(letter_queues.count)}"
         end
       end
 
-      div(style: "display: flex; gap: 8px; align-items: center;") do
+      div(class: "page-actions") do
         admin_tool do
-          button_to mark_printed_instants_mailed_letter_queues_path, method: :post, style: "padding: 3px 12px; font-size: 12px; border: 1px solid var(--borderColor-danger-emphasis); border-radius: 6px; background: var(--bgColor-danger-emphasis); color: var(--fgColor-onEmphasis); cursor: pointer;" do
+          button_to mark_printed_instants_mailed_letter_queues_path, method: :post, class: "btn-danger-sm" do
             "Mark printed instants mailed"
           end
         end
@@ -58,7 +58,7 @@ class Views::Letter::Queues::Index < Views::Base
   end
 
   def filters_section
-    div(style: "display: flex; gap: 12px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;") do
+    div(class: "filter-section") do
       admin_tool do
         render Components::Shared::UserPicker.new(
           users: users,
@@ -90,7 +90,7 @@ class Views::Letter::Queues::Index < Views::Base
       { key: "instant", label: "Instant", icon: :zap },
     ]
 
-    div(style: "display: flex; gap: 4px;") do
+    div(class: "filter-toggle-row") do
       types.each do |t|
         is_active = queue_type == t[:key]
         render Primer::Beta::Button.new(
@@ -108,7 +108,7 @@ class Views::Letter::Queues::Index < Views::Base
 
   def queue_grid_section
     if letter_queues.any?
-      div(style: "display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-bottom: 24px;") do
+      div(class: "queue-card-grid") do
         sorted_queues.each { |q| queue_card(q) }
       end
     else
@@ -141,11 +141,11 @@ class Views::Letter::Queues::Index < Views::Base
       box_style = nil
     end
 
-    a(href: href, style: "text-decoration: none; color: inherit; display: block;") do
+    a(href: href, class: "link-reset d-block") do
       render Primer::Beta::BorderBox.new(style: box_style) do |box|
         box.with_row do
-          div(style: "display: flex; align-items: center; gap: 8px;") do
-            span(style: "font-weight: 600; font-size: 15px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;") do
+          div(class: "queue-card-header") do
+            span(class: "queue-card-name") do
               queue.name
             end
             if is_instant
@@ -159,14 +159,14 @@ class Views::Letter::Queues::Index < Views::Base
         box.with_row do
           if action > 0
             label = is_instant ? "awaiting mail" : "queued"
-            div(style: "display: flex; align-items: baseline; gap: 8px;") do
-              span(style: "font-size: 32px; font-weight: 700; line-height: 1;") { action.to_s }
-              span(style: "font-size: 14px; color: var(--fgColor-muted);") { label }
+            div(class: "queue-card-stat") do
+              span(class: "stat-value") { action.to_s }
+              span(class: "page-subtitle") { label }
             end
           else
-            div(style: "display: flex; align-items: baseline; gap: 8px;") do
-              span(style: "font-size: 32px; font-weight: 700; line-height: 1; color: var(--fgColor-muted);") { "—" }
-              span(style: "font-size: 14px; color: var(--fgColor-muted);") { "idle" }
+            div(class: "queue-card-stat") do
+              span(class: "stat-value kv-label") { "—" }
+              span(class: "page-subtitle") { "idle" }
             end
           end
         end

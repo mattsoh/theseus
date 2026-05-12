@@ -25,7 +25,7 @@ class Components::Shared::TemplatePicker < Components::Base
         if selected.present?
           plain selected.to_s.titleize
         else
-          span(style: "color: var(--fgColor-muted);") { "Choose template..." }
+          span(class: "kv-label") { "Choose template..." }
         end
       end
 

@@ -6,10 +6,10 @@ class Views::ReturnAddresses::Index < Views::Base
   end
 
   def view_template
-    div(style: "max-width: 1200px; margin: 0 auto; padding: 24px;") do
-      div(style: "display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;") do
-        div(style: "display: flex; align-items: center; gap: 8px;") do
-          h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "Return Addresses" }
+    div(class: "page-container") do
+      div(class: "page-header") do
+        div(class: "page-title-group") do
+          h1(class: "page-title") { "Return Addresses" }
           render Components::Shared::Jumpcode.new(path: return_addresses_path)
         end
         render Primer::Beta::Button.new(tag: :a, href: new_return_address_path, scheme: :primary) do |btn|
@@ -42,14 +42,14 @@ class Views::ReturnAddresses::Index < Views::Base
   attr_reader :return_addresses
 
   def render_address_row(address)
-    div(style: "display: flex; align-items: flex-start; justify-content: space-between; width: 100%;") do
-      div(style: "flex: 1;") do
-        div(style: "display: flex; align-items: center; gap: 8px; margin-bottom: 4px;") do
-          span(style: "font-weight: 600;") { address.name }
+    div(class: "return-address-row") do
+      div(class: "flex-1") do
+        div(class: "order-collection-header") do
+          span(class: "fw-semibold") { address.name }
           render_badges(address)
         end
 
-        div(style: "font-size: 13px; color: var(--fgColor-muted);") do
+        div(class: "index-card-meta") do
           parts = [address.line_1]
           parts << address.line_2 if address.line_2.present?
           parts << "#{address.city}, #{address.state} #{address.postal_code}"
@@ -64,7 +64,7 @@ class Views::ReturnAddresses::Index < Views::Base
 
   def render_badges(address)
     if address == current_user&.home_return_address
-      render(Primer::Beta::Label.new(scheme: :success)) { plain "🏠 Default" }
+      render(Primer::Beta::Label.new(scheme: :success)) { plain "Default" }
     end
 
     if address.shared

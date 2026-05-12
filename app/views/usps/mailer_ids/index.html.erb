@@ -16,9 +16,9 @@
     <%= render Primer::Beta::BorderBox.new do |box|
       @usps_mailer_ids.each do |mid|
         box.with_row do %>
-          <a href="<%= usps_mailer_id_path(mid) %>" class="resource-card" style="text-decoration: none; color: inherit;">
+          <a href="<%= usps_mailer_id_path(mid) %>" class="resource-card link-reset">
             <span class="resource-card-title"><%= mid.name %></span>
-            <div class="resource-card-meta" style="display: flex; gap: 16px;">
+            <div class="resource-card-meta mailer-id-codes">
               <span>CRID: <code><%= mid.crid %></code></span>
               <span>MID: <code><%= mid.mid %></code></span>
             </div>

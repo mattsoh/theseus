@@ -3,17 +3,17 @@
 <div class="page-container--narrow">
   <div class="page-header">
     <div>
-      <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 4px 0;">Indicium</h1>
-      <p style="color: var(--fgColor-muted); margin: 0; font-size: 14px;">
+      <h1 class="page-title">Indicium</h1>
+      <p class="page-subtitle">
         <%= render Components::Shared::PublicId.new(value: @usps_indicium.public_id) %>
       </p>
     </div>
-    <div style="display: flex; gap: 8px;">
+    <div class="page-actions">
       <%= render Primer::Beta::Button.new(tag: :a, href: edit_usps_indicium_path(@usps_indicium), scheme: :secondary, size: :medium) do |btn|
         btn.with_leading_visual_icon(icon: :pencil)
         "Edit"
       end %>
-      <%= form_with url: usps_indicium_path(@usps_indicium), method: :delete, data: { turbo_confirm: "Delete this indicium?" }, style: "display: inline;" do %>
+      <%= form_with url: usps_indicium_path(@usps_indicium), method: :delete, data: { turbo_confirm: "Delete this indicium?" }, class: "form-inline" do %>
         <%= render Primer::Beta::Button.new(type: :submit, scheme: :danger, size: :medium) do |btn|
           btn.with_leading_visual_icon(icon: :trash)
           "Delete"
@@ -22,11 +22,11 @@
     </div>
   </div>
 
-  <div style="margin-bottom: 24px;">
-    <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Postage Details</h2>
+  <div class="content-section">
+    <h2 class="section-heading">Postage Details</h2>
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_row do %>
-        <div class="kv-row"><span class="kv-label">Postage</span><span style="font-weight: 600; font-size: 16px;"><%= number_to_currency(@usps_indicium.postage) %></span></div>
+        <div class="kv-row"><span class="kv-label">Postage</span><span class="fw-semibold"><%= number_to_currency(@usps_indicium.postage) %></span></div>
       <% end
       box.with_row do %>
         <div class="kv-row"><span class="kv-label">Mailing Date</span><span><%= @usps_indicium.mailing_date %></span></div>
@@ -40,8 +40,8 @@
     end %>
   </div>
 
-  <div style="margin-bottom: 24px;">
-    <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Dimensions</h2>
+  <div class="content-section">
+    <h2 class="section-heading">Dimensions</h2>
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_row do %>
         <div class="kv-row"><span class="kv-label">Weight</span><span><%= @usps_indicium.postage_weight %> oz</span></div>
@@ -63,7 +63,7 @@
 
   <%= render partial: "admin_inspector", locals: { record: @usps_indicium } %>
 
-  <div style="margin-top: 32px;">
+  <div class="back-link">
     <%= render Primer::Beta::Button.new(tag: :a, href: usps_indicia_path, scheme: :invisible, size: :small) do |btn|
       btn.with_leading_visual_icon(icon: :"arrow-left")
       "Back to indicia"

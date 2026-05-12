@@ -18,7 +18,7 @@
   </div>
 
   <% if letter.tags.present? %>
-    <div class="tags-row" style="margin-top: 6px; margin-bottom: 0;">
+    <div class="index-card-tags">
       <% letter.tags.compact_blank.each do |tag| %>
         <%= render(Primer::Beta::Label.new(scheme: :secondary, size: :small)) { tag } %>
       <% end %>

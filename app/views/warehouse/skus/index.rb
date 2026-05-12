@@ -8,7 +8,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
   end
 
   def view_template
-    div(style: "max-width: 1200px; margin: 0 auto; padding: 24px;") do
+    div(class: "page-container") do
       header_section
       search_section
       stats_section
@@ -21,19 +21,19 @@ class Views::Warehouse::SKUs::Index < Views::Base
   attr_reader :warehouse_skus, :include_non_inventory, :view
 
   def header_section
-    div(style: "display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;") do
+    div(class: "page-header") do
       div do
-        div(style: "display: flex; align-items: center; gap: 8px;") do
-          h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "SKUs" }
+        div(class: "section-title-group") do
+          h1(class: "page-title") { "SKUs" }
           render Components::Shared::Jumpcode.new(path: warehouse_skus_path)
         end
-        p(style: "color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;") do
+        p(class: "page-subtitle") do
           plain "#{warehouse_skus.count} items"
           plain " (showing all)" if include_non_inventory
         end
       end
 
-      div(style: "display: flex; gap: 8px; align-items: center;") do
+      div(class: "page-actions") do
         if include_non_inventory
           render Primer::Beta::Button.new(tag: :a, href: warehouse_skus_path, scheme: :secondary, size: :small) do |btn|
             btn.with_leading_visual_icon(icon: :filter)
@@ -57,7 +57,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
   end
 
   def search_section
-    div(style: "margin-bottom: 24px;") do
+    div(class: "content-section") do
       render Primer::Alpha::TextField.new(
         name: "sku_search",
         label: "Search SKUs",
@@ -75,7 +75,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
     backordered_count = warehouse_skus.count { |s| s.in_stock.to_i < 0 }
     low_stock_count = warehouse_skus.count { |s| s.in_stock.to_i.between?(1, 10) }
 
-    div(style: "display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px;", id: "stats-container") do
+    div(class: "stat-pill-grid", id: "stats-container") do
       stat_pill_button("In Stock", in_stock_count, :success, "in-stock")
       stat_pill_button("Low Stock", low_stock_count, :attention, "low-stock") if low_stock_count > 0
       stat_pill_button("Backordered", backordered_count, :danger, "backordered") if backordered_count > 0
@@ -83,52 +83,19 @@ class Views::Warehouse::SKUs::Index < Views::Base
   end
 
   def stat_pill(label, value, scheme)
-    bg_colors = {
-      success: "var(--bgColor-success-muted)",
-      attention: "var(--bgColor-attention-muted)",
-      danger: "var(--bgColor-danger-muted)",
-      secondary: "var(--bgColor-muted)"
-    }
-    border_colors = {
-      success: "var(--borderColor-success-muted)",
-      attention: "var(--borderColor-attention-muted)",
-      danger: "var(--borderColor-danger-muted)",
-      secondary: "var(--borderColor-default)"
-    }
-
-    div(style: "padding: 12px 16px; background: #{bg_colors[scheme]}; border: 1px solid #{border_colors[scheme]}; border-radius: 6px; text-align: center;") do
-      div(style: "font-size: 24px; font-weight: 600; line-height: 1;") { value.to_s }
-      div(style: "font-size: 12px; color: var(--fgColor-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px;") { label }
+    div(class: "stat-pill-filter", data: { scheme: scheme }) do
+      div(class: "stat-pill-value") { value.to_s }
+      div(class: "stat-pill-label") { label }
     end
   end
 
   def stat_pill_button(label, value, scheme, filter_key)
-    bg_colors = {
-      success: "var(--bgColor-success-muted)",
-      attention: "var(--bgColor-attention-muted)",
-      danger: "var(--bgColor-danger-muted)",
-      secondary: "var(--bgColor-muted)"
-    }
-    border_colors = {
-      success: "var(--borderColor-success-muted)",
-      attention: "var(--borderColor-attention-muted)",
-      danger: "var(--borderColor-danger-muted)",
-      secondary: "var(--borderColor-default)"
-    }
-    dark_bg_colors = {
-      success: "var(--bgColor-success-muted)",
-      attention: "var(--bgColor-attention-muted)",
-      danger: "var(--bgColor-danger-muted)",
-      secondary: "var(--bgColor-muted)"
-    }
-
     button(
-      style: "padding: 12px 16px; background: #{bg_colors[scheme]}; border: 2px solid #{border_colors[scheme]}; border-radius: 6px; text-align: center; cursor: pointer; transition: all 0.2s; font-family: inherit; position: relative;",
       class: "stat-pill-filter",
       data: { filter: filter_key, scheme: scheme }
     ) do
-      div(style: "font-size: 24px; font-weight: 600; line-height: 1;") { value.to_s }
-      div(style: "font-size: 12px; color: var(--fgColor-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px;") { label }
+      div(class: "stat-pill-value") { value.to_s }
+      div(class: "stat-pill-label") { label }
     end
   end
 
@@ -144,7 +111,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
   end
 
   def render_grouped_view
-    div(style: "display: flex; justify-content: flex-end; margin-bottom: 12px; gap: 8px;") do
+    div(class: "view-toolbar") do
       render Primer::Beta::Button.new(
         scheme: :invisible,
         size: :small,
@@ -178,8 +145,8 @@ class Views::Warehouse::SKUs::Index < Views::Base
   end
 
   def render_flat_view
-    div(style: "display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px;") do
-      div(style: "display: flex; gap: 8px;") do
+    div(class: "view-toolbar--spread") do
+      div(class: "page-actions") do
         render Primer::Beta::Button.new(
           scheme: :secondary,
           size: :small,
@@ -224,18 +191,18 @@ class Views::Warehouse::SKUs::Index < Views::Base
       end
     end
 
-    div(style: "overflow-x: auto; border: 1px solid var(--borderColor-default); border-radius: 6px;") do
-      table(style: "width: 100%; border-collapse: collapse; font-size: 13px;") do
+    div(class: "flat-table-wrapper") do
+      table(class: "flat-table") do
         thead do
-          tr(style: "background: var(--bgColor-muted); border-bottom: 1px solid var(--borderColor-default);") do
-            th(style: "padding: 12px 16px; text-align: left; font-weight: 600; color: var(--fgColor-default);") { "SKU" }
-            th(style: "padding: 12px 16px; text-align: left; font-weight: 600; color: var(--fgColor-default);") { "Name" }
-            th(style: "padding: 12px 16px; text-align: left; font-weight: 600; color: var(--fgColor-default);") { "Category" }
-            th(style: "padding: 12px 16px; text-align: right; font-weight: 600; color: var(--fgColor-default);") { "Stock" }
-            th(style: "padding: 12px 16px; text-align: right; font-weight: 600; color: var(--fgColor-default);") { "Inbound" }
-            th(style: "padding: 12px 16px; text-align: right; font-weight: 600; color: var(--fgColor-default);") { "Cost" }
-            th(style: "padding: 12px 16px; text-align: left; font-weight: 600; color: var(--fgColor-default);") { "Status" }
-            th(style: "padding: 12px 16px; text-align: center; font-weight: 600; color: var(--fgColor-default);") { "Actions" }
+          tr(class: "flat-table-head") do
+            th(class: "flat-table-th") { "SKU" }
+            th(class: "flat-table-th") { "Name" }
+            th(class: "flat-table-th") { "Category" }
+            th(class: "flat-table-th flat-table-th--right") { "Stock" }
+            th(class: "flat-table-th flat-table-th--right") { "Inbound" }
+            th(class: "flat-table-th flat-table-th--right") { "Cost" }
+            th(class: "flat-table-th") { "Status" }
+            th(class: "flat-table-th flat-table-th--center") { "Actions" }
           end
         end
         tbody(id: "flat-table-body") do
@@ -243,10 +210,9 @@ class Views::Warehouse::SKUs::Index < Views::Base
             search_text = [sku.sku, sku.name, sku.description].compact.join(" ").downcase
             stock_status = get_stock_status(sku)
             tr(
-              classes: "flat-view-row",
-              style: "border-bottom: 1px solid var(--borderColor-default);",
-              data: { 
-                search: search_text, 
+              class: "flat-view-row flat-table-row",
+              data: {
+                search: search_text,
                 status: stock_status,
                 sku_name: sku.sku.downcase,
                 sort_name: sku.name.downcase,
@@ -254,18 +220,18 @@ class Views::Warehouse::SKUs::Index < Views::Base
                 sort_stock: sku.in_stock.to_i
               }
             ) do
-              td(style: "padding: 12px 16px; font-family: var(--fontStack-monospace); font-weight: 600; color: var(--fgColor-accent);") do
-                a(href: warehouse_sku_path(sku), style: "text-decoration: none; color: inherit;") { sku.sku }
+              td(class: "flat-table-td flat-table-td--mono") do
+                a(href: warehouse_sku_path(sku), class: "link-reset") { sku.sku }
               end
-              td(style: "padding: 12px 16px; color: var(--fgColor-default);") { sku.name }
-              td(style: "padding: 12px 16px; color: var(--fgColor-muted);") { sku.category&.humanize || "Uncategorized" }
-              td(style: "padding: 12px 16px; text-align: right; font-weight: 600;") { sku.in_stock&.to_s || "—" }
-              td(style: "padding: 12px 16px; text-align: right; color: var(--fgColor-muted);") { sku.inbound&.to_s || "—" }
-              td(style: "padding: 12px 16px; text-align: right;") { helpers.number_to_currency(sku.declared_unit_cost) }
-              td(style: "padding: 12px 16px;") do
+              td(class: "flat-table-td") { sku.name }
+              td(class: "flat-table-td flat-table-td--muted") { sku.category&.humanize || "Uncategorized" }
+              td(class: "flat-table-td flat-table-td--right-bold") { sku.in_stock&.to_s || "—" }
+              td(class: "flat-table-td flat-table-td--right-muted") { sku.inbound&.to_s || "—" }
+              td(class: "flat-table-td flat-table-td--right") { helpers.number_to_currency(sku.declared_unit_cost) }
+              td(class: "flat-table-td") do
                 render(Primer::Beta::Label.new(scheme: get_badge_scheme(sku), size: :medium)) { get_badge_text(sku) }
               end
-              td(style: "padding: 12px 16px; text-align: center;") do
+              td(class: "flat-table-td flat-table-td--center") do
                 render_sku_actions(sku)
               end
             end
@@ -282,7 +248,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
           const searchInput = document.querySelector('[name="sku_search"]');
           const expandBtn = document.getElementById('expand-all-btn');
           const collapseBtn = document.getElementById('collapse-all-btn');
-          
+
           let selectedStatus = null;
           let currentSort = 'sku';
           let sortAscending = true;
@@ -321,7 +287,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
             pill.style.color = 'var(--fgColor-onEmphasis)';
             pill.style.fontWeight = '700';
             pill.style.boxShadow = '0 0 0 3px rgba(0,0,0,0.1)';
-            
+
             const divs = pill.querySelectorAll('div');
             divs.forEach(div => {
               div.style.color = 'var(--fgColor-onEmphasis)';
@@ -342,13 +308,13 @@ class Views::Warehouse::SKUs::Index < Views::Base
               danger: 'var(--borderColor-danger-muted)',
               secondary: 'var(--borderColor-default)'
             };
-            
+
             pill.style.background = bgColors[scheme];
             pill.style.borderColor = borderColors[scheme];
             pill.style.color = '';
             pill.style.fontWeight = '';
             pill.style.boxShadow = '';
-            
+
             const divs = pill.querySelectorAll('div');
             divs.forEach((div, i) => {
               div.style.color = i === 0 ? '' : 'var(--fgColor-muted)';
@@ -357,7 +323,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
 
           function updateDisplay() {
             const searchQuery = searchInput?.value.toLowerCase().trim() || '';
-            
+
             const groupedRows = document.querySelectorAll('.sku-category .sku-row');
             groupedRows.forEach(row => {
               const searchText = row.dataset.search || '';
@@ -383,10 +349,10 @@ class Views::Warehouse::SKUs::Index < Views::Base
             }
             // Get all tr elements - they may have classes= instead of class=
             const flatViewRows = Array.from(tbody.querySelectorAll('tr'));
-            
+
             flatViewRows.sort((a, b) => {
               let aVal, bVal;
-              
+
               switch(currentSort) {
                 case 'sku':
                   aVal = a.dataset.sku_name || '';
@@ -407,7 +373,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
                 default:
                   return 0;
               }
-              
+
               if (aVal < bVal) return sortAscending ? -1 : 1;
               if (aVal > bVal) return sortAscending ? 1 : -1;
               return 0;
@@ -426,14 +392,14 @@ class Views::Warehouse::SKUs::Index < Views::Base
 
           function updateCategoryCounts() {
             if (isFlat()) return;
-            
+
             document.querySelectorAll('.sku-category').forEach(category => {
               const categoryName = category.dataset.category;
               const visibleRows = Array.from(category.querySelectorAll('.sku-row:not([style*="display: none"])'));
-              
+
               let inStockCount = 0;
               let backordered = 0;
-              
+
               visibleRows.forEach(row => {
                 const status = row.dataset.status || '';
                 if (status === 'in-stock') {
@@ -442,10 +408,10 @@ class Views::Warehouse::SKUs::Index < Views::Base
                   backordered++;
                 }
               });
-              
+
               const inStockLabel = document.getElementById(`label-in-stock-${categoryName}`);
               const backordeeredLabel = document.getElementById(`label-backordered-${categoryName}`);
-              
+
               if (inStockLabel) {
                 inStockLabel.style.display = inStockCount > 0 ? 'inline-block' : 'none';
                 inStockLabel.innerText = `${inStockCount} in stock`;
@@ -517,17 +483,16 @@ class Views::Warehouse::SKUs::Index < Views::Base
 
     details(
       open: true,
-      class: "sku-category",
-      style: "margin-bottom: 16px;",
+      class: "sku-category mb-3",
       data: { category: category }
     ) do
-      summary(style: "cursor: pointer; list-style: none; padding: 12px 16px; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px; display: flex; align-items: center; justify-content: space-between;") do
-        div(style: "display: flex; align-items: center; gap: 12px;") do
+      summary(class: "sku-category-summary") do
+        div(class: "category-info") do
           render Primer::Beta::Octicon.new(icon: category_icon(category), size: :small, color: :muted)
-          span(style: "font-weight: 600; font-size: 15px;") { category&.humanize || "Uncategorized" }
+          span(class: "category-name") { category&.humanize || "Uncategorized" }
           render(Primer::Beta::Counter.new(count: skus.count, scheme: :secondary, id: "counter-#{category}"))
         end
-        div(style: "display: flex; gap: 8px;", id: "status-labels-#{category}") do
+        div(class: "page-actions", id: "status-labels-#{category}") do
           if in_stock > 0
             render(Primer::Beta::Label.new(scheme: :success, size: :medium, id: "label-in-stock-#{category}")) { "#{in_stock} in stock" }
           end
@@ -537,7 +502,7 @@ class Views::Warehouse::SKUs::Index < Views::Base
         end
       end
 
-      div(style: "margin-top: -1px; border: 1px solid var(--borderColor-default); border-top: none; border-radius: 0 0 6px 6px; overflow: hidden;") do
+      div(class: "sku-category-body") do
         render Primer::Beta::BorderBox.new(padding: :condensed) do |box|
           skus.sort_by { |s| [s.in_stock.to_i > 0 ? 0 : 1, s.sku] }.each do |sku|
             search_text = [sku.sku, sku.name, sku.description].compact.join(" ").downcase
@@ -552,32 +517,32 @@ class Views::Warehouse::SKUs::Index < Views::Base
   end
 
   def render_sku_row(sku)
-    div(style: "display: flex; align-items: flex-start; justify-content: space-between; width: 100%; gap: 16px;") do
-      div(style: "flex: 1; min-width: 0;") do
-        div(style: "display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;") do
-          a(href: warehouse_sku_path(sku), style: "font-weight: 600; font-family: var(--fontStack-monospace); font-size: 13px; text-decoration: none; color: var(--fgColor-accent);") { sku.sku }
+    div(class: "sku-row-layout") do
+      div(class: "sku-row-info") do
+        div(class: "sku-row-badges") do
+          a(href: warehouse_sku_path(sku), class: "sku-link") { sku.sku }
           stock_badge(sku)
           render(Primer::Beta::Label.new(scheme: :accent, size: :medium)) { "AI enabled" } if sku.ai_enabled
           render(Primer::Beta::Label.new(scheme: :secondary, size: :medium)) { "Disabled" } unless sku.enabled
         end
-        div(style: "font-size: 14px; color: var(--fgColor-default);") { sku.name }
+        div(class: "sku-row-name") { sku.name }
         if sku.description.present? && sku.description != sku.name
-          div(style: "font-size: 13px; color: var(--fgColor-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 500px;") { sku.description }
+          div(class: "sku-row-desc") { sku.description }
         end
       end
 
-      div(style: "display: flex; align-items: center; gap: 24px; flex-shrink: 0;") do
-        div(style: "text-align: right; min-width: 80px;") do
-          div(style: "font-size: 13px; color: var(--fgColor-muted);") { "Stock" }
-          div(style: "font-weight: 600; font-size: 15px;") { sku.in_stock&.to_s || "—" }
+      div(class: "sku-row-stats") do
+        div(class: "sku-stat-col sku-stat-col--wide") do
+          div(class: "sku-stat-label") { "Stock" }
+          div(class: "sku-stat-value") { sku.in_stock&.to_s || "—" }
         end
-        div(style: "text-align: right; min-width: 60px;") do
-          div(style: "font-size: 13px; color: var(--fgColor-muted);") { "Inbound" }
-          div(style: "font-weight: 500; font-size: 15px; color: var(--fgColor-muted);") { sku.inbound&.to_s || "—" }
+        div(class: "sku-stat-col") do
+          div(class: "sku-stat-label") { "Inbound" }
+          div(class: "sku-stat-value sku-stat-value--muted") { sku.inbound&.to_s || "—" }
         end
-        div(style: "text-align: right; min-width: 70px;") do
-          div(style: "font-size: 13px; color: var(--fgColor-muted);") { "Cost" }
-          div(style: "font-weight: 500; font-size: 15px;") { helpers.number_to_currency(sku.declared_unit_cost) }
+        div(class: "sku-stat-col sku-stat-col--cost") do
+          div(class: "sku-stat-label") { "Cost" }
+          div(class: "sku-stat-value sku-stat-value--muted") { helpers.number_to_currency(sku.declared_unit_cost) }
         end
 
         render_sku_actions(sku)

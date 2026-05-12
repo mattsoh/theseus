@@ -5,10 +5,23 @@
   z-index: 100;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--base-size-12, 12px);
   padding: var(--base-size-12, 12px) var(--base-size-16, 16px);
   background-color: var(--bgColor-default);
   border-bottom: 1px solid var(--borderColor-muted);
+}
+
+.app-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.app-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .app-header-brand {

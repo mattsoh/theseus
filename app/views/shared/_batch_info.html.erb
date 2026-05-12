@@ -1,11 +1,11 @@
 <% if record.batch.present? %>
-  <div style="margin-bottom: 24px;">
-    <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Part of Batch</h2>
+  <div class="content-section">
+    <h2 class="section-heading">Part of Batch</h2>
     <%= render Primer::Beta::BorderBox.new do |box| %>
       <% box.with_header do %>
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-          <span style="font-weight: 600;"><%= record.batch.type.split('::').first.titleize %> Batch #<%= record.batch.id %></span>
-          <div style="display: flex; align-items: center; gap: 8px;">
+        <div class="kv-row">
+          <span class="fw-semibold"><%= record.batch.type.split('::').first.titleize %> Batch #<%= record.batch.id %></span>
+          <div class="page-actions">
             <%= render Components::Shared::StatusBadge.new(status: record.batch.aasm.current_state, type: :batch) %>
             <% batch_path = record.batch.is_a?(Letter::Batch) ? letter_batch_path(record.batch) : warehouse_batch_path(record.batch) %>
             <%= render Primer::Beta::Button.new(tag: :a, href: batch_path, scheme: :secondary, size: :small) do |btn|
@@ -16,28 +16,28 @@
         </div>
       <% end %>
       <% box.with_body do %>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 14px;">
+        <div class="batch-info-grid">
           <div>
-            <span style="color: var(--fgColor-muted);">Created:</span>
+            <span class="kv-label">Created:</span>
             <%= record.batch.created_at.strftime("%B %d, %Y") %>
           </div>
           <div>
-            <span style="color: var(--fgColor-muted);">Items in Batch:</span>
+            <span class="kv-label">Items in Batch:</span>
             <%= record.batch.addresses.count %>
           </div>
           <% if record.batch.is_a?(Letter::Batch) %>
             <div>
-              <span style="color: var(--fgColor-muted);">Dimensions:</span>
+              <span class="kv-label">Dimensions:</span>
               <%= record.batch.letter_width %>" × <%= record.batch.letter_height %>"
             </div>
             <div>
-              <span style="color: var(--fgColor-muted);">Weight:</span>
+              <span class="kv-label">Weight:</span>
               <%= record.batch.letter_weight %> oz
             </div>
           <% end %>
           <% if record.batch.is_a?(Warehouse::Batch) && record.batch.warehouse_template.present? %>
             <div>
-              <span style="color: var(--fgColor-muted);">Template:</span>
+              <span class="kv-label">Template:</span>
               <%= record.batch.warehouse_template.name %>
             </div>
           <% end %>

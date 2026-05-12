@@ -1,17 +1,17 @@
 <% content_for :title, "Tag: #{@tag}" %>
 
 <div class="page-container">
-  <div style="margin-bottom: 24px;">
-    <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 8px 0;">
+  <div class="content-section">
+    <h1 class="page-title">
       <%= render(Primer::Beta::Label.new(scheme: :accent, size: :large)) { @tag } %>
     </h1>
   </div>
 
-  <div style="margin-bottom: 24px;">
+  <div class="content-section">
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_body do %>
-        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-          <span style="color: var(--fgColor-muted); font-size: 14px;">Showing:</span>
+        <div class="filter-bar">
+          <span class="kv-label">Showing:</span>
           <%= render Primer::Alpha::Select.new(name: "time_period", label: "Time period", visually_hide_label: true, id: "time_period") do |select|
             select.with_option(value: "all_time", label: "All-time", selected: @time_period == "all_time")
             select.with_option(value: "ytd", label: "Year-to-date", selected: @time_period == "ytd")
@@ -43,37 +43,37 @@
     end %>
   </div>
 
-  <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+  <div class="filter-bar content-section">
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_body do %>
-        <div style="text-align: center; min-width: 80px;">
-          <div style="font-size: 24px; font-weight: 600; line-height: 1;"><%= @warehouse_order_count %></div>
-          <div style="font-size: 12px; color: var(--fgColor-muted); margin-top: 4px;">Warehouse Orders</div>
+        <div class="stat-card">
+          <div class="stat-pill-value"><%= @warehouse_order_count %></div>
+          <div class="stat-pill-label">Warehouse Orders</div>
         </div>
       <% end
     end %>
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_body do %>
-        <div style="text-align: center; min-width: 80px;">
-          <div style="font-size: 24px; font-weight: 600; line-height: 1;"><%= @letter_count %></div>
-          <div style="font-size: 12px; color: var(--fgColor-muted); margin-top: 4px;">Letters</div>
+        <div class="stat-card">
+          <div class="stat-pill-value"><%= @letter_count %></div>
+          <div class="stat-pill-label">Letters</div>
         </div>
       <% end
     end %>
   </div>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+  <div class="two-col-equal content-section">
     <div>
-      <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Letter Costs</h2>
+      <h2 class="section-heading">Letter Costs</h2>
       <%= render Primer::Beta::BorderBox.new do |box|
         box.with_row do %>
-          <div class="kv-row"><span class="kv-label">Postage</span><span style="font-weight: 600;"><%= number_to_currency(@letter_postage_cost) %></span></div>
+          <div class="kv-row"><span class="kv-label">Postage</span><span class="fw-semibold"><%= number_to_currency(@letter_postage_cost) %></span></div>
         <% end
       end %>
     </div>
 
     <div>
-      <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Warehouse Costs</h2>
+      <h2 class="section-heading">Warehouse Costs</h2>
       <%= render Primer::Beta::BorderBox.new do |box|
         box.with_row do %>
           <div class="kv-row"><span class="kv-label">Postage</span><span><%= number_to_currency(@warehouse_order_postage_cost) %></span></div>
@@ -85,13 +85,13 @@
           <div class="kv-row"><span class="kv-label">Contents</span><span><%= number_to_currency(@warehouse_order_contents_cost) %></span></div>
         <% end
         box.with_footer do %>
-          <div class="kv-row" style="font-weight: 600;"><span>Total</span><span><%= number_to_currency(@warehouse_order_total_cost) %></span></div>
+          <div class="kv-row fw-semibold"><span>Total</span><span><%= number_to_currency(@warehouse_order_total_cost) %></span></div>
         <% end
       end %>
     </div>
   </div>
 
-  <div style="margin-top: 32px;">
+  <div class="back-link">
     <%= render Primer::Beta::Button.new(tag: :a, href: tags_path, scheme: :invisible, size: :small) do |btn|
       btn.with_leading_visual_icon(icon: :"arrow-left")
       "Back to tags"

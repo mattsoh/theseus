@@ -1,6 +1,6 @@
 <%= form_with(url: buy_indicia_letter_path(letter), method: :post) do |form| %>
   <% if current_user.hcb_payment_accounts.any? %>
-    <div style="margin-bottom: 12px;">
+    <div class="form-field">
       <%= render Primer::Alpha::Select.new(
         name: "hcb_payment_account_id",
         label: "Pay with HCB Organization",
@@ -14,7 +14,7 @@
       end %>
     </div>
 
-    <div style="margin-bottom: 12px;">
+    <div class="form-field">
       <%= render Primer::Alpha::Select.new(
         name: "usps_payment_account_id",
         label: "USPS Payment Account",

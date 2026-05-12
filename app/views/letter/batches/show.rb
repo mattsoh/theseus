@@ -9,7 +9,7 @@ class Views::Letter::Batches::Show < Views::Base
   end
 
   def view_template
-    div(style: "max-width: 1200px; margin: 0 auto; padding: 24px;") do
+    div(class: "page-container") do
       render Components::Shared::PageHeader.new(
         title: "Letter Batch ##{@batch.id}",
         subtitle: "#{helpers.pluralize(@batch.addresses.count, 'address')} / #{helpers.pluralize(@batch.letters.count, 'letter')}"
@@ -48,7 +48,7 @@ class Views::Letter::Batches::Show < Views::Base
         header.with_title(tag: :h3) { "Details" }
       end
       box.with_body do
-        dl(style: "display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; margin: 0;") do
+        dl(class: "detail-dl") do
           detail_row("Status") { render Components::Shared::StatusBadge.new(status: @batch.aasm.current_state, type: :batch) }
           detail_row("Origin") { plain @batch.origin }
           detail_row("Letter Size") { plain "#{@batch.letter_width}\" x #{@batch.letter_height}\"" }
@@ -67,8 +67,8 @@ class Views::Letter::Batches::Show < Views::Base
   end
 
   def detail_row(label)
-    dt(style: "font-size: 13px; color: var(--fgColor-muted); font-weight: 600;") { label }
-    dd(style: "margin: 0; font-size: 14px;") { yield }
+    dt { label }
+    dd { yield }
   end
 
   def batch_actions
@@ -77,7 +77,7 @@ class Views::Letter::Batches::Show < Views::Base
         header.with_title(tag: :h3) { "Actions" }
       end
       box.with_body do
-        div(style: "display: flex; gap: 8px; flex-wrap: wrap;") do
+        div(class: "page-actions") do
           if @batch.pdf_label.attached?
             render Primer::Beta::Button.new(
               tag: :a,
@@ -90,7 +90,7 @@ class Views::Letter::Batches::Show < Views::Base
             end
           end
 
-          form(method: :post, action: mark_printed_letter_batch_path(@batch), style: "display: inline;") do
+          form(method: :post, action: mark_printed_letter_batch_path(@batch), class: "form-inline") do
             input(type: :hidden, name: :authenticity_token, value: form_authenticity_token)
             render Primer::Beta::Button.new(type: :submit, scheme: :secondary) do |btn|
               btn.with_leading_visual_icon(icon: :check)
@@ -98,7 +98,7 @@ class Views::Letter::Batches::Show < Views::Base
             end
           end
 
-          form(method: :post, action: mark_mailed_letter_batch_path(@batch), style: "display: inline;") do
+          form(method: :post, action: mark_mailed_letter_batch_path(@batch), class: "form-inline") do
             input(type: :hidden, name: :authenticity_token, value: form_authenticity_token)
             render Primer::Beta::Button.new(type: :submit, scheme: :secondary) do |btn|
               btn.with_leading_visual_icon(icon: :mail)
@@ -117,7 +117,7 @@ class Views::Letter::Batches::Show < Views::Base
         end
 
         if @batch.processed?
-          div(style: "margin-top: 12px; font-size: 13px; color: var(--fgColor-muted);") do
+          div(class: "text-sm mt-3 kv-label") do
             plain "Total postage: "
             strong { number_to_currency(@batch.postage_cost) }
           end
@@ -127,32 +127,32 @@ class Views::Letter::Batches::Show < Views::Base
   end
 
   def letters_section
-    details(style: "margin-bottom: 16px;") do
-      summary(style: "cursor: pointer; padding: 12px; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px; font-weight: 600;") do
+    details(class: "collapsible-section") do
+      summary(class: "collapsible-summary") do
         "Letters (#{@batch.letters.count})"
       end
-      div(style: "border: 1px solid var(--borderColor-default); border-top: none; border-radius: 0 0 6px 6px; overflow-x: auto;") do
-        table(style: "width: 100%; border-collapse: collapse; font-size: 13px;") do
+      div(class: "collapsible-body") do
+        table(class: "data-table") do
           thead do
             tr do
               %w[ID Recipient Status Postage].each do |h|
-                th(style: "text-align: left; padding: 8px 12px; background: var(--bgColor-muted); font-weight: 600; border-bottom: 1px solid var(--borderColor-default);") { h }
+                th { h }
               end
             end
           end
           tbody do
             @batch.letters.includes(:address).limit(100).each do |letter|
               tr do
-                td(style: "padding: 8px 12px; border-bottom: 1px solid var(--borderColor-muted);") do
+                td do
                   a(href: letter_path(letter)) { letter.public_id }
                 end
-                td(style: "padding: 8px 12px; border-bottom: 1px solid var(--borderColor-muted);") do
+                td do
                   plain "#{letter.address&.first_name} #{letter.address&.last_name}"
                 end
-                td(style: "padding: 8px 12px; border-bottom: 1px solid var(--borderColor-muted);") do
+                td do
                   render Components::Shared::StatusBadge.new(status: letter.aasm_state, type: :letter)
                 end
-                td(style: "padding: 8px 12px; border-bottom: 1px solid var(--borderColor-muted);") do
+                td do
                   plain letter.postage_type || "—"
                 end
               end
@@ -160,7 +160,7 @@ class Views::Letter::Batches::Show < Views::Base
           end
         end
         if @batch.letters.count > 100
-          div(style: "padding: 8px 12px; text-align: center; color: var(--fgColor-muted); font-size: 12px;") do
+          div(class: "data-table-footer") do
             "Showing first 100 of #{@batch.letters.count} letters"
           end
         end
@@ -169,28 +169,28 @@ class Views::Letter::Batches::Show < Views::Base
   end
 
   def addresses_section
-    details(style: "margin-bottom: 16px;") do
-      summary(style: "cursor: pointer; padding: 12px; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-radius: 6px; font-weight: 600;") do
+    details(class: "collapsible-section") do
+      summary(class: "collapsible-summary") do
         "Addresses (#{@batch.addresses.count})"
       end
-      div(style: "border: 1px solid var(--borderColor-default); border-top: none; border-radius: 0 0 6px 6px; overflow-x: auto;") do
-        table(style: "width: 100%; border-collapse: collapse; font-size: 13px;") do
+      div(class: "collapsible-body") do
+        table(class: "data-table") do
           thead do
             tr do
               %w[Name Address City State ZIP Country].each do |h|
-                th(style: "text-align: left; padding: 8px 12px; background: var(--bgColor-muted); font-weight: 600; border-bottom: 1px solid var(--borderColor-default);") { h }
+                th { h }
               end
             end
           end
           tbody do
             @batch.addresses.limit(100).each do |addr|
               tr do
-                td(style: "padding: 8px 12px; border-bottom: 1px solid var(--borderColor-muted);") { "#{addr.first_name} #{addr.last_name}" }
-                td(style: "padding: 8px 12px; border-bottom: 1px solid var(--borderColor-muted);") { "#{addr.line_1}#{addr.line_2.present? ? ", #{addr.line_2}" : ""}" }
-                td(style: "padding: 8px 12px; border-bottom: 1px solid var(--borderColor-muted);") { addr.city || "—" }
-                td(style: "padding: 8px 12px; border-bottom: 1px solid var(--borderColor-muted);") { addr.state || "—" }
-                td(style: "padding: 8px 12px; border-bottom: 1px solid var(--borderColor-muted);") { addr.postal_code || "—" }
-                td(style: "padding: 8px 12px; border-bottom: 1px solid var(--borderColor-muted);") { addr.country || "—" }
+                td { "#{addr.first_name} #{addr.last_name}" }
+                td { "#{addr.line_1}#{addr.line_2.present? ? ", #{addr.line_2}" : ""}" }
+                td { addr.city || "—" }
+                td { addr.state || "—" }
+                td { addr.postal_code || "—" }
+                td { addr.country || "—" }
               end
             end
           end
@@ -200,9 +200,9 @@ class Views::Letter::Batches::Show < Views::Base
   end
 
   def danger_zone
-    div(style: "margin-top: 24px; padding: 16px; border: 1px solid var(--borderColor-danger-muted); background: var(--bgColor-danger-muted); border-radius: 6px;") do
-      h3(style: "margin-top: 0; color: var(--fgColor-danger);") { "Danger Zone" }
-      p(style: "color: var(--fgColor-muted); font-size: 14px;") { "This action cannot be undone." }
+    div(class: "danger-zone") do
+      h3 { "Danger Zone" }
+      p(class: "kv-label") { "This action cannot be undone." }
       form(method: :post, action: letter_batch_path(@batch)) do
         input(type: :hidden, name: :_method, value: :delete)
         input(type: :hidden, name: :authenticity_token, value: form_authenticity_token)

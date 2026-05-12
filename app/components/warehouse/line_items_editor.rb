@@ -17,16 +17,16 @@ class Components::Warehouse::LineItemsEditor < Components::Base
 
   def view_template
     div(class: "line-items-editor", "x-data": alpine_data_json, "x-cloak": true) do
-      div(style: "border: 1px solid var(--borderColor-default); border-radius: 6px; overflow: hidden;", "x-ref": "list") do
+      div(class: "li-editor-border", "x-ref": "list") do
         div("x-show": "visibleItems().length > 0") do
-          table(style: "width: 100%; border-collapse: collapse;") do
-            thead(style: "background: var(--bgColor-muted); border-bottom: 1px solid var(--borderColor-default);") do
-              tr(style: "color: var(--fgColor-muted); font-size: 12px;") do
-                th(style: "text-align: left; font-weight: 400; padding: 8px 16px;") { "Item" }
-                th(style: "text-align: left; font-weight: 400; padding: 8px 16px; width: 120px;") { "Stock" }
-                th(style: "text-align: left; font-weight: 400; padding: 8px 16px; width: 100px;") { "Quantity" }
-                th(style: "text-align: left; font-weight: 400; padding: 8px 16px; width: 120px;") { "Unit Cost" } if @show_unit_cost
-                th(style: "font-weight: 400; padding: 8px 16px; width: 50px;")
+          table(class: "li-editor-table") do
+            thead(class: "li-editor-thead") do
+              tr do
+                th(class: "li-editor-th") { "Item" }
+                th(class: "li-editor-th", style: "width: 120px;") { "Stock" }
+                th(class: "li-editor-th", style: "width: 100px;") { "Quantity" }
+                th(class: "li-editor-th", style: "width: 120px;") { "Unit Cost" } if @show_unit_cost
+                th(class: "li-editor-th", style: "width: 50px;")
               end
             end
             tbody do
@@ -40,7 +40,7 @@ class Components::Warehouse::LineItemsEditor < Components::Base
         render_empty_state
       end
 
-      div(style: "margin-top: 12px;") { add_item_panel }
+      div(class: "form-field") { add_item_panel }
 
       hidden_fields
       sku_filter_script
@@ -56,47 +56,47 @@ class Components::Warehouse::LineItemsEditor < Components::Base
   # Line item row
 
   def render_line_item_row
-    tr(style: "border-bottom: 1px solid var(--borderColor-default);", "x-show": "!item._destroy", "x-transition.opacity": true) do
-      td(style: "padding: 8px 16px;") do
-        div(style: "font-weight: 600;", "x-text": "item.sku_name")
-        code(style: "color: var(--fgColor-muted); font-size: 12px;", "x-text": "item.sku_code")
+    tr(class: "li-editor-row", "x-show": "!item._destroy", "x-transition.opacity": true) do
+      td(class: "li-editor-td") do
+        div(class: "li-editor-name", "x-text": "item.sku_name")
+        code(class: "li-editor-sku", "x-text": "item.sku_code")
       end
-      td(style: "padding: 8px 16px;") do
+      td(class: "li-editor-td") do
         template_tag("x-if": "item.sku_stock != null") do
           span(
-            style: "display: inline-block; padding: 2px 8px; font-size: 12px; font-weight: 500; border-radius: 2em; border: 1px solid var(--borderColor-default);",
+            class: "li-editor-stock-badge",
             ":style": "stockStyle(item.sku_stock)",
             "x-text": "item.sku_stock + ' in stock'"
           )
         end
       end
-      td(style: "padding: 8px 16px;") do
+      td(class: "li-editor-td") do
         input(
           type: "number",
           "x-model.number": "item.quantity",
           min: 1,
-          style: "width: 80px; text-align: center; padding: 5px 8px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
+          class: "li-editor-qty-input"
         )
       end
       if @show_unit_cost
-        td(style: "padding: 8px 16px;") do
-          div(style: "display: flex; align-items: stretch; width: 110px;") do
-            span(style: "display: flex; align-items: center; padding: 0 8px; background: var(--bgColor-muted); border: 1px solid var(--borderColor-default); border-right: 0; border-radius: 6px 0 0 6px; color: var(--fgColor-muted); font-size: 14px;") { "$" }
+        td(class: "li-editor-td") do
+          div(class: "li-editor-cost-group") do
+            span(class: "li-editor-cost-prefix") { "$" }
             input(
               type: "number",
               "x-model": "item.unit_cost",
               min: 0,
               step: "0.01",
               placeholder: "0.00",
-              style: "padding: 5px 8px; border: 1px solid var(--borderColor-default); border-radius: 0 6px 6px 0; background: var(--bgColor-default); color: var(--fgColor-default); width: 100%;"
+              class: "li-editor-cost-input"
             )
           end
         end
       end
-      td(style: "padding: 8px 16px; text-align: right;") do
+      td(class: "li-editor-td text-right") do
         button(
           type: "button",
-          style: "padding: 3px 8px; font-size: 12px; border: 1px solid var(--borderColor-danger-emphasis); border-radius: 6px; background: transparent; color: var(--fgColor-danger); cursor: pointer;",
+          class: "li-editor-remove-btn",
           "aria-label": "Remove item",
           "@click": "removeItem(item._index)"
         ) do
@@ -107,13 +107,13 @@ class Components::Warehouse::LineItemsEditor < Components::Base
   end
 
   def render_empty_state
-    div(style: "padding: 32px 16px; border-bottom: 1px solid var(--borderColor-default);", "x-show": "visibleItems().length === 0") do
-      div(style: "text-align: center;") do
-        div(style: "color: var(--fgColor-muted); margin-bottom: 8px;") do
+    div(class: "li-editor-empty", "x-show": "visibleItems().length === 0") do
+      div(class: "text-center") do
+        div(class: "li-editor-empty-icon") do
           render Primer::Beta::Octicon.new(icon: :package, size: :medium)
         end
-        h3(style: "font-size: 16px; font-weight: 600; margin: 0 0 4px;") { "No items added" }
-        p(style: "color: var(--fgColor-muted); margin: 0;") { "Click the button below to add SKUs." }
+        h3(class: "li-editor-empty-title") { "No items added" }
+        p(class: "li-editor-empty-text") { "Click the button below to add SKUs." }
       end
     end
   end

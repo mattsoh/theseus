@@ -1,7 +1,7 @@
 <% content_for :title, "Edit Purchase Order #{@purchase_order.order_number.presence || "##{@purchase_order.id}"}" %>
 
 <div class="page-container--narrow">
-  <div style="margin-bottom: 24px;">
+  <div class="content-section">
     <div class="page-title-group">
       <h1 class="page-title">Edit Purchase Order</h1>
       <% status_scheme = { "draft" => :secondary, "open" => :accent, "completed" => :success, "deleted" => :danger }[@purchase_order.status] || :secondary %>

@@ -8,8 +8,8 @@ class Components::Shared::AppHeader < Components::Base
   register_value_helper :impersonating?
 
   def view_template
-    header(class: "app-header", style: "display: flex; align-items: center; justify-content: space-between;") do
-      div(style: "display: flex; align-items: center; gap: 1rem;") do
+    header(class: "app-header") do
+      div(class: "app-header-left") do
         render(Primer::Alpha::Dialog.new(
           title: "Navigation",
           position: :left,
@@ -37,7 +37,7 @@ class Components::Shared::AppHeader < Components::Base
         ))
       end
 
-      div(style: "display: flex; align-items: center; gap: 0.5rem;") do
+      div(class: "app-header-right") do
         render(Primer::Beta::IconButton.new(
           icon: :zap,
           "aria-label": "Mail Scanner",
@@ -54,7 +54,7 @@ class Components::Shared::AppHeader < Components::Base
           onclick: safe("window.openKbar?.()")
         )) do |btn|
           btn.with_leading_visual_icon(icon: :search)
-          span(style: "font-size: 12px; color: var(--fgColor-muted); font-family: var(--fontStack-monospace);") { "⌘K" }
+          span(class: "kbar-label") { "⌘K" }
         end
 
         render_id_lookup_dialog
@@ -107,7 +107,7 @@ class Components::Shared::AppHeader < Components::Base
             full_width: true,
             autofocus: true
           ))
-          div(style: "margin-top: 1rem; display: flex; justify-content: flex-end;") do
+          div(class: "dialog-form-footer") do
             render(Primer::ButtonComponent.new(type: :submit, scheme: :primary)) { "Go!" }
           end
         end

@@ -13,13 +13,13 @@ class Views::Letter::Batches::New < Views::Base
   def view_template
     vite_javascript_tag("taggable")
 
-    div(style: "max-width: 1200px; margin: 0 auto; padding: 24px;") do
-      div(style: "display: flex; align-items: center; gap: 12px; margin-bottom: 24px;") do
+    div(class: "page-container") do
+      div(class: "page-header") do
         render Primer::Beta::Button.new(tag: :a, href: letter_batches_path, scheme: :invisible, size: :small) do |btn|
           btn.with_leading_visual_icon(icon: :"arrow-left")
           "Back"
         end
-        h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "New Letter Batch" }
+        h1(class: "page-title") { "New Letter Batch" }
       end
 
       error_messages
@@ -70,7 +70,7 @@ class Views::Letter::Batches::New < Views::Base
         tag_picker(f)
 
         # Actions
-        div(style: "display: flex; gap: 8px;") do
+        div(class: "page-actions") do
           render Primer::Beta::Button.new(tag: :a, href: letter_batches_path, scheme: :secondary) do
             "Cancel"
           end
@@ -90,7 +90,7 @@ class Views::Letter::Batches::New < Views::Base
 
     render Primer::Beta::Flash.new(scheme: :danger, mb: 3) do
       strong { "Hey, slight issue:" }
-      ul(style: "margin: 8px 0 0 16px; padding: 0;") do
+      ul(class: "error-list") do
         @batch.errors.each do |error|
           li { error.full_message }
         end
@@ -101,13 +101,13 @@ class Views::Letter::Batches::New < Views::Base
   def sender_fields(f)
     addresses = ReturnAddress.shared.or(ReturnAddress.owned_by(current_user))
 
-    div(style: "margin-bottom: 16px;") do
-      label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;", for: "letter_batch_letter_mailer_id_id") { "USPS Mailer ID" }
-      div(style: "margin-top: 4px;") do
+    div(class: "form-field-lg") do
+      label(class: "date-field-label", for: "letter_batch_letter_mailer_id_id") { "USPS Mailer ID" }
+      div(class: "mt-1") do
         select(
           name: "letter_batch[letter_mailer_id_id]",
           id: "letter_batch_letter_mailer_id_id",
-          style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
+          class: "select-field"
         ) do
           USPS::MailerId.all.each do |m|
             option(
@@ -119,13 +119,13 @@ class Views::Letter::Batches::New < Views::Base
       end
     end
 
-    div(style: "margin-bottom: 16px;") do
-      label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;", for: "letter_batch_letter_return_address_id") { "Return Address" }
-      div(style: "margin-top: 4px;") do
+    div(class: "form-field-lg") do
+      label(class: "date-field-label", for: "letter_batch_letter_return_address_id") { "Return Address" }
+      div(class: "mt-1") do
         select(
           name: "letter_batch[letter_return_address_id]",
           id: "letter_batch_letter_return_address_id",
-          style: "width: 100%; padding: 5px 12px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-default);"
+          class: "select-field"
         ) do
           addresses.each do |addr|
             option(
@@ -135,7 +135,7 @@ class Views::Letter::Batches::New < Views::Base
           end
         end
       end
-      p(style: "color: var(--fgColor-muted); font-size: 12px; margin-top: 4px;") do
+      p(class: "form-hint") do
         a(href: return_addresses_path) { "Manage return addresses" }
       end
     end
@@ -150,19 +150,18 @@ class Views::Letter::Batches::New < Views::Base
   end
 
   def tag_picker(f)
-    div(style: "margin-bottom: 16px;") do
-      label(style: "display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px;") { "Tags" }
+    div(class: "form-field-lg") do
+      label(class: "date-field-label") { "Tags" }
       select(
         name: "letter_batch[tags][]",
         multiple: true,
-        class: "selectize-tags",
-        style: "width: 100%;"
+        class: "selectize-tags w-full"
       ) do
         available_tags.each do |tag|
           option(value: tag) { tag }
         end
       end
-      p(style: "color: var(--fgColor-muted); font-size: 12px; margin-top: 4px;") { "Select from common tags or create your own" }
+      p(class: "form-hint") { "Select from common tags or create your own" }
     end
   end
 end

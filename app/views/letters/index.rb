@@ -14,7 +14,7 @@ class Views::Letters::Index < Views::Base
   end
 
   def view_template
-    div(style: "max-width: 1200px; margin: 0 auto; padding: 24px;") do
+    div(class: "page-container") do
       header_section
       stats_section
       filters_section
@@ -28,13 +28,13 @@ class Views::Letters::Index < Views::Base
   attr_reader :letters, :all_letters, :search, :status, :origin, :user_id, :users
 
   def header_section
-    div(style: "display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;") do
+    div(class: "page-header") do
       div do
-        div(style: "display: flex; align-items: center; gap: 8px;") do
-          h1(style: "font-size: 24px; font-weight: 600; margin: 0;") { "Letters" }
+        div(class: "page-title-group") do
+          h1(class: "page-title") { "Letters" }
           render Components::Shared::Jumpcode.new(path: letters_path)
         end
-        p(style: "color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;") do
+        p(class: "page-subtitle mt-1") do
           plain "#{letters.respond_to?(:total_count) ? letters.total_count : letters.count} letters"
         end
       end
@@ -54,7 +54,7 @@ class Views::Letters::Index < Views::Base
       received: all_letters.where(aasm_state: :received).count
     }
 
-    div(style: "display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;") do
+    div(class: "stat-pill-row") do
       stat_pill("Pending", counts[:pending], :attention, "pending")
       stat_pill("Printed", counts[:printed], :secondary, "printed")
       stat_pill("Mailed", counts[:mailed], :accent, "mailed")
@@ -80,21 +80,20 @@ class Views::Letters::Index < Views::Base
 
     a(
       href: href,
-      style: "display: flex; align-items: center; gap: 8px; padding: 8px 14px; " \
-             "background: #{is_active ? s[:active_bg] : s[:bg]}; " \
-             "border: 1px solid #{is_active ? s[:active_bg] : s[:border]}; " \
-             "border-radius: 6px; text-decoration: none; " \
-             "color: #{is_active ? 'var(--fgColor-onEmphasis)' : 'inherit'}; font-size: 14px;"
+      class: "stat-pill-link",
+      style: "background: #{is_active ? s[:active_bg] : s[:bg]}; " \
+             "border-color: #{is_active ? s[:active_bg] : s[:border]}; " \
+             "color: #{is_active ? 'var(--fgColor-onEmphasis)' : 'inherit'};"
     ) do
-      span(style: "font-weight: 600;") { count.to_s }
-      span(style: is_active ? "" : "color: var(--fgColor-muted);") { label }
+      span(class: "fw-semibold") { count.to_s }
+      span(class: is_active ? "" : "kv-label") { label }
     end
   end
 
   def filters_section
-    div(style: "display: flex; gap: 12px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;") do
-      div(style: "flex: 1; min-width: 200px; max-width: 400px;") do
-        form_tag(letters_path, method: :get, style: "display: contents;") do
+    div(class: "filter-section") do
+      div(class: "filter-search") do
+        form_tag(letters_path, method: :get) do
           hidden_field_tag(:status, status) if status.present?
           hidden_field_tag(:origin, origin) if origin.present?
           hidden_field_tag(:user_id, user_id) if user_id.present?
@@ -144,7 +143,7 @@ class Views::Letters::Index < Views::Base
       { key: "api", label: "API", icon: :code },
     ]
 
-    div(style: "display: flex; gap: 4px;") do
+    div(class: "filter-toggle-row") do
       origins.each do |o|
         is_active = origin == o[:key]
         render Primer::Beta::Button.new(
@@ -164,12 +163,12 @@ class Views::Letters::Index < Views::Base
     if letters.any?
       render Primer::Beta::BorderBox.new do |box|
         box.with_header do
-          div(style: "display: flex; justify-content: space-between; align-items: center; width: 100%;") do
-            span(style: "font-weight: 600;") { "Letter" }
-            div(style: "display: flex; gap: 48px;") do
-              span(style: "font-weight: 600; min-width: 140px;") { "Recipient" }
-              span(style: "font-weight: 600; min-width: 100px; text-align: right;") { "Batch" }
-              span(style: "font-weight: 600; min-width: 80px; text-align: right;") { "Status" }
+          div(class: "letter-list-header") do
+            span(class: "fw-semibold") { "Letter" }
+            div(class: "letter-list-header-side") do
+              span(class: "letter-list-col-recipient") { "Recipient" }
+              span(class: "letter-list-col-batch") { "Batch" }
+              span(class: "letter-list-col-status") { "Status" }
             end
           end
         end
@@ -195,25 +194,21 @@ class Views::Letters::Index < Views::Base
   end
 
   def render_letter_row(letter)
-    a(
-      href: letter_path(letter),
-      style: "display: flex; justify-content: space-between; align-items: center; width: 100%; " \
-             "text-decoration: none; color: inherit; gap: 16px; padding: 8px 16px;"
-    ) do
-      div(style: "flex: 1; min-width: 0;") do
-        div(style: "display: flex; align-items: center; gap: 8px; margin-bottom: 2px;") do
-          span(style: "font-weight: 600; font-family: var(--fontStack-monospace); font-size: 13px; color: var(--fgColor-accent);") do
+    a(href: letter_path(letter), class: "letter-row") do
+      div(class: "letter-row-main") do
+        div(class: "letter-row-id-line") do
+          span(class: "letter-row-id") do
             letter.public_id
           end
           if letter.user_facing_title.present?
-            span(style: "color: var(--fgColor-default);") { "·" }
-            span(style: "font-size: 14px; color: var(--fgColor-default); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px;") do
+            span { "·" }
+            span(class: "letter-row-title") do
               letter.user_facing_title
             end
           end
           render_tags(letter.tags.first(2)) if letter.tags.present?
         end
-        div(style: "font-size: 12px; color: var(--fgColor-muted); margin-top: 2px;") do
+        div(class: "letter-row-meta") do
           plain letter.created_at.strftime("%b %d, %Y")
           plain " · #{letter.origin_label}"
           if letter.mailed_at
@@ -222,27 +217,27 @@ class Views::Letters::Index < Views::Base
         end
       end
 
-      div(style: "display: flex; gap: 48px; align-items: center; flex-shrink: 0;") do
-        div(style: "min-width: 140px;") do
-          div(style: "font-size: 14px; font-weight: 500;") { letter.address&.name_line || "—" }
+      div(class: "letter-row-side") do
+        div(class: "letter-row-recipient") do
+          div(class: "letter-row-recipient-name") { letter.address&.name_line || "—" }
           if letter.recipient_email.present?
-            div(style: "font-size: 12px; color: var(--fgColor-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;") do
+            div(class: "letter-row-recipient-email") do
               letter.recipient_email
             end
           end
         end
 
-        div(style: "min-width: 100px; text-align: right;") do
+        div(class: "letter-row-batch") do
           if letter.batch_id.present?
             render Primer::Beta::Label.new(scheme: :secondary, size: :medium) do
               "Batch ##{letter.batch_id}"
             end
           else
-            span(style: "font-size: 13px; color: var(--fgColor-muted);") { "—" }
+            span(class: "text-sm kv-label") { "—" }
           end
         end
 
-        div(style: "min-width: 80px; text-align: right;") do
+        div(class: "letter-row-status") do
           render Components::Shared::StatusBadge.new(status: letter.aasm_state, type: :letter)
         end
       end
@@ -263,8 +258,8 @@ class Views::Letters::Index < Views::Base
     )
   end
 
-  def form_tag(url, method:, style:, &block)
-    form(action: url, method: method == :get ? "get" : "post", style: style, &block)
+  def form_tag(url, method:, &block)
+    form(action: url, method: method == :get ? "get" : "post", &block)
   end
 
   def hidden_field_tag(name, value)

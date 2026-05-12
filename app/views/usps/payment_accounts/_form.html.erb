@@ -2,7 +2,7 @@
   <% if usps_payment_account.errors.any? %>
     <%= render Primer::Beta::Flash.new(scheme: :danger, mb: 3) do %>
       <strong><%= pluralize(usps_payment_account.errors.count, "error") %>:</strong>
-      <ul style="margin: 8px 0 0 16px; padding: 0;">
+      <ul class="error-list">
         <% usps_payment_account.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -23,7 +23,7 @@
         mb: 3
       ) %>
 
-      <div style="margin-bottom: 12px;">
+      <div class="form-field">
         <%= render Primer::Alpha::Select.new(
           name: "usps_payment_account[usps_mailer_id_id]",
           label: "CRID/MID",
@@ -37,7 +37,7 @@
         end %>
       </div>
 
-      <div x-data="{account_type: '<%= usps_payment_account.account_type %>'}" style="margin-bottom: 12px;">
+      <div x-data="{account_type: '<%= usps_payment_account.account_type %>'}" class="form-field">
         <%= render Primer::Alpha::Select.new(
           name: "usps_payment_account[account_type]",
           label: "Account type",
@@ -50,7 +50,7 @@
         end %>
 
         <template x-if="account_type=='EPS'">
-          <div style="margin-top: 12px;">
+          <div class="form-field">
             <%= render Primer::Alpha::TextField.new(
               name: "usps_payment_account[account_number]",
               label: "EPS account number",
@@ -60,7 +60,7 @@
           </div>
         </template>
         <template x-if="account_type=='PERMIT'">
-          <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-field form-grid">
             <div>
               <%= render Primer::Alpha::TextField.new(
                 name: "usps_payment_account[permit_number]",
@@ -90,7 +90,7 @@
     <% end %>
   <% end %>
 
-  <div style="display: flex; gap: 8px;">
+  <div class="page-actions">
     <%= render Primer::Beta::Button.new(tag: :a, href: usps_payment_accounts_path, scheme: :secondary) do
       "Cancel"
     end %>

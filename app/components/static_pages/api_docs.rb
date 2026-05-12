@@ -6,7 +6,7 @@ class Components::StaticPages::APIDocs < Components::Base
   end
 
   def view_template
-    div(style: "max-width: 900px; margin: 0 auto; padding: 24px;") do
+    div(class: "api-docs-container") do
       div(class: "markdown-body") do
         raw safe rendered_html
       end
@@ -38,7 +38,7 @@ class Components::StaticPages::APIDocs < Components::Base
 
   def ai_copy_button
     button(
-      style: "display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; font-size: 13px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); cursor: pointer; color: var(--fgColor-default);",
+      class: "api-docs-copy-btn",
       onclick: safe("let b=this;fetch('#{api_docs_path(format: :md)}').then(r=>r.text()).then(t=>navigator.clipboard.writeText(t)).then(()=>{b.querySelector('span').textContent='Copied!';setTimeout(()=>b.querySelector('span').textContent='Copy LLM-friendly version as Markdown',2000)})")
     ) do
       render Primer::Beta::Octicon.new(icon: :copy, size: :small)

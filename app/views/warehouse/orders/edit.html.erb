@@ -1,14 +1,14 @@
 <% content_for :title, "Edit order #{@warehouse_order.hc_id}" %>
 
 <div class="page-container--narrow">
-  <div class="page-title-group" style="margin-bottom: 24px;">
+  <div class="page-title-group content-section">
     <h1 class="page-title">Edit order</h1>
-    <code class="mono" style="font-size: 16px;"><%= @warehouse_order.hc_id %></code>
+    <code class="mono"><%= @warehouse_order.hc_id %></code>
   </div>
 
   <%= render "form", warehouse_order: @warehouse_order %>
 
-  <div style="margin-top: 32px;">
+  <div class="back-link">
     <%= render Primer::Beta::Button.new(tag: :a, href: warehouse_order_path(@warehouse_order), scheme: :invisible, size: :small) do |btn|
       btn.with_leading_visual_icon(icon: :"arrow-left")
       "Back to order"

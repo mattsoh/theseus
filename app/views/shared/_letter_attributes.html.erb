@@ -1,15 +1,15 @@
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; font-size: 14px;">
+<div class="letter-attrs-grid">
   <div>
-    <span style="color: var(--fgColor-muted);">Dimensions:</span>
+    <span class="kv-label">Dimensions:</span>
     <%= record.is_a?(Letter) ? record.height : record.letter_height %> × <%= record.is_a?(Letter) ? record.width : record.letter_width %> in
   </div>
   <div>
-    <span style="color: var(--fgColor-muted);">Weight:</span>
+    <span class="kv-label">Weight:</span>
     <%= record.is_a?(Letter) ? record.weight : record.letter_weight %> oz
   </div>
   <% if record.is_a?(Letter) %>
     <div>
-      <span style="color: var(--fgColor-muted);">Mailing Date:</span>
+      <span class="kv-label">Mailing Date:</span>
       <%= record.mailing_date&.strftime("%B %d, %Y") || "Not set" %>
     </div>
   <% end %>

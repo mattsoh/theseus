@@ -6,8 +6,8 @@ class Views::ReturnAddresses::Edit < Views::Base
   end
 
   def view_template
-    div(style: "max-width: 640px; margin: 0 auto; padding: 24px;") do
-      h1(style: "font-size: 24px; font-weight: 600; margin: 0 0 24px 0;") { "Edit Return Address" }
+    div(class: "page-container--sm") do
+      h1(class: "page-title content-section") { "Edit Return Address" }
 
       render Primer::Beta::BorderBox.new(mb: 3) do |box|
         box.with_header { "Address Details" }

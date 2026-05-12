@@ -8,13 +8,13 @@ class Components::Shared::Jumpcode < Components::Base
   def view_template
     return unless @code
 
-    span(style: "display: inline-flex; align-items: center; gap: 4px; vertical-align: middle;") do
+    span(class: "jumpcode") do
       span(
-        style: "display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; font-family: var(--fontStack-monospace); padding: 2px 8px; border-radius: 6px; background: var(--bgColor-muted); color: var(--fgColor-muted); letter-spacing: 0.5px; cursor: pointer; user-select: none;",
+        class: "jumpcode-badge",
         title: "Press ⌘K and type #{@code}",
         onclick: safe("window.openKbar?.()")
       ) do
-        span(style: "font-size: 10px; opacity: 0.6;") { "⌘K" }
+        span(class: "jumpcode-prefix") { "⌘K" }
         plain @code
       end
 
@@ -34,41 +34,40 @@ class Components::Shared::Jumpcode < Components::Base
         size: :small,
         "aria-label": "What's a jumpcode?"
       ) do
-        span(style: "font-size: 11px; color: var(--fgColor-muted); cursor: pointer; opacity: 0.5;") { "?" }
+        span(class: "jumpcode-help-trigger") { "?" }
       end
 
       dialog.with_body do
-        cs = "font-size: 12px; padding: 2px 6px; border-radius: 4px; background: var(--bgColor-muted); font-family: var(--fontStack-monospace);"
-        div(style: "font-size: 14px; line-height: 1.6; color: var(--fgColor-default);") do
-          p(style: "margin: 0 0 12px 0;") do
+        div(class: "jumpcode-dialog-body") do
+          p(class: "jumpcode-dialog-p") do
             plain "you've probably seen the "
-            code(style: cs) { "⌘K #{@code}" }
+            code(class: "jumpcode-code") { "⌘K #{@code}" }
             plain " badges around — those are jumpcodes. hit "
-            code(style: cs) { "⌘K" }
+            code(class: "jumpcode-code") { "⌘K" }
             plain ", type the code, go."
           end
 
-          p(style: "margin: 0 0 12px 0;") do
+          p(class: "jumpcode-dialog-p") do
             plain "letter pages start with L ("
-            code(style: cs) { "MAIL" }
+            code(class: "jumpcode-code") { "MAIL" }
             plain ", "
-            code(style: cs) { "SCAN" }
+            code(class: "jumpcode-code") { "SCAN" }
             plain ", "
-            code(style: cs) { "LBAT" }
+            code(class: "jumpcode-code") { "LBAT" }
             plain "), warehouse starts with W ("
-            code(style: cs) { "WORD" }
+            code(class: "jumpcode-code") { "WORD" }
             plain ", "
-            code(style: cs) { "SKUS" }
+            code(class: "jumpcode-code") { "SKUS" }
             plain "). you'll pick them up fast."
           end
 
-          p(style: "margin: 0; color: var(--fgColor-muted); font-size: 13px;") do
+          p(class: "jumpcode-dialog-p--last") do
             plain "the palette also does search — "
-            code(style: cs) { "?l" }
+            code(class: "jumpcode-code") { "?l" }
             plain " for letters, "
-            code(style: cs) { "?w" }
+            code(class: "jumpcode-code") { "?w" }
             plain " for orders — and you can paste IDs like "
-            code(style: cs) { "ltr!abc123" }
+            code(class: "jumpcode-code") { "ltr!abc123" }
             plain " to jump to them."
           end
         end

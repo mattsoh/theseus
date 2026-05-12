@@ -19,14 +19,14 @@ class Views::Letter::InstantQueues::Show < Views::Letter::Queues::ShowBase
     box.with_row do
       div do
         strong { "Template" }
-        div(style: "margin-top: 4px;") { queue.template.presence || "\u2014" }
+        div(class: "detail-value") { queue.template.presence || "—" }
       end
     end
 
     box.with_row do
       div do
         strong { "Postage Type" }
-        div(style: "margin-top: 4px;") { queue.postage_type&.humanize || "\u2014" }
+        div(class: "detail-value") { queue.postage_type&.humanize || "—" }
       end
     end
 
@@ -34,7 +34,7 @@ class Views::Letter::InstantQueues::Show < Views::Letter::Queues::ShowBase
       box.with_row do
         div do
           strong { "USPS Payment Account" }
-          div(style: "margin-top: 4px;") { queue.usps_payment_account.display_name }
+          div(class: "detail-value") { queue.usps_payment_account.display_name }
         end
       end
     end
@@ -43,7 +43,7 @@ class Views::Letter::InstantQueues::Show < Views::Letter::Queues::ShowBase
       box.with_row do
         div do
           strong { "HCB Payment Account" }
-          div(style: "margin-top: 4px;") { queue.hcb_payment_account.organization_name }
+          div(class: "detail-value") { queue.hcb_payment_account.organization_name }
         end
       end
     end
@@ -51,7 +51,7 @@ class Views::Letter::InstantQueues::Show < Views::Letter::Queues::ShowBase
     box.with_row do
       div do
         strong { "QR Code" }
-        div(style: "margin-top: 4px;") { queue.include_qr_code ? "Enabled" : "Disabled" }
+        div(class: "detail-value") { queue.include_qr_code ? "Enabled" : "Disabled" }
       end
     end
   end

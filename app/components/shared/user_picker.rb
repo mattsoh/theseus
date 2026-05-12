@@ -70,7 +70,7 @@ class Components::Shared::UserPicker < Components::Base
       ) do |item|
         if user.icon_url.present?
           item.with_leading_visual_content do
-            img(src: user.icon_url, alt: user.email, style: "width: 20px; height: 20px; border-radius: 50%;")
+            img(src: user.icon_url, alt: user.email, class: "user-avatar")
           end
         else
           item.with_leading_visual_icon(icon: :person)

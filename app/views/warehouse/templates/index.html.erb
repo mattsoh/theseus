@@ -20,12 +20,12 @@
     <%= render Primer::Beta::BorderBox.new(mb: 4) do |box|
       current_user.warehouse_templates.each do |template|
         box.with_row do %>
-          <a href="<%= warehouse_template_path(template) %>" class="resource-card" style="text-decoration: none; color: inherit;">
+          <a href="<%= warehouse_template_path(template) %>" class="resource-card link-reset">
             <div>
               <span class="resource-card-title"><%= template.name %></span>
-              <span class="resource-card-meta" style="margin-left: 8px;"><%= template.line_items.count %> items</span>
+              <span class="resource-card-meta resource-card-meta--inline"><%= template.line_items.count %> items</span>
             </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="section-title-group">
               <% if template.public %>
                 <%= render(Primer::Beta::Label.new(scheme: :accent, size: :small)) { "Shared" } %>
               <% end %>
@@ -42,10 +42,10 @@
     <%= render Primer::Beta::BorderBox.new do |box|
       Warehouse::Template.shared.each do |template|
         box.with_row do %>
-          <a href="<%= warehouse_template_path(template) %>" class="resource-card" style="text-decoration: none; color: inherit;">
+          <a href="<%= warehouse_template_path(template) %>" class="resource-card link-reset">
             <div>
               <span class="resource-card-title"><%= template.name %></span>
-              <span class="resource-card-meta" style="margin-left: 8px;"><%= template.line_items.count %> items</span>
+              <span class="resource-card-meta resource-card-meta--inline"><%= template.line_items.count %> items</span>
             </div>
             <span class="resource-card-meta">by <%= template.user&.username || "unknown" %></span>
           </a>

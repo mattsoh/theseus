@@ -3,8 +3,8 @@
 <div class="page-container">
   <div class="page-header">
     <div>
-      <h1 style="font-size: 24px; font-weight: 600; margin: 0;">Indicia</h1>
-      <p style="color: var(--fgColor-muted); margin: 4px 0 0; font-size: 14px;"><%= @usps_indicia.count %> purchased</p>
+      <h1 class="page-title">Indicia</h1>
+      <p class="page-subtitle"><%= @usps_indicia.count %> purchased</p>
     </div>
     <%= render Primer::Beta::Button.new(tag: :a, href: new_usps_indicium_path, scheme: :primary) do |btn|
       btn.with_leading_visual_icon(icon: :plus)
@@ -16,22 +16,22 @@
     <%= render Primer::Beta::BorderBox.new do |box|
       box.with_header do %>
         <div class="indicia-row">
-          <span class="indicia-col-id" style="font-weight: 600;">ID</span>
-          <code class="indicia-col-sku" style="font-weight: 600;">SKU</code>
-          <span class="indicia-col-num" style="font-weight: 600;">Postage</span>
-          <span class="indicia-col-date" style="font-weight: 600;">Date</span>
-          <span class="indicia-col-cat" style="font-weight: 600;">Category</span>
+          <span class="indicia-col-id col-header">ID</span>
+          <code class="indicia-col-sku col-header">SKU</code>
+          <span class="indicia-col-num col-header">Postage</span>
+          <span class="indicia-col-date col-header">Date</span>
+          <span class="indicia-col-cat col-header">Category</span>
         </div>
       <% end
 
       @usps_indicia.each do |indicium|
         box.with_row do %>
-          <a href="<%= usps_indicium_path(indicium) %>" class="indicia-row" style="text-decoration: none; color: inherit;">
+          <a href="<%= usps_indicium_path(indicium) %>" class="indicia-row link-reset">
             <span class="indicia-col-id"><%= render Components::Shared::PublicId.new(value: indicium.public_id) %></span>
-            <code class="indicia-col-sku" style="font-size: 12px;"><%= indicium.usps_sku %></code>
-            <span class="indicia-col-num" style="font-weight: 500;"><%= number_to_currency(indicium.postage) %></span>
-            <span class="indicia-col-date" style="color: var(--fgColor-muted);"><%= indicium.mailing_date %></span>
-            <span class="indicia-col-cat" style="color: var(--fgColor-muted);"><%= indicium.processing_category %></span>
+            <code class="indicia-col-sku mono"><%= indicium.usps_sku %></code>
+            <span class="indicia-col-num fw-medium"><%= number_to_currency(indicium.postage) %></span>
+            <span class="indicia-col-date kv-label"><%= indicium.mailing_date %></span>
+            <span class="indicia-col-cat kv-label"><%= indicium.processing_category %></span>
           </a>
         <% end
       end
