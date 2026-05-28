@@ -30,7 +30,7 @@ module SnailMail
           text = <<~EOM
             Hey, #{letter.address&.first_name&.titleize},
 
-            We wanted to tell the star of the day, (that's you!), that your project #{project}really added brightened up the sky at HQ!
+            We wanted to tell the star of the day, (that's you!), that your project #{project}really brightened up the sky at HQ!
 
             We love seeing people shoot for the stars, and you're shining brighter than ever!
 
