@@ -6,7 +6,7 @@ module API
       end
 
       def create
-        authorize User, :create?
+        authorize User
 
         if identifier_params.values.none?(&:present?)
           return render json: { error: "missing_parameter", messages: ["provide at least one of hca_id, slack_id, or email"] }, status: :bad_request
